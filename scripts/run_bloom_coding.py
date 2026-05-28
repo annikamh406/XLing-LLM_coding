@@ -18,13 +18,23 @@ import urllib.request
 from pathlib import Path
 
 
+# Resolve paths relative to this standalone XLing-LLM_coding folder. This keeps
+# the script portable after the folder is pushed to its own Git repository and
+# cloned onto Oscar.
 LLM_DIR = Path(__file__).resolve().parents[1]
 DEFAULT_PROMPT = LLM_DIR / "prompts" / "bloom_v1_english_initial_prompt.md"
 DEFAULT_SPLIT_DIR = LLM_DIR / "splits" / "english"
 DEFAULT_RESULTS_DIR = LLM_DIR / "results" / "dev"
 DEFAULT_OLLAMA_URL = "http://localhost:11434/api/chat"
 
+# These version strings are saved in raw-response metadata and the terminal
+# summary. The schema and prompt versions are also used in output filenames as
+# compact run locators; the full prompt path stays in metadata.
 SCHEMA_VERSION = "bloom_v1"
+PROMPT_VERSION = "p001"
+
+# Local copies of the schema constraints. Keeping these in code makes validation
+# cheap and avoids depending on external JSON-schema packages on Oscar.
 ALLOWED_LABELS = {
     "Nonexistence",
     "Rejection",
@@ -43,6 +53,9 @@ REQUIRED_FLAGS = {
 }
 ALLOWED_FLAG_VALUES = {"Yes", "No"}
 
+# Only these fields are sent to the LLM. The split JSONL records also include
+# human coder labels and split metadata; those must never be included in the
+# prompt because they would leak evaluation information to the model.
 PROMPT_RECORD_FIELDS = [
     "record_id",
     "language",
@@ -64,11 +77,13 @@ class ValidationError(Exception):
 
 
 def read_jsonl(path: Path) -> list[dict]:
+    """Read newline-delimited JSON records from a split or results file."""
     with path.open(encoding="utf-8") as handle:
         return [json.loads(line) for line in handle if line.strip()]
 
 
 def write_jsonl(path: Path, records: list[dict]) -> None:
+    """Write records as newline-delimited JSON, creating the parent directory."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as handle:
         for record in records:
@@ -76,19 +91,28 @@ def write_jsonl(path: Path, records: list[dict]) -> None:
 
 
 def clean_model_name(model: str) -> str:
+    """Convert an Ollama model name into a safe filename component."""
     return re.sub(r"[^A-Za-z0-9_.-]+", "_", model).strip("_") or "model"
 
 
 def prompt_record(record: dict) -> dict:
+    """Return only the fields that the LLM is allowed to see."""
     return {field: record.get(field) for field in PROMPT_RECORD_FIELDS}
 
 
 def chunks(items: list[dict], size: int):
+    """Yield successive fixed-size batches while preserving record order."""
     for start in range(0, len(items), size):
         yield start, items[start : start + size]
 
 
 def extract_json_object(text: str) -> dict:
+    """Parse a JSON object from an LLM response.
+
+    Ollama is asked to return JSON, but local models can still occasionally wrap
+    output in Markdown fences or add a short preamble. This parser first tries
+    strict JSON, then falls back to the first {...} span.
+    """
     text = text.strip()
     if text.startswith("```"):
         text = re.sub(r"^```(?:json)?\s*", "", text)
@@ -104,6 +128,12 @@ def extract_json_object(text: str) -> dict:
 
 
 def validate_response(payload: dict, expected_ids: list[str]) -> list[dict]:
+    """Validate one model response against the Bloom v1 output contract.
+
+    This is deliberately strict. If a model omits a record, invents an ID,
+    changes enum spelling, or adds extra keys, the run should fail before any
+    final prediction file is written.
+    """
     if not isinstance(payload, dict):
         raise ValidationError("Top-level output is not a JSON object.")
     if payload.get("schema_version") != SCHEMA_VERSION:
@@ -116,6 +146,8 @@ def validate_response(payload: dict, expected_ids: list[str]) -> list[dict]:
     seen = set()
     cleaned = []
 
+    # Validate every prediction object independently before checking for any
+    # batch-level missing IDs.
     for prediction in predictions:
         if not isinstance(prediction, dict):
             raise ValidationError("Each prediction must be an object.")
@@ -175,10 +207,15 @@ def ollama_chat(
     temperature: float,
     timeout: int,
 ) -> tuple[dict, dict]:
+    """Send one batch to Ollama's local /api/chat endpoint."""
+    # The prompt file is sent as the system message. The current batch is sent
+    # as the user message so the model sees exactly the records it should code.
     user_content = (
         "Code the following batch. Return only the JSON output object.\n\n"
         + json.dumps(records, ensure_ascii=False, indent=2)
     )
+    # format="json" asks Ollama to constrain output toward JSON. We still run
+    # our own validator below because this does not guarantee semantic validity.
     request_payload = {
         "model": model,
         "messages": [
@@ -189,6 +226,8 @@ def ollama_chat(
         "format": "json",
         "options": {"temperature": temperature},
     }
+    # Use Python's standard-library HTTP client so the script runs on Oscar
+    # without installing requests/openai/etc.
     data = json.dumps(request_payload).encode("utf-8")
     request = urllib.request.Request(
         url,
@@ -204,6 +243,7 @@ def ollama_chat(
             f"Could not reach Ollama at {url}. Is `ollama serve` running on this node?"
         ) from exc
 
+    # Ollama chat responses place the model's text in message.content.
     content = (raw_response.get("message") or {}).get("content")
     if not content:
         raise RuntimeError(f"Ollama response did not include message.content: {raw_response}")
@@ -211,6 +251,7 @@ def ollama_chat(
 
 
 def parse_args() -> argparse.Namespace:
+    """Define the command-line interface for local/Oscar runs."""
     parser = argparse.ArgumentParser(
         description="Run Bloom v1 coding on an English split with Ollama."
     )
@@ -244,6 +285,9 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+
+    # Lockbox discipline: the held-out test split requires an explicit override
+    # so it cannot be run accidentally during prompt iteration.
     if args.split == "test_lockbox" and not args.allow_lockbox:
         print(
             "Refusing to run on test_lockbox without --allow-lockbox.",
@@ -257,6 +301,8 @@ def main() -> int:
         print("--batch-size must be positive.", file=sys.stderr)
         return 2
 
+    # Locate the requested split and prompt. By default these are resolved
+    # relative to the standalone XLing-LLM_coding folder.
     split_path = args.split_dir / f"{args.split}.jsonl"
     if not split_path.exists():
         print(f"Split file not found: {split_path}", file=sys.stderr)
@@ -265,6 +311,7 @@ def main() -> int:
         print(f"Prompt file not found: {args.prompt}", file=sys.stderr)
         return 2
 
+    # Load the split and optionally truncate for smoke tests, e.g. --limit 20.
     records = read_jsonl(split_path)
     if args.limit is not None:
         records = records[: args.limit]
@@ -272,12 +319,15 @@ def main() -> int:
         print("No records to code.", file=sys.stderr)
         return 2
 
+    # Build traceable but compact output filenames. Full provenance is stored
+    # below in raw-response metadata and printed in the terminal summary.
     model_slug = clean_model_name(args.model)
     limit_suffix = f"_limit-{args.limit}" if args.limit is not None else ""
-    output_prefix = f"{args.split}_{model_slug}{limit_suffix}"
+    output_prefix = f"{args.split}_{model_slug}_{SCHEMA_VERSION}_{PROMPT_VERSION}{limit_suffix}"
     prediction_path = args.results_dir / f"{output_prefix}_predictions.jsonl"
     raw_path = args.results_dir / f"{output_prefix}_raw_responses.jsonl"
 
+    # Avoid clobbering previous runs unless the user explicitly requests it.
     if not args.overwrite and (prediction_path.exists() or raw_path.exists()):
         print(
             f"Output already exists. Use --overwrite to replace:\n"
@@ -291,6 +341,8 @@ def main() -> int:
     raw_responses = []
     started_at = time.time()
 
+    # Process records in deterministic order. Each batch is independently
+    # validated, then appended to the run-level outputs.
     for batch_index, batch in chunks(records, args.batch_size):
         batch_number = batch_index // args.batch_size + 1
         batch_records = [prompt_record(record) for record in batch]
@@ -314,10 +366,15 @@ def main() -> int:
                 "batch_number": batch_number,
                 "record_ids": expected_ids,
                 "model": args.model,
+                "schema_version": SCHEMA_VERSION,
+                "prompt_version": PROMPT_VERSION,
+                "prompt_path": str(args.prompt),
                 "raw_response": raw_response,
             }
         )
 
+    # Write only after every batch succeeds. This prevents partial prediction
+    # files from looking like complete validated outputs.
     write_jsonl(prediction_path, predictions)
     write_jsonl(raw_path, raw_responses)
     elapsed = time.time() - started_at
@@ -326,6 +383,9 @@ def main() -> int:
             {
                 "split": args.split,
                 "model": args.model,
+                "schema_version": SCHEMA_VERSION,
+                "prompt_version": PROMPT_VERSION,
+                "prompt_path": str(args.prompt),
                 "n_records": len(records),
                 "batch_size": args.batch_size,
                 "prediction_path": str(prediction_path),

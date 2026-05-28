@@ -40,4 +40,9 @@ python3 scripts/run_bloom_coding.py --split dev_train --model gemma2:9b --limit 
 ```
 
 The runner writes predictions and raw model responses under `results/dev/`.
-It refuses to run on `test_lockbox` unless `--allow-lockbox` is passed.
+Output filenames include split, model, schema version, prompt ID, and optional
+limit, e.g. `dev_train_llama3.2_bloom_v1_p001_limit-20_predictions.jsonl`.
+The schema version, prompt ID, and prompt path are also stored in the raw
+response metadata and terminal summary.
+
+The runner refuses to run on `test_lockbox` unless `--allow-lockbox` is passed.
