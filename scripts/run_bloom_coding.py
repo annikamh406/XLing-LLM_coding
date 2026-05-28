@@ -206,6 +206,7 @@ def ollama_chat(
     records: list[dict],
     temperature: float,
     timeout: int,
+    validation_feedback: str | None = None,
 ) -> tuple[dict, dict]:
     """Send one batch to Ollama's local /api/chat endpoint."""
     # The prompt file is sent as the system message. The current batch is sent
@@ -214,6 +215,12 @@ def ollama_chat(
         "Code the following batch. Return only the JSON output object.\n\n"
         + json.dumps(records, ensure_ascii=False, indent=2)
     )
+    if validation_feedback:
+        user_content += (
+            "\n\nYour previous response failed local validation. "
+            "Return the full corrected JSON object for the same batch. "
+            f"Validation error: {validation_feedback}"
+        )
     # format="json" asks Ollama to constrain output toward JSON. We still run
     # our own validator below because this does not guarantee semantic validity.
     request_payload = {
@@ -264,6 +271,12 @@ def parse_args() -> argparse.Namespace:
         help="Optional max records to code, e.g. --limit 20 for a smoke test.",
     )
     parser.add_argument("--batch-size", type=int, default=5, help="Records per LLM call.")
+    parser.add_argument(
+        "--max-retries",
+        type=int,
+        default=2,
+        help="Retry a batch this many times after schema validation failures.",
+    )
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument("--timeout", type=int, default=300, help="HTTP timeout seconds.")
     parser.add_argument("--prompt", type=Path, default=DEFAULT_PROMPT)
@@ -299,6 +312,9 @@ def main() -> int:
         return 2
     if args.batch_size <= 0:
         print("--batch-size must be positive.", file=sys.stderr)
+        return 2
+    if args.max_retries < 0:
+        print("--max-retries must be zero or positive.", file=sys.stderr)
         return 2
 
     # Locate the requested split and prompt. By default these are resolved
@@ -351,15 +367,66 @@ def main() -> int:
             f"Coding batch {batch_number}: {expected_ids[0]}..{expected_ids[-1]}",
             file=sys.stderr,
         )
-        payload, raw_response = ollama_chat(
-            url=args.ollama_url,
-            model=args.model,
-            prompt=prompt,
-            records=batch_records,
-            temperature=args.temperature,
-            timeout=args.timeout,
-        )
-        batch_predictions = validate_response(payload, expected_ids)
+        validation_feedback = None
+        last_payload = None
+        last_raw_response = None
+        last_error = None
+
+        # Local models may produce syntactically valid JSON that still violates
+        # our schema. Retry the same batch with the validation error included so
+        # the model gets a chance to repair missing/extra keys or bad enum text.
+        for attempt in range(args.max_retries + 1):
+            if attempt:
+                print(
+                    f"Retrying batch {batch_number} after validation failure "
+                    f"({attempt}/{args.max_retries}).",
+                    file=sys.stderr,
+                )
+            payload, raw_response = ollama_chat(
+                url=args.ollama_url,
+                model=args.model,
+                prompt=prompt,
+                records=batch_records,
+                temperature=args.temperature,
+                timeout=args.timeout,
+                validation_feedback=validation_feedback,
+            )
+            last_payload = payload
+            last_raw_response = raw_response
+            try:
+                batch_predictions = validate_response(payload, expected_ids)
+                last_error = None
+                break
+            except ValidationError as exc:
+                last_error = exc
+                validation_feedback = str(exc)
+        else:
+            batch_predictions = []
+
+        if last_error is not None:
+            failure_path = args.results_dir / f"{output_prefix}_failed_batch-{batch_number}.json"
+            failure_path.parent.mkdir(parents=True, exist_ok=True)
+            failure_path.write_text(
+                json.dumps(
+                    {
+                        "batch_number": batch_number,
+                        "record_ids": expected_ids,
+                        "model": args.model,
+                        "schema_version": SCHEMA_VERSION,
+                        "prompt_version": PROMPT_VERSION,
+                        "prompt_path": str(args.prompt),
+                        "validation_error": str(last_error),
+                        "parsed_payload": last_payload,
+                        "raw_response": last_raw_response,
+                    },
+                    indent=2,
+                    ensure_ascii=False,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            raise last_error
+
         predictions.extend(batch_predictions)
         raw_responses.append(
             {

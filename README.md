@@ -28,14 +28,14 @@ In a second SSH session, connect to the same GPU node and run:
 ```bash
 module load ollama
 cd XLing-LLM_coding
-python3 scripts/run_bloom_coding.py --split dev_train --model llama3.2 --limit 20
+python3 scripts/run_bloom_coding.py --split dev_train --model llama3.2 --limit 20 --batch-size 1
 ```
 
 Useful options:
 
 ```bash
 python3 scripts/run_bloom_coding.py --help
-python3 scripts/run_bloom_coding.py --split dev_train --model llama3.2 --limit 20 --batch-size 2
+python3 scripts/run_bloom_coding.py --split dev_train --model llama3.2 --limit 20 --batch-size 1
 python3 scripts/run_bloom_coding.py --split dev_train --model gemma2:9b --limit 20
 ```
 
@@ -44,5 +44,9 @@ Output filenames include split, model, schema version, prompt ID, and optional
 limit, e.g. `dev_train_llama3.2_bloom_v1_p001_limit-20_predictions.jsonl`.
 The schema version, prompt ID, and prompt path are also stored in the raw
 response metadata and terminal summary.
+
+If a batch repeatedly fails schema validation, the runner writes a
+`*_failed_batch-N.json` debug file under `results/dev/` with the parsed model
+payload, raw response, and validation error.
 
 The runner refuses to run on `test_lockbox` unless `--allow-lockbox` is passed.
