@@ -1,0 +1,16 @@
+# Local/system files
+.DS_Store
+__pycache__/
+*.py[cod]
+
+# Large/generated inputs
+datasets/
+splits/**/*.csv
+
+# Model outputs and diagnostics
+results/
+outputs/
+
+# Local environment/secrets
+.env
+*.log

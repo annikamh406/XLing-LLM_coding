@@ -1,0 +1,156 @@
+{
+  "seed": 20260527,
+  "n_iterations": 20000,
+  "split_score": 0.14305579916266023,
+  "split_targets": {
+    "dev_train": 0.2,
+    "dev_check_1": 0.25,
+    "dev_check_2": 0.25,
+    "test_lockbox": 0.3
+  },
+  "age_bins_months": [
+    14.0,
+    16.666666666666668,
+    19.333333333333332,
+    22.0,
+    24.666666666666664,
+    27.333333333333332,
+    30.0
+  ],
+  "n_input_rows": 9628,
+  "n_coded_by_at_least_one": 7606,
+  "n_uncoded_by_neither": 2022,
+  "splits": {
+    "dev_train": {
+      "n_rows": 1521,
+      "n_transcripts": 104,
+      "mean_age_months": 24.318,
+      "min_age_months": 16.0,
+      "max_age_months": 30.0,
+      "both_coders": 1082,
+      "one_coder": 439,
+      "neither": 0,
+      "n_overlap_bloom": 1082,
+      "bloom_exact_agreement": 0.7699,
+      "bloom_cohen_kappa": 0.6446,
+      "coder_counts": {
+        "EB": 1379,
+        "WP": 969,
+        "ariel": 109,
+        "caitlin": 31,
+        "heather": 2,
+        "jared": 113
+      },
+      "overlap_counts": {
+        "EB + WP": 965,
+        "ariel + WP": 2,
+        "ariel + jared": 84,
+        "caitlin + heather": 2,
+        "caitlin + jared": 29
+      }
+    },
+    "dev_check_1": {
+      "n_rows": 1918,
+      "n_transcripts": 121,
+      "mean_age_months": 24.868,
+      "min_age_months": 16.0,
+      "max_age_months": 30.0,
+      "both_coders": 1408,
+      "one_coder": 510,
+      "neither": 0,
+      "n_overlap_bloom": 1408,
+      "bloom_exact_agreement": 0.7749,
+      "bloom_cohen_kappa": 0.6458,
+      "coder_counts": {
+        "EB": 1829,
+        "WP": 1353,
+        "ariel": 60,
+        "caitlin": 29,
+        "heather": 5,
+        "jared": 50
+      },
+      "overlap_counts": {
+        "EB + WP": 1338,
+        "ariel + WP": 15,
+        "ariel + jared": 26,
+        "caitlin + heather": 5,
+        "caitlin + jared": 24
+      }
+    },
+    "dev_check_2": {
+      "n_rows": 1894,
+      "n_transcripts": 151,
+      "mean_age_months": 24.527,
+      "min_age_months": 14.427,
+      "max_age_months": 30.0,
+      "both_coders": 1359,
+      "one_coder": 535,
+      "neither": 0,
+      "n_overlap_bloom": 1359,
+      "bloom_exact_agreement": 0.7697,
+      "bloom_cohen_kappa": 0.6398,
+      "coder_counts": {
+        "EB": 1701,
+        "WP": 1204,
+        "ariel": 116,
+        "caitlin": 77,
+        "heather": 13,
+        "jared": 142
+      },
+      "overlap_counts": {
+        "EB + WP": 1200,
+        "EB + jared": 1,
+        "ariel + WP": 4,
+        "ariel + jared": 77,
+        "caitlin + heather": 13,
+        "caitlin + jared": 64
+      }
+    },
+    "test_lockbox": {
+      "n_rows": 2273,
+      "n_transcripts": 179,
+      "mean_age_months": 24.652,
+      "min_age_months": 16.821,
+      "max_age_months": 30.0,
+      "both_coders": 1613,
+      "one_coder": 660,
+      "neither": 0,
+      "n_overlap_bloom": 1613,
+      "bloom_exact_agreement": 0.7402,
+      "bloom_cohen_kappa": 0.6085,
+      "coder_counts": {
+        "EB": 2155,
+        "WP": 1536,
+        "ariel": 95,
+        "caitlin": 23,
+        "jared": 77
+      },
+      "overlap_counts": {
+        "EB + WP": 1521,
+        "ariel + WP": 15,
+        "ariel + jared": 54,
+        "caitlin + jared": 23
+      }
+    },
+    "uncoded_by_neither": {
+      "n_rows": 2022,
+      "n_transcripts": 159,
+      "mean_age_months": 23.988,
+      "min_age_months": 16.394,
+      "max_age_months": 30.0,
+      "both_coders": 0,
+      "one_coder": 0,
+      "neither": 2022,
+      "n_overlap_bloom": 0,
+      "bloom_exact_agreement": null,
+      "bloom_cohen_kappa": null,
+      "coder_counts": {},
+      "overlap_counts": {}
+    }
+  },
+  "outputs": {
+    "split_dir": "Data/XLing-LLM_coding/splits/english",
+    "diagnostic_svg": "Data/XLing-LLM_coding/results/english_split_diagnostics/english_split_diagnostics.svg",
+    "transcript_manifest": "Data/XLing-LLM_coding/splits/english/transcript_split_manifest.csv"
+  }
+}

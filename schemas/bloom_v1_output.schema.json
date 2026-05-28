@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "bloom_v1_output.schema.json",
+  "title": "Bloom v1 LLM Coding Output",
+  "description": "Strict output schema for Phase 1 English Bloom negation coding. The schema_version value matches the Bloom coding policy version.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "predictions"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "bloom_v1"
+    },
+    "predictions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["record_id", "bloom_label", "flags", "comments"],
+        "properties": {
+          "record_id": {
+            "type": "string",
+            "pattern": "^eng_[0-9]{6}$"
+          },
+          "bloom_label": {
+            "type": "string",
+            "enum": [
+              "Nonexistence",
+              "Rejection",
+              "Denial",
+              "Nonpossession",
+              "Uncoded",
+              "Excluded"
+            ]
+          },
+          "flags": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "foreign_language_negation",
+              "singing",
+              "mimicry",
+              "tag_question",
+              "repetition",
+              "not_a_negation"
+            ],
+            "properties": {
+              "foreign_language_negation": {
+                "type": "string",
+                "enum": ["Yes", "No"]
+              },
+              "singing": {
+                "type": "string",
+                "enum": ["Yes", "No"]
+              },
+              "mimicry": {
+                "type": "string",
+                "enum": ["Yes", "No"]
+              },
+              "tag_question": {
+                "type": "string",
+                "enum": ["Yes", "No"]
+              },
+              "repetition": {
+                "type": "string",
+                "enum": ["Yes", "No"]
+              },
+              "not_a_negation": {
+                "type": "string",
+                "enum": ["Yes", "No"]
+              }
+            }
+          },
+          "comments": {
+            "type": "string",
+            "maxLength": 300
+          }
+        }
+      }
+    }
+  }
+}
