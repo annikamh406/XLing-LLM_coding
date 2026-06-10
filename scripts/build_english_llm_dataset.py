@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import csv
 import json
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 from openpyxl import load_workbook
@@ -198,11 +198,31 @@ def main():
     context_missing = []
     dropped_red_tt5 = 0
 
+    kept_rows = []
     for source_row, row, headers in read_code_sheet(FULL_WORKBOOK):
         if get(row, headers, "exclusion") == EXCLUSION_VALUE:
             dropped_red_tt5 += 1
             continue
+        kept_rows.append((source_row, row, headers))
 
+    # One record per negator token, so an utterance with several negator tokens
+    # yields several consecutive records that are otherwise indistinguishable
+    # (same transcript, line, and utterance text). Number the tokens so a coder
+    # seeing a single record knows which occurrence it is coding; the
+    # within-utterance repetition flag depends on this.
+    def utterance_key(row, headers):
+        return (
+            get(row, headers, "Transcript"),
+            int(get(row, headers, "Half")),
+            get(row, headers, "Line"),
+        )
+
+    negators_per_utterance = Counter(
+        utterance_key(row, headers) for _, row, headers in kept_rows
+    )
+    negators_seen = Counter()
+
+    for source_row, row, headers in kept_rows:
         base_key = row_key(row, headers)
         eb = eb_rows.get(source_row)
         wp = wp_rows.get(source_row)
@@ -215,6 +235,9 @@ def main():
         before, after = context_window(context_by_transcript, context_by_line, half, transcript_id, line)
         if not before and not after:
             context_missing.append(source_row)
+
+        token_key = (transcript_id, half, line)
+        negators_seen[token_key] += 1
 
         record_id = f"eng_{len(llm_records) + 1:06d}"
         llm_record = {
@@ -232,6 +255,8 @@ def main():
             "child_id": get(row, headers, "Child_ID"),
             "target_negator": get(row, headers, "Negation"),
             "target_utterance": get(row, headers, "Utterance"),
+            "negator_index_in_utterance": negators_seen[token_key],
+            "negators_in_utterance": negators_per_utterance[token_key],
             "context_window_size": CONTEXT_SIZE,
             "context_before": before,
             "context_after": after,
@@ -265,6 +290,8 @@ def main():
         "child_id",
         "target_negator",
         "target_utterance",
+        "negator_index_in_utterance",
+        "negators_in_utterance",
         "coded_by_1",
         "coded_by_2",
         "context_before_json",
@@ -286,6 +313,8 @@ def main():
                     "child_id": record["child_id"],
                     "target_negator": record["target_negator"],
                     "target_utterance": record["target_utterance"],
+                    "negator_index_in_utterance": record["negator_index_in_utterance"],
+                    "negators_in_utterance": record["negators_in_utterance"],
                     "coded_by_1": record["coded_by_1"],
                     "coded_by_2": record["coded_by_2"],
                     "context_before_json": json.dumps(record["context_before"], ensure_ascii=False),
@@ -305,6 +334,7 @@ def main():
             "dropped_rows": dropped_red_tt5,
         },
         "output_rows": len(llm_records),
+        "token_index_fields": ["negator_index_in_utterance", "negators_in_utterance"],
         "alignment_mismatch_source_rows": alignment_mismatches,
         "context_missing_source_rows": context_missing,
         "outputs": {

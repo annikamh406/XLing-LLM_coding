@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run Bloom v1 negation coding with a local Ollama model.
+"""Run Bloom negation coding with a local Ollama model.
 
 This runner is intentionally dev-first: it refuses to run on test_lockbox unless
 --allow-lockbox is passed, strips human/evaluation fields before prompting, and
@@ -22,16 +22,18 @@ from pathlib import Path
 # the script portable after the folder is pushed to its own Git repository and
 # cloned onto Oscar.
 LLM_DIR = Path(__file__).resolve().parents[1]
-DEFAULT_PROMPT = LLM_DIR / "prompts" / "bloom_v1_english_initial_prompt.md"
+DEFAULT_PROMPT = LLM_DIR / "v2" / "bloom_v2_english_prompt.md"
 DEFAULT_SPLIT_DIR = LLM_DIR / "splits" / "english"
-DEFAULT_RESULTS_DIR = LLM_DIR / "results" / "dev"
+DEFAULT_RESULTS_DIR = LLM_DIR / "v2" / "results" / "dev"
 DEFAULT_OLLAMA_URL = "http://localhost:11434/api/chat"
 
 # These version strings are saved in raw-response metadata and the terminal
 # summary. The schema and prompt versions are also used in output filenames as
-# compact run locators; the full prompt path stays in metadata.
-SCHEMA_VERSION = "bloom_v1"
-PROMPT_VERSION = "p001"
+# compact run locators; the full prompt path stays in metadata. Defaults track
+# the current policy/prompt version; pass --schema-version/--prompt-version
+# (with matching --prompt and --results-dir) to reproduce an older run.
+DEFAULT_SCHEMA_VERSION = "bloom_v2"
+DEFAULT_PROMPT_VERSION = "p002"
 
 # Local copies of the schema constraints. Keeping these in code makes validation
 # cheap and avoids depending on external JSON-schema packages on Oscar.
@@ -66,6 +68,8 @@ PROMPT_RECORD_FIELDS = [
     "child_id",
     "target_negator",
     "target_utterance",
+    "negator_index_in_utterance",
+    "negators_in_utterance",
     "context_window_size",
     "context_before",
     "context_after",
@@ -73,7 +77,7 @@ PROMPT_RECORD_FIELDS = [
 
 
 class ValidationError(Exception):
-    """Raised when model output violates the local Bloom v1 contract."""
+    """Raised when model output violates the local Bloom output contract."""
 
 
 def read_jsonl(path: Path) -> list[dict]:
@@ -96,8 +100,13 @@ def clean_model_name(model: str) -> str:
 
 
 def prompt_record(record: dict) -> dict:
-    """Return only the fields that the LLM is allowed to see."""
-    return {field: record.get(field) for field in PROMPT_RECORD_FIELDS}
+    """Return only the fields that the LLM is allowed to see.
+
+    Fields absent from the split record are omitted (rather than sent as null)
+    so that runs against older split files, such as the frozen v1 inputs in
+    v1/inputs/, produce byte-identical prompt payloads to the original runs.
+    """
+    return {field: record[field] for field in PROMPT_RECORD_FIELDS if field in record}
 
 
 def chunks(items: list[dict], size: int):
@@ -127,8 +136,10 @@ def extract_json_object(text: str) -> dict:
         return json.loads(text[start : end + 1])
 
 
-def validate_response(payload: dict, expected_ids: list[str]) -> list[dict]:
-    """Validate one model response against the Bloom v1 output contract.
+def validate_response(
+    payload: dict, expected_ids: list[str], schema_version: str
+) -> list[dict]:
+    """Validate one model response against the Bloom output contract.
 
     This is deliberately strict. If a model omits a record, invents an ID,
     changes enum spelling, or adds extra keys, the run should fail before any
@@ -136,8 +147,8 @@ def validate_response(payload: dict, expected_ids: list[str]) -> list[dict]:
     """
     if not isinstance(payload, dict):
         raise ValidationError("Top-level output is not a JSON object.")
-    if payload.get("schema_version") != SCHEMA_VERSION:
-        raise ValidationError(f"schema_version must be {SCHEMA_VERSION!r}.")
+    if payload.get("schema_version") != schema_version:
+        raise ValidationError(f"schema_version must be {schema_version!r}.")
     predictions = payload.get("predictions")
     if not isinstance(predictions, list):
         raise ValidationError("predictions must be a list.")
@@ -260,7 +271,7 @@ def ollama_chat(
 def parse_args() -> argparse.Namespace:
     """Define the command-line interface for local/Oscar runs."""
     parser = argparse.ArgumentParser(
-        description="Run Bloom v1 coding on an English split with Ollama."
+        description="Run Bloom coding on an English split with Ollama."
     )
     parser.add_argument("--split", default="dev_train", help="Split name to code.")
     parser.add_argument("--model", default="llama3.2", help="Ollama model name.")
@@ -279,6 +290,16 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument("--timeout", type=int, default=300, help="HTTP timeout seconds.")
+    parser.add_argument(
+        "--schema-version",
+        default=DEFAULT_SCHEMA_VERSION,
+        help="Expected schema_version in model output, e.g. bloom_v2.",
+    )
+    parser.add_argument(
+        "--prompt-version",
+        default=DEFAULT_PROMPT_VERSION,
+        help="Prompt version tag recorded in filenames and metadata, e.g. p002.",
+    )
     parser.add_argument("--prompt", type=Path, default=DEFAULT_PROMPT)
     parser.add_argument("--split-dir", type=Path, default=DEFAULT_SPLIT_DIR)
     parser.add_argument("--results-dir", type=Path, default=DEFAULT_RESULTS_DIR)
@@ -339,7 +360,7 @@ def main() -> int:
     # below in raw-response metadata and printed in the terminal summary.
     model_slug = clean_model_name(args.model)
     limit_suffix = f"_limit-{args.limit}" if args.limit is not None else ""
-    output_prefix = f"{args.split}_{model_slug}_{SCHEMA_VERSION}_{PROMPT_VERSION}{limit_suffix}"
+    output_prefix = f"{args.split}_{model_slug}_{args.schema_version}_{args.prompt_version}{limit_suffix}"
     prediction_path = args.results_dir / f"{output_prefix}_predictions.jsonl"
     raw_path = args.results_dir / f"{output_prefix}_raw_responses.jsonl"
 
@@ -394,7 +415,9 @@ def main() -> int:
             last_payload = payload
             last_raw_response = raw_response
             try:
-                batch_predictions = validate_response(payload, expected_ids)
+                batch_predictions = validate_response(
+                    payload, expected_ids, args.schema_version
+                )
                 last_error = None
                 break
             except ValidationError as exc:
@@ -412,8 +435,8 @@ def main() -> int:
                         "batch_number": batch_number,
                         "record_ids": expected_ids,
                         "model": args.model,
-                        "schema_version": SCHEMA_VERSION,
-                        "prompt_version": PROMPT_VERSION,
+                        "schema_version": args.schema_version,
+                        "prompt_version": args.prompt_version,
                         "prompt_path": str(args.prompt),
                         "validation_error": str(last_error),
                         "parsed_payload": last_payload,
@@ -433,8 +456,8 @@ def main() -> int:
                 "batch_number": batch_number,
                 "record_ids": expected_ids,
                 "model": args.model,
-                "schema_version": SCHEMA_VERSION,
-                "prompt_version": PROMPT_VERSION,
+                "schema_version": args.schema_version,
+                "prompt_version": args.prompt_version,
                 "prompt_path": str(args.prompt),
                 "raw_response": raw_response,
             }
@@ -450,8 +473,8 @@ def main() -> int:
             {
                 "split": args.split,
                 "model": args.model,
-                "schema_version": SCHEMA_VERSION,
-                "prompt_version": PROMPT_VERSION,
+                "schema_version": args.schema_version,
+                "prompt_version": args.prompt_version,
                 "prompt_path": str(args.prompt),
                 "n_records": len(records),
                 "batch_size": args.batch_size,

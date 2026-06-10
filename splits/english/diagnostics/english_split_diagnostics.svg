@@ -1,0 +1,579 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1325" viewBox="0 0 1280 1325">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="40" y="42" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#111827" text-anchor="start">English LLM Split Diagnostics</text>
+<text x="40" y="68" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#4b5563" text-anchor="start">Transcript-level pseudorandom split, seed 20260527; age in months; context split file rows shown.</text>
+<line x1="40" y1="72" x2="1240" y2="72" stroke="#e5e7eb"/>
+<text x="40" y="95" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">dev_train</text>
+<text x="40" y="119" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">1521 rows, 104 transcripts</text>
+<text x="40" y="140" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">age mean 24.3; range 16.0-30.0</text>
+<text x="40" y="161" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Bloom IRR: agreement 0.770; kappa 0.645; n=1082</text>
+<rect x="260" y="89" width="184.95726495726498" height="22" fill="#2563eb"/>
+<rect x="444.957264957265" y="89" width="75.04273504273505" height="22" fill="#14b8a6"/>
+<rect x="260" y="89" width="260" height="22" fill="none" stroke="#111827" stroke-width="0.7"/>
+<text x="260" y="132" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">both 1082  |  one 439  |  neither 0</text>
+<text x="570" y="75" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">child age distribution</text>
+<rect x="572.0" y="140.8054054054054" width="37.666666666666664" height="2.194594594594595" fill="#f97316"/>
+<rect x="613.6666666666666" y="126.22702702702702" width="37.666666666666664" height="16.772972972972973" fill="#f97316"/>
+<rect x="655.3333333333334" y="89.23243243243243" width="37.666666666666664" height="53.76756756756757" fill="#f97316"/>
+<rect x="697.0" y="87.5081081081081" width="37.666666666666664" height="55.49189189189189" fill="#f97316"/>
+<rect x="738.6666666666666" y="90.8" width="37.666666666666664" height="52.2" fill="#f97316"/>
+<rect x="780.3333333333333" y="85.0" width="37.666666666666664" height="58.0" fill="#f97316"/>
+<line x1="570" y1="143" x2="820" y2="143" stroke="#111827" stroke-width="0.7"/>
+<text x="570" y="159" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="start">14</text>
+<text x="820" y="159" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">30</text>
+<text x="870" y="75" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">coder line counts</text>
+<rect x="870" y="80" width="150.0" height="11" fill="#1d4ed8"/>
+<text x="1028" y="90" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">EB: 1379</text>
+<rect x="870" y="97" width="105.40246555474981" height="11" fill="#0891b2"/>
+<text x="1028" y="107" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">WP: 969</text>
+<rect x="870" y="114" width="12.291515591007977" height="11" fill="#7c3aed"/>
+<text x="1028" y="124" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">jared: 113</text>
+<rect x="870" y="131" width="11.856417693981147" height="11" fill="#c2410c"/>
+<text x="1028" y="141" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">ariel: 109</text>
+<rect x="870" y="148" width="3.372008701957941" height="11" fill="#15803d"/>
+<text x="1028" y="158" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">caitlin: 31</text>
+<rect x="870" y="165" width="0.21754894851341552" height="11" fill="#be123c"/>
+<text x="1028" y="175" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">heather: 2</text>
+<text x="260" y="172" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">overlap: EB + WP: 965; ariel + jared: 84; caitlin + jared: 29; ariel + WP: 2</text>
+<line x1="40" y1="242" x2="1240" y2="242" stroke="#e5e7eb"/>
+<text x="40" y="265" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">dev_check_1</text>
+<text x="40" y="289" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">1918 rows, 121 transcripts</text>
+<text x="40" y="310" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">age mean 24.9; range 16.0-30.0</text>
+<text x="40" y="331" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Bloom IRR: agreement 0.775; kappa 0.646; n=1408</text>
+<rect x="260" y="259" width="190.86548488008341" height="22" fill="#2563eb"/>
+<rect x="450.8654848800834" y="259" width="69.13451511991659" height="22" fill="#14b8a6"/>
+<rect x="260" y="259" width="260" height="22" fill="none" stroke="#111827" stroke-width="0.7"/>
+<text x="260" y="302" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">both 1408  |  one 510  |  neither 0</text>
+<text x="570" y="245" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">child age distribution</text>
+<rect x="572.0" y="311.18434782608693" width="37.666666666666664" height="1.8156521739130436" fill="#f97316"/>
+<rect x="613.6666666666666" y="298.1721739130435" width="37.666666666666664" height="14.82782608695652" fill="#f97316"/>
+<rect x="655.3333333333334" y="276.384347826087" width="37.666666666666664" height="36.61565217391304" fill="#f97316"/>
+<rect x="697.0" y="279.7130434782609" width="37.666666666666664" height="33.28695652173913" fill="#f97316"/>
+<rect x="738.6666666666666" y="264.28" width="37.666666666666664" height="48.72" fill="#f97316"/>
+<rect x="780.3333333333333" y="255.0" width="37.666666666666664" height="58.0" fill="#f97316"/>
+<line x1="570" y1="313" x2="820" y2="313" stroke="#111827" stroke-width="0.7"/>
+<text x="570" y="329" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="start">14</text>
+<text x="820" y="329" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">30</text>
+<text x="870" y="245" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">coder line counts</text>
+<rect x="870" y="250" width="150.0" height="11" fill="#1d4ed8"/>
+<text x="1028" y="260" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">EB: 1829</text>
+<rect x="870" y="267" width="110.96227446692183" height="11" fill="#0891b2"/>
+<text x="1028" y="277" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">WP: 1353</text>
+<rect x="870" y="284" width="4.920721705850192" height="11" fill="#7c3aed"/>
+<text x="1028" y="294" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">ariel: 60</text>
+<rect x="870" y="301" width="4.1006014215418265" height="11" fill="#c2410c"/>
+<text x="1028" y="311" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">jared: 50</text>
+<rect x="870" y="318" width="2.378348824494259" height="11" fill="#15803d"/>
+<text x="1028" y="328" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">caitlin: 29</text>
+<rect x="870" y="335" width="0.41006014215418257" height="11" fill="#be123c"/>
+<text x="1028" y="345" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">heather: 5</text>
+<text x="260" y="342" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">overlap: EB + WP: 1338; ariel + jared: 26; caitlin + jared: 24; ariel + WP: 15</text>
+<line x1="40" y1="412" x2="1240" y2="412" stroke="#e5e7eb"/>
+<text x="40" y="435" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">dev_check_2</text>
+<text x="40" y="459" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">1894 rows, 151 transcripts</text>
+<text x="40" y="480" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">age mean 24.5; range 14.4-30.0</text>
+<text x="40" y="501" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Bloom IRR: agreement 0.770; kappa 0.640; n=1359</text>
+<rect x="260" y="429" width="186.55755015839492" height="22" fill="#2563eb"/>
+<rect x="446.5575501583949" y="429" width="73.44244984160507" height="22" fill="#14b8a6"/>
+<rect x="260" y="429" width="260" height="22" fill="none" stroke="#111827" stroke-width="0.7"/>
+<text x="260" y="472" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">both 1359  |  one 535  |  neither 0</text>
+<text x="570" y="415" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">child age distribution</text>
+<rect x="572.0" y="481.35752212389383" width="37.666666666666664" height="1.6424778761061947" fill="#f97316"/>
+<rect x="613.6666666666666" y="464.0088495575221" width="37.666666666666664" height="18.991150442477878" fill="#f97316"/>
+<rect x="655.3333333333334" y="455.1805309734513" width="37.666666666666664" height="27.81946902654867" fill="#f97316"/>
+<rect x="697.0" y="442.75929203539823" width="37.666666666666664" height="40.24070796460177" fill="#f97316"/>
+<rect x="738.6666666666666" y="435.2654867256637" width="37.666666666666664" height="47.73451327433628" fill="#f97316"/>
+<rect x="780.3333333333333" y="425.0" width="37.666666666666664" height="58.0" fill="#f97316"/>
+<line x1="570" y1="483" x2="820" y2="483" stroke="#111827" stroke-width="0.7"/>
+<text x="570" y="499" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="start">14</text>
+<text x="820" y="499" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">30</text>
+<text x="870" y="415" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">coder line counts</text>
+<rect x="870" y="420" width="150.0" height="11" fill="#1d4ed8"/>
+<text x="1028" y="430" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">EB: 1701</text>
+<rect x="870" y="437" width="106.17283950617283" height="11" fill="#0891b2"/>
+<text x="1028" y="447" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">WP: 1204</text>
+<rect x="870" y="454" width="12.52204585537919" height="11" fill="#7c3aed"/>
+<text x="1028" y="464" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">jared: 142</text>
+<rect x="870" y="471" width="10.229276895943563" height="11" fill="#c2410c"/>
+<text x="1028" y="481" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">ariel: 116</text>
+<rect x="870" y="488" width="6.790123456790123" height="11" fill="#15803d"/>
+<text x="1028" y="498" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">caitlin: 77</text>
+<rect x="870" y="505" width="1.146384479717813" height="11" fill="#be123c"/>
+<text x="1028" y="515" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">heather: 13</text>
+<text x="260" y="512" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">overlap: EB + WP: 1200; ariel + jared: 77; caitlin + jared: 64; caitlin + heather: 13</text>
+<line x1="40" y1="582" x2="1240" y2="582" stroke="#e5e7eb"/>
+<text x="40" y="605" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">test_lockbox</text>
+<text x="40" y="629" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">2273 rows, 179 transcripts</text>
+<text x="40" y="650" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">age mean 24.7; range 16.8-30.0</text>
+<text x="40" y="671" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Bloom IRR: agreement 0.740; kappa 0.609; n=1613</text>
+<rect x="260" y="599" width="184.50505939287285" height="22" fill="#2563eb"/>
+<rect x="444.50505939287285" y="599" width="75.49494060712715" height="22" fill="#14b8a6"/>
+<rect x="260" y="599" width="260" height="22" fill="none" stroke="#111827" stroke-width="0.7"/>
+<text x="260" y="642" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">both 1613  |  one 660  |  neither 0</text>
+<text x="570" y="585" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">child age distribution</text>
+<rect x="572.0" y="653.0" width="37.666666666666664" height="0.0" fill="#f97316"/>
+<rect x="613.6666666666666" y="637.0863509749304" width="37.666666666666664" height="15.913649025069638" fill="#f97316"/>
+<rect x="655.3333333333334" y="613.5793871866296" width="37.666666666666664" height="39.42061281337047" fill="#f97316"/>
+<rect x="697.0" y="616.4066852367688" width="37.666666666666664" height="36.5933147632312" fill="#f97316"/>
+<rect x="738.6666666666666" y="620.041782729805" width="37.666666666666664" height="32.958217270194986" fill="#f97316"/>
+<rect x="780.3333333333333" y="595.0" width="37.666666666666664" height="58.0" fill="#f97316"/>
+<line x1="570" y1="653" x2="820" y2="653" stroke="#111827" stroke-width="0.7"/>
+<text x="570" y="669" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="start">14</text>
+<text x="820" y="669" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">30</text>
+<text x="870" y="585" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">coder line counts</text>
+<rect x="870" y="590" width="150.0" height="11" fill="#1d4ed8"/>
+<text x="1028" y="600" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">EB: 2155</text>
+<rect x="870" y="607" width="106.91415313225058" height="11" fill="#0891b2"/>
+<text x="1028" y="617" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">WP: 1536</text>
+<rect x="870" y="624" width="6.612529002320185" height="11" fill="#7c3aed"/>
+<text x="1028" y="634" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">ariel: 95</text>
+<rect x="870" y="641" width="5.359628770301624" height="11" fill="#c2410c"/>
+<text x="1028" y="651" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">jared: 77</text>
+<rect x="870" y="658" width="1.6009280742459397" height="11" fill="#15803d"/>
+<text x="1028" y="668" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">caitlin: 23</text>
+<text x="260" y="682" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">overlap: EB + WP: 1521; ariel + jared: 54; caitlin + jared: 23; ariel + WP: 15</text>
+<line x1="40" y1="752" x2="1240" y2="752" stroke="#e5e7eb"/>
+<text x="40" y="775" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">uncoded_by_neither</text>
+<text x="40" y="799" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">2022 rows, 159 transcripts</text>
+<text x="40" y="820" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">age mean 24.0; range 16.4-30.0</text>
+<text x="40" y="841" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Bloom IRR: not available</text>
+<rect x="260.0" y="769" width="260.0" height="22" fill="#9ca3af"/>
+<rect x="260" y="769" width="260" height="22" fill="none" stroke="#111827" stroke-width="0.7"/>
+<text x="260" y="812" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">both 0  |  one 0  |  neither 2022</text>
+<text x="570" y="755" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">child age distribution</text>
+<rect x="572.0" y="822.9197786998617" width="37.666666666666664" height="0.08022130013831259" fill="#f97316"/>
+<rect x="613.6666666666666" y="805.1908713692947" width="37.666666666666664" height="17.809128630705395" fill="#f97316"/>
+<rect x="655.3333333333334" y="795.8852005532503" width="37.666666666666664" height="27.114799446749654" fill="#f97316"/>
+<rect x="697.0" y="765.0" width="37.666666666666664" height="58.0" fill="#f97316"/>
+<rect x="738.6666666666666" y="802.9446749654219" width="37.666666666666664" height="20.055325034578146" fill="#f97316"/>
+<rect x="780.3333333333333" y="783.8520055325034" width="37.666666666666664" height="39.147994467496545" fill="#f97316"/>
+<line x1="570" y1="823" x2="820" y2="823" stroke="#111827" stroke-width="0.7"/>
+<text x="570" y="839" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="start">14</text>
+<text x="820" y="839" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">30</text>
+<text x="870" y="755" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">coder line counts</text>
+<text x="260" y="852" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">overlap: No overlapping coder pairs</text>
+<line x1="40" y1="959" x2="1240" y2="959" stroke="#e5e7eb"/>
+<text x="40" y="985" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827" text-anchor="start">Transcript-Level Bloom IRR</text>
+<text x="40" y="1007" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Each dot is one transcript with overlapping EB/WP Bloom codes; y-axis is exact agreement; larger dots have more overlap rows.</text>
+<line x1="70" y1="1215" x2="1210" y2="1215" stroke="#e5e7eb" stroke-width="0.8"/>
+<text x="60" y="1219" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">0.00</text>
+<line x1="70" y1="1167.5" x2="1210" y2="1167.5" stroke="#e5e7eb" stroke-width="0.8"/>
+<text x="60" y="1171.5" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">0.25</text>
+<line x1="70" y1="1120.0" x2="1210" y2="1120.0" stroke="#e5e7eb" stroke-width="0.8"/>
+<text x="60" y="1124.0" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">0.50</text>
+<line x1="70" y1="1072.5" x2="1210" y2="1072.5" stroke="#e5e7eb" stroke-width="0.8"/>
+<text x="60" y="1076.5" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">0.75</text>
+<line x1="70" y1="1025.0" x2="1210" y2="1025.0" stroke="#e5e7eb" stroke-width="0.8"/>
+<text x="60" y="1029.0" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">1.00</text>
+<line x1="70" y1="1025" x2="70" y2="1215" stroke="#111827" stroke-width="0.8"/>
+<line x1="70" y1="1215" x2="1210" y2="1215" stroke="#111827" stroke-width="0.8"/>
+<text x="212.5" y="1239" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="middle">dev_train</text>
+<line x1="70.0" y1="1025" x2="70.0" y2="1215" stroke="#f3f4f6" stroke-width="0.8"/>
+<text x="497.5" y="1239" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="middle">dev_check_1</text>
+<line x1="355.0" y1="1025" x2="355.0" y2="1215" stroke="#f3f4f6" stroke-width="0.8"/>
+<text x="782.5" y="1239" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="middle">dev_check_2</text>
+<line x1="640.0" y1="1025" x2="640.0" y2="1215" stroke="#f3f4f6" stroke-width="0.8"/>
+<text x="1067.5" y="1239" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="middle">test_lockbox</text>
+<line x1="925.0" y1="1025" x2="925.0" y2="1215" stroke="#f3f4f6" stroke-width="0.8"/>
+<circle cx="243.44" cy="1088.33" r="3.36" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Braunwald_020000.cha | agreement 0.667 | n=6</title></circle>
+<circle cx="244.99" cy="1025.00" r="3.45" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Braunwald_011008.cha | agreement 1.000 | n=7</title></circle>
+<circle cx="245.19" cy="1128.64" r="3.77" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Braunwald_020405.cha | agreement 0.455 | n=11</title></circle>
+<circle cx="278.17" cy="1025.00" r="2.67" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | McCune-Alice_010428.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="117.15" cy="1063.00" r="3.26" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Bates-rick_Snack28.cha | agreement 0.800 | n=5</title></circle>
+<circle cx="270.99" cy="1025.00" r="2.87" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Brown-Sarah_020307.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="245.38" cy="1114.41" r="4.15" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Braunwald_020406.cha | agreement 0.529 | n=17</title></circle>
+<circle cx="199.99" cy="1037.67" r="4.03" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Morisset-795m30_Seattle.cha | agreement 0.933 | n=15</title></circle>
+<circle cx="244.80" cy="1120.00" r="2.87" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Braunwald_010512.cha | agreement 0.500 | n=2</title></circle>
+<circle cx="249.26" cy="1025.00" r="5.16" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Brown-Eve_010900a.cha | agreement 1.000 | n=39</title></circle>
+<circle cx="259.16" cy="1025.00" r="3.26" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | McCune-Jase_010700.cha | agreement 1.000 | n=5</title></circle>
+<circle cx="292.52" cy="1044.00" r="3.70" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Gelman-50_1998Books.cha | agreement 0.900 | n=10</title></circle>
+<circle cx="245.19" cy="1126.33" r="4.03" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Braunwald_011027.cha | agreement 0.467 | n=15</title></circle>
+<circle cx="246.16" cy="1054.23" r="3.91" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Braunwald_010717.cha | agreement 0.846 | n=13</title></circle>
+<circle cx="135.58" cy="1025.00" r="3.02" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Bates-linda_Snack28.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="245.38" cy="1025.00" r="3.36" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Braunwald_010605.cha | agreement 1.000 | n=6</title></circle>
+<circle cx="127.63" cy="1083.46" r="3.91" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Demetras2-Tim_m020206.cha | agreement 0.692 | n=13</title></circle>
+<circle cx="145.67" cy="1025.00" r="3.36" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Bates-wanda_Story28.cha | agreement 1.000 | n=6</title></circle>
+<circle cx="293.88" cy="1063.00" r="3.26" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Gelman-39_1998Books.cha | agreement 0.800 | n=5</title></circle>
+<circle cx="246.93" cy="1062.07" r="5.23" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Brown-Adam_020415.cha | agreement 0.805 | n=41</title></circle>
+<circle cx="125.88" cy="1044.00" r="3.70" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Higginson-april_01.cha | agreement 0.900 | n=10</title></circle>
+<circle cx="271.38" cy="1183.33" r="3.36" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Brown-Sarah_020417.cha | agreement 0.167 | n=6</title></circle>
+<circle cx="170.31" cy="1051.51" r="5.31" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Clark-_020328.cha | agreement 0.860 | n=43</title></circle>
+<circle cx="250.04" cy="1025.00" r="3.02" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | NewEngland-99_20.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="245.96" cy="1067.22" r="3.62" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Braunwald_010824.cha | agreement 0.778 | n=9</title></circle>
+<circle cx="165.46" cy="1025.00" r="3.02" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | macw_010411a.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="138.30" cy="1025.00" r="3.15" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Bates-olivia_Free28.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="199.21" cy="1025.00" r="3.26" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Morisset-173m30t_Topeka.cha | agreement 1.000 | n=5</title></circle>
+<circle cx="126.66" cy="1088.33" r="4.21" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Demetras2-Tim_m020201.cha | agreement 0.667 | n=18</title></circle>
+<circle cx="244.80" cy="1046.11" r="3.62" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Braunwald_011124.cha | agreement 0.889 | n=9</title></circle>
+<circle cx="270.60" cy="1077.78" r="4.21" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Bloom-Peter_011105.cha | agreement 0.722 | n=18</title></circle>
+<circle cx="270.02" cy="1096.25" r="3.54" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Brown-Sarah_020410.cha | agreement 0.625 | n=8</title></circle>
+<circle cx="198.24" cy="1120.00" r="2.87" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Morisset-222m30t_Topeka.cha | agreement 0.500 | n=2</title></circle>
+<circle cx="247.90" cy="1039.62" r="3.91" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | NewEngland-07_20.cha | agreement 0.923 | n=13</title></circle>
+<circle cx="247.71" cy="1025.00" r="3.02" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | NewEngland-15_20.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="147.22" cy="1215.00" r="2.67" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Bates-paula_Story28.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="301.64" cy="1025.00" r="2.87" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Bates-amy_Story28.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="120.26" cy="1025.00" r="3.26" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Bates-steve_Free28.cha | agreement 1.000 | n=5</title></circle>
+<circle cx="269.63" cy="1054.23" r="5.16" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Bloom-Peter_020100.cha | agreement 0.846 | n=39</title></circle>
+<circle cx="248.68" cy="1025.00" r="2.67" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | NewEngland-92_20.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="237.43" cy="1025.00" r="4.26" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | NewEngland-03-20.cha | agreement 1.000 | n=19</title></circle>
+<circle cx="264.20" cy="1025.00" r="3.15" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Braunwald_010604b.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="138.88" cy="1025.00" r="3.26" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Bates-mandy_Snack28.cha | agreement 1.000 | n=5</title></circle>
+<circle cx="288.06" cy="1025.00" r="2.87" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | McCune-Ronny_010900.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="199.79" cy="1025.00" r="3.45" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Morisset-149m30t_Topeka.cha | agreement 1.000 | n=7</title></circle>
+<circle cx="244.41" cy="1055.40" r="4.57" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Braunwald_011113.cha | agreement 0.840 | n=25</title></circle>
+<circle cx="184.86" cy="1114.41" r="4.15" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Nelson_020102.cha | agreement 0.529 | n=17</title></circle>
+<circle cx="270.99" cy="1080.73" r="8.00" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Bloom-Peter_020503.cha | agreement 0.707 | n=150</title></circle>
+<circle cx="244.80" cy="1059.55" r="3.77" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Kuczaj-Abe_020514.cha | agreement 0.818 | n=11</title></circle>
+<circle cx="302.80" cy="1025.00" r="2.87" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Bates-sue_Story28.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="244.80" cy="1072.50" r="3.15" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Braunwald_020223.cha | agreement 0.750 | n=4</title></circle>
+<circle cx="249.26" cy="1088.33" r="4.03" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | NewEngland-86_20.cha | agreement 0.667 | n=15</title></circle>
+<circle cx="187.18" cy="1215.00" r="4.09" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Nelson_010925.cha | agreement 0.000 | n=16</title></circle>
+<circle cx="248.29" cy="1044.85" r="6.08" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Brown-Eve_020300a.cha | agreement 0.896 | n=67</title></circle>
+<circle cx="127.82" cy="1025.00" r="2.87" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Bates-doug_Story28.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="198.24" cy="1025.00" r="2.67" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Morisset-132m30t_Topeka.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="199.21" cy="1025.00" r="3.15" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Morisset-128m30t_Topeka.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="301.06" cy="1088.33" r="5.38" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Higginson-june_06.cha | agreement 0.667 | n=45</title></circle>
+<circle cx="244.41" cy="1084.81" r="5.68" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Braunwald_020221.cha | agreement 0.685 | n=54</title></circle>
+<circle cx="247.90" cy="1025.00" r="3.84" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | NewEngland-43_20.cha | agreement 1.000 | n=12</title></circle>
+<circle cx="126.85" cy="1057.57" r="5.00" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Demetras2-Tim_m020130.cha | agreement 0.829 | n=35</title></circle>
+<circle cx="245.19" cy="1025.00" r="3.15" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Kuczaj-Abe_020516.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="247.71" cy="1065.71" r="3.97" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | NewEngland-06_20.cha | agreement 0.786 | n=14</title></circle>
+<circle cx="290.19" cy="1052.14" r="3.45" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Bates-nan_Snack28.cha | agreement 0.857 | n=7</title></circle>
+<circle cx="287.87" cy="1025.00" r="2.67" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | McCune-Ronny_010800.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="247.71" cy="1086.07" r="4.71" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Brown-Eve_011000a.cha | agreement 0.679 | n=28</title></circle>
+<circle cx="300.48" cy="1025.00" r="3.77" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Higginson-june_03.cha | agreement 1.000 | n=11</title></circle>
+<circle cx="244.99" cy="1120.00" r="2.87" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Braunwald_010720.cha | agreement 0.500 | n=2</title></circle>
+<circle cx="292.33" cy="1025.00" r="2.67" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Gelman-31_1998Books.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="245.58" cy="1094.09" r="4.42" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Braunwald_020218.cha | agreement 0.636 | n=22</title></circle>
+<circle cx="247.13" cy="1025.00" r="2.87" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | NewEngland-30_20.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="260.51" cy="1025.00" r="2.67" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | McCune-Rick_010800.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="244.61" cy="1215.00" r="3.02" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Braunwald_020024.cha | agreement 0.000 | n=3</title></circle>
+<circle cx="264.39" cy="1151.67" r="3.02" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Braunwald_010614b.cha | agreement 0.333 | n=3</title></circle>
+<circle cx="269.63" cy="1074.03" r="5.93" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Bloom-Peter_020010.cha | agreement 0.742 | n=62</title></circle>
+<circle cx="555.60" cy="1025.00" r="3.15" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Brown-Sarah_020305.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="529.22" cy="1025.00" r="3.54" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Kuczaj-Abe_020520.cha | agreement 1.000 | n=8</title></circle>
+<circle cx="556.18" cy="1025.00" r="3.45" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Brown-Sarah_020515.cha | agreement 1.000 | n=7</title></circle>
+<circle cx="400.79" cy="1088.33" r="3.02" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Bates-hank_Snack28.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="483.82" cy="1038.57" r="3.97" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Morisset-108m30t_Topeka.cha | agreement 0.929 | n=14</title></circle>
+<circle cx="485.18" cy="1025.00" r="3.77" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Morisset-187m30t_Topeka.cha | agreement 1.000 | n=11</title></circle>
+<circle cx="470.63" cy="1120.00" r="4.52" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Nelson_011016.cha | agreement 0.500 | n=24</title></circle>
+<circle cx="405.45" cy="1025.00" r="3.02" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Bates-betty_Free28.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="527.86" cy="1061.94" r="5.04" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Demetras1-_020028.cha | agreement 0.806 | n=36</title></circle>
+<circle cx="466.75" cy="1025.00" r="2.87" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Gopnik-p06042_prompted.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="530.38" cy="1063.00" r="4.03" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Braunwald_011019.cha | agreement 0.800 | n=15</title></circle>
+<circle cx="593.82" cy="1215.00" r="3.02" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Bates-paula_Free20.cha | agreement 0.000 | n=3</title></circle>
+<circle cx="534.46" cy="1034.50" r="5.20" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Brown-Eve_010900b.cha | agreement 0.950 | n=40</title></circle>
+<circle cx="573.45" cy="1088.33" r="3.02" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Bates-hank_Free28.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="586.45" cy="1025.00" r="3.15" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Higginson-june_08.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="534.65" cy="1076.82" r="6.36" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Brown-Eve_010900c.cha | agreement 0.727 | n=77</title></circle>
+<circle cx="556.57" cy="1076.82" r="3.77" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Brown-Sarah_020328.cha | agreement 0.727 | n=11</title></circle>
+<circle cx="528.05" cy="1083.64" r="6.46" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Demetras1-_020029.cha | agreement 0.691 | n=81</title></circle>
+<circle cx="569.37" cy="1025.00" r="2.87" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Gopnik-f06011_free.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="556.18" cy="1078.20" r="4.57" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Bloom-Peter_011117.cha | agreement 0.720 | n=25</title></circle>
+<circle cx="529.99" cy="1088.33" r="3.02" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Braunwald_010603.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="492.17" cy="1082.00" r="3.70" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Feldman-_011100.cha | agreement 0.700 | n=10</title></circle>
+<circle cx="529.99" cy="1079.29" r="3.45" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Braunwald_011125.cha | agreement 0.714 | n=7</title></circle>
+<circle cx="529.80" cy="1101.00" r="3.26" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Braunwald_020313.cha | agreement 0.600 | n=5</title></circle>
+<circle cx="455.11" cy="1058.65" r="6.84" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Clark-_020516.cha | agreement 0.823 | n=96</title></circle>
+<circle cx="482.85" cy="1120.00" r="3.54" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Morisset-802m30_Seattle.cha | agreement 0.500 | n=8</title></circle>
+<circle cx="528.83" cy="1052.14" r="3.97" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Braunwald_020110.cha | agreement 0.857 | n=14</title></circle>
+<circle cx="555.41" cy="1059.55" r="3.77" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Brown-Sarah_020412.cha | agreement 0.818 | n=11</title></circle>
+<circle cx="534.07" cy="1025.00" r="2.67" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | NewEngland-85_20.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="452.98" cy="1025.00" r="3.02" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Bates-gloria_Story28.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="530.19" cy="1072.50" r="3.15" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Braunwald_011126.cha | agreement 0.750 | n=4</title></circle>
+<circle cx="482.66" cy="1025.00" r="3.70" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Morisset-810m30_Seattle.cha | agreement 1.000 | n=10</title></circle>
+<circle cx="470.24" cy="1088.33" r="4.03" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Nelson_020122.cha | agreement 0.667 | n=15</title></circle>
+<circle cx="556.18" cy="1071.69" r="7.34" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Bloom-Peter_020522.cha | agreement 0.754 | n=118</title></circle>
+<circle cx="548.42" cy="1101.00" r="3.70" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Braunwald_020212b.cha | agreement 0.600 | n=10</title></circle>
+<circle cx="534.07" cy="1025.00" r="3.02" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | NewEngland-49_20.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="548.23" cy="1025.00" r="2.87" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Braunwald_011130b.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="508.85" cy="1059.55" r="4.42" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Gleason-nanette_Dinner.cha | agreement 0.818 | n=22</title></circle>
+<circle cx="529.41" cy="1072.50" r="3.15" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Braunwald_020122.cha | agreement 0.750 | n=4</title></circle>
+<circle cx="533.29" cy="1025.00" r="2.67" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | NewEngland-45_20.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="488.09" cy="1051.39" r="6.22" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Demetras2-Michael_f020218.cha | agreement 0.861 | n=72</title></circle>
+<circle cx="531.74" cy="1101.00" r="3.26" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | NewEngland-10_20.cha | agreement 0.600 | n=5</title></circle>
+<circle cx="484.60" cy="1215.00" r="2.67" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Morisset-148m30t_Topeka.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="533.68" cy="1088.33" r="4.79" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Brown-Eve_010600a.cha | agreement 0.667 | n=30</title></circle>
+<circle cx="484.02" cy="1025.00" r="3.02" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Morisset-136m30t_Topeka.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="554.63" cy="1025.00" r="3.26" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | McMillan-_sarah.cha | agreement 1.000 | n=5</title></circle>
+<circle cx="420.58" cy="1025.00" r="2.67" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Bates-gloria_Free20.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="578.49" cy="1042.27" r="3.77" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Gelman-28_1998Books.cha | agreement 0.909 | n=11</title></circle>
+<circle cx="529.99" cy="1088.33" r="3.02" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Braunwald_020530.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="454.72" cy="1069.00" r="6.82" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Clark-_020523.cha | agreement 0.768 | n=95</title></circle>
+<circle cx="545.71" cy="1067.22" r="3.62" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | McCune-Rick_010900.cha | agreement 0.778 | n=9</title></circle>
+<circle cx="515.25" cy="1050.91" r="4.42" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Brown-Eve_010800.cha | agreement 0.864 | n=22</title></circle>
+<circle cx="433.38" cy="1098.89" r="4.21" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | macw_010609.cha | agreement 0.611 | n=18</title></circle>
+<circle cx="534.26" cy="1046.11" r="3.62" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | NewEngland-59_20.cha | agreement 0.889 | n=9</title></circle>
+<circle cx="556.77" cy="1082.00" r="3.70" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Brown-Sarah_020419.cha | agreement 0.700 | n=10</title></circle>
+<circle cx="533.49" cy="1025.00" r="3.15" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | NewEngland-55_20.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="533.29" cy="1025.00" r="3.15" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | NewEngland-36_20.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="530.19" cy="1120.00" r="2.87" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Braunwald_020126.cha | agreement 0.500 | n=2</title></circle>
+<circle cx="571.51" cy="1025.00" r="3.02" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | McCune-Ronny_011000.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="529.61" cy="1135.83" r="3.84" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Braunwald_020330.cha | agreement 0.417 | n=12</title></circle>
+<circle cx="566.85" cy="1072.50" r="3.84" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | McCune-Aurie_010900.cha | agreement 0.750 | n=12</title></circle>
+<circle cx="549.20" cy="1112.69" r="3.91" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | McCune-Vito_011100.cha | agreement 0.538 | n=13</title></circle>
+<circle cx="531.16" cy="1120.00" r="3.70" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Braunwald_010519.cha | agreement 0.500 | n=10</title></circle>
+<circle cx="534.84" cy="1025.00" r="2.87" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | NewEngland-98_20.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="556.57" cy="1050.33" r="4.03" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Brown-Sarah_020319.cha | agreement 0.867 | n=15</title></circle>
+<circle cx="483.63" cy="1025.00" r="2.67" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Morisset-215m30t_Topeka.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="585.09" cy="1025.00" r="3.84" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Higginson-june_10.cha | agreement 1.000 | n=12</title></circle>
+<circle cx="585.67" cy="1120.00" r="4.09" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Higginson-june_04.cha | agreement 0.500 | n=16</title></circle>
+<circle cx="483.24" cy="1050.33" r="4.03" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Morisset-750m30_Seattle.cha | agreement 0.867 | n=15</title></circle>
+<circle cx="550.36" cy="1067.22" r="3.62" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | McCune-Vito_010800.cha | agreement 0.778 | n=9</title></circle>
+<circle cx="557.54" cy="1052.14" r="3.45" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Bloom-Peter_010908.cha | agreement 0.857 | n=7</title></circle>
+<circle cx="574.42" cy="1088.33" r="3.02" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Bates-doug_Free20.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="590.13" cy="1038.57" r="3.97" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Gelman-22_2004Gender.cha | agreement 0.929 | n=14</title></circle>
+<circle cx="533.49" cy="1046.51" r="5.65" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Brown-Eve_020300b.cha | agreement 0.887 | n=53</title></circle>
+<circle cx="484.60" cy="1056.67" r="3.36" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Morisset-757m30_Seattle.cha | agreement 0.833 | n=6</title></circle>
+<circle cx="483.44" cy="1025.00" r="3.91" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Morisset-742m30_Seattle.cha | agreement 1.000 | n=13</title></circle>
+<circle cx="469.86" cy="1083.46" r="5.16" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Nelson_020003.cha | agreement 0.692 | n=39</title></circle>
+<circle cx="533.68" cy="1025.00" r="3.70" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | NewEngland-65_20.cha | agreement 1.000 | n=10</title></circle>
+<circle cx="549.20" cy="1113.67" r="4.03" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Braunwald_010614a.cha | agreement 0.533 | n=15</title></circle>
+<circle cx="565.49" cy="1065.71" r="3.97" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | McCune-Aurie_011100.cha | agreement 0.786 | n=14</title></circle>
+<circle cx="585.28" cy="1025.00" r="4.21" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Higginson-june_02.cha | agreement 1.000 | n=18</title></circle>
+<circle cx="531.16" cy="1215.00" r="3.15" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Braunwald_010906.cha | agreement 0.000 | n=4</title></circle>
+<circle cx="529.99" cy="1215.00" r="3.36" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Braunwald_010522.cha | agreement 0.000 | n=6</title></circle>
+<circle cx="555.60" cy="1025.00" r="3.36" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Brown-Sarah_020530.cha | agreement 1.000 | n=6</title></circle>
+<circle cx="530.19" cy="1034.05" r="4.37" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Kuczaj-Abe_020507.cha | agreement 0.952 | n=21</title></circle>
+<circle cx="436.29" cy="1120.00" r="2.87" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Bates-betty_Story28.cha | agreement 0.500 | n=2</title></circle>
+<circle cx="483.44" cy="1025.00" r="2.67" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Morisset-133m30t_Topeka.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="488.09" cy="1102.41" r="4.66" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Demetras2-Michael_m020130.cha | agreement 0.593 | n=27</title></circle>
+<circle cx="430.28" cy="1025.00" r="3.26" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | sach_010800.cha | agreement 1.000 | n=5</title></circle>
+<circle cx="814.41" cy="1079.29" r="3.45" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_010510.cha | agreement 0.714 | n=7</title></circle>
+<circle cx="819.07" cy="1046.11" r="5.04" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Brown-Eve_010700b.cha | agreement 0.889 | n=36</title></circle>
+<circle cx="815.96" cy="1072.50" r="3.54" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_010707.cha | agreement 0.750 | n=8</title></circle>
+<circle cx="814.61" cy="1025.00" r="3.36" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_010511.cha | agreement 1.000 | n=6</title></circle>
+<circle cx="815.19" cy="1025.00" r="2.87" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_011009.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="846.62" cy="1025.00" r="3.26" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | McCune-Alice_010600.cha | agreement 1.000 | n=5</title></circle>
+<circle cx="814.41" cy="1101.00" r="4.03" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_011023.cha | agreement 0.600 | n=15</title></circle>
+<circle cx="716.25" cy="1025.00" r="2.87" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bates-chuck_Story28.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="817.71" cy="1025.00" r="2.87" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | NewEngland-60_20.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="739.53" cy="1079.29" r="4.37" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Clark-_020216.cha | agreement 0.714 | n=21</title></circle>
+<circle cx="815.58" cy="1063.00" r="3.26" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_010705.cha | agreement 0.800 | n=5</title></circle>
+<circle cx="837.89" cy="1025.00" r="2.67" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bates-jim_Free20.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="860.97" cy="1025.00" r="3.02" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bates-doug_Free28.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="813.83" cy="1098.08" r="3.91" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_020200.cha | agreement 0.615 | n=13</title></circle>
+<circle cx="818.29" cy="1040.83" r="3.84" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | NewEngland-27_20.cha | agreement 0.917 | n=12</title></circle>
+<circle cx="814.80" cy="1034.05" r="4.37" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Kuczaj-Abe_020523.cha | agreement 0.952 | n=21</title></circle>
+<circle cx="816.74" cy="1025.00" r="2.67" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | NewEngland-01_20.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="864.85" cy="1215.00" r="2.67" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bates-ruth_Free28.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="817.32" cy="1025.00" r="2.67" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | NewEngland-13_20.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="817.90" cy="1025.00" r="2.67" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | NewEngland-70_20.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="818.68" cy="1059.55" r="3.77" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | NewEngland-29_20.cha | agreement 0.818 | n=11</title></circle>
+<circle cx="815.19" cy="1056.67" r="3.36" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_010514.cha | agreement 0.833 | n=6</title></circle>
+<circle cx="816.16" cy="1080.88" r="4.15" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_010528.cha | agreement 0.706 | n=17</title></circle>
+<circle cx="816.93" cy="1040.08" r="5.96" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bloom-Eric_011027.cha | agreement 0.921 | n=63</title></circle>
+<circle cx="816.35" cy="1086.62" r="6.27" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Brown-Adam_020403.cha | agreement 0.676 | n=74</title></circle>
+<circle cx="696.27" cy="1040.41" r="5.08" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Higginson-april_03.cha | agreement 0.919 | n=37</title></circle>
+<circle cx="769.21" cy="1120.00" r="3.36" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Morisset-773m30_Seattle.cha | agreement 0.500 | n=6</title></circle>
+<circle cx="818.87" cy="1059.55" r="3.77" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | NewEngland-66_20.cha | agreement 0.818 | n=11</title></circle>
+<circle cx="815.58" cy="1120.00" r="3.36" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_020128.cha | agreement 0.500 | n=6</title></circle>
+<circle cx="829.93" cy="1025.00" r="2.67" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | McCune-Rick_010500.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="851.46" cy="1025.00" r="2.67" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | McCune-Aurie_010700.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="815.38" cy="1054.23" r="3.91" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_011109.cha | agreement 0.846 | n=13</title></circle>
+<circle cx="819.46" cy="1072.50" r="3.84" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | NewEngland-87_20.cha | agreement 0.750 | n=12</title></circle>
+<circle cx="815.77" cy="1156.03" r="4.75" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_010607.cha | agreement 0.310 | n=29</title></circle>
+<circle cx="853.79" cy="1040.83" r="3.84" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bliss-normarjo_.cha | agreement 0.917 | n=12</title></circle>
+<circle cx="829.16" cy="1025.00" r="2.87" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | McCune-Rick_020000.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="841.38" cy="1074.35" r="6.36" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bloom-Peter_020118.cha | agreement 0.740 | n=77</title></circle>
+<circle cx="851.46" cy="1083.46" r="3.91" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bliss-normered_.cha | agreement 0.692 | n=13</title></circle>
+<circle cx="769.60" cy="1215.00" r="2.67" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Morisset-166m30t_Topeka.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="815.19" cy="1079.29" r="3.45" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_020306.cha | agreement 0.714 | n=7</title></circle>
+<circle cx="770.38" cy="1025.00" r="3.15" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Morisset-797m30_Seattle.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="840.80" cy="1044.00" r="3.70" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bates-amy_Free28.cha | agreement 0.900 | n=10</title></circle>
+<circle cx="814.80" cy="1151.67" r="3.02" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_010602.cha | agreement 0.333 | n=3</title></circle>
+<circle cx="769.21" cy="1133.57" r="3.45" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Morisset-719m30_Seattle.cha | agreement 0.429 | n=7</title></circle>
+<circle cx="778.14" cy="1083.81" r="6.54" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Feldman-_020123.cha | agreement 0.690 | n=84</title></circle>
+<circle cx="735.65" cy="1025.00" r="3.15" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | macw_010411b.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="814.80" cy="1082.00" r="4.32" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_020502.cha | agreement 0.700 | n=20</title></circle>
+<circle cx="768.44" cy="1042.27" r="3.77" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Morisset-805m30_Seattle.cha | agreement 0.909 | n=11</title></circle>
+<circle cx="817.32" cy="1025.00" r="3.02" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | NewEngland-31_20.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="879.21" cy="1063.00" r="3.26" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bates-keith_Free20.cha | agreement 0.800 | n=5</title></circle>
+<circle cx="814.41" cy="1025.00" r="2.87" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_020311.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="828.96" cy="1025.00" r="2.87" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | McCune-Jase_010600.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="841.18" cy="1050.33" r="5.38" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bloom-Peter_020324.cha | agreement 0.867 | n=45</title></circle>
+<circle cx="817.90" cy="1060.62" r="4.09" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | NewEngland-34_20.cha | agreement 0.812 | n=16</title></circle>
+<circle cx="818.87" cy="1025.00" r="3.77" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | NewEngland-57_20.cha | agreement 1.000 | n=11</title></circle>
+<circle cx="777.94" cy="1045.36" r="4.71" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Feldman-_020311.cha | agreement 0.893 | n=28</title></circle>
+<circle cx="769.99" cy="1025.00" r="2.67" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Morisset-285m30t_Topeka.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="818.68" cy="1067.22" r="3.62" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | NewEngland-38_20.cha | agreement 0.778 | n=9</title></circle>
+<circle cx="768.05" cy="1025.00" r="2.67" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Morisset-140m30t_Topeka.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="833.04" cy="1025.00" r="2.87" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_011130a.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="874.94" cy="1108.12" r="4.09" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Gelman-21_2004Gender.cha | agreement 0.562 | n=16</title></circle>
+<circle cx="768.63" cy="1063.00" r="3.26" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Morisset-152m30t_Topeka.cha | agreement 0.800 | n=5</title></circle>
+<circle cx="828.19" cy="1072.50" r="3.84" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | McCune-Jase_011100.cha | agreement 0.750 | n=12</title></circle>
+<circle cx="814.22" cy="1088.33" r="3.62" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_020121.cha | agreement 0.667 | n=9</title></circle>
+<circle cx="834.01" cy="1139.00" r="4.79" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | McCune-Vito_011000.cha | agreement 0.400 | n=30</title></circle>
+<circle cx="814.02" cy="1025.00" r="3.26" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_020120.cha | agreement 1.000 | n=5</title></circle>
+<circle cx="829.35" cy="1025.00" r="4.03" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | McCune-Jase_010800.cha | agreement 1.000 | n=15</title></circle>
+<circle cx="841.38" cy="1130.56" r="3.62" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Brown-Sarah_020426.cha | agreement 0.444 | n=9</title></circle>
+<circle cx="772.12" cy="1056.67" r="4.52" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Demetras2-Michael_f020222.cha | agreement 0.833 | n=24</title></circle>
+<circle cx="706.75" cy="1025.00" r="2.67" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bates-olivia_Free20.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="687.54" cy="1056.67" r="3.36" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bates-kathy_Free20.cha | agreement 0.833 | n=6</title></circle>
+<circle cx="707.52" cy="1120.00" r="2.87" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bates-frank_Snack28.cha | agreement 0.500 | n=2</title></circle>
+<circle cx="859.81" cy="1120.00" r="2.87" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bates-rick_Free28.cha | agreement 0.500 | n=2</title></circle>
+<circle cx="755.44" cy="1076.82" r="4.92" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Nelson_011123.cha | agreement 0.727 | n=33</title></circle>
+<circle cx="812.08" cy="1094.67" r="4.79" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Gleason-patricia_Dinner.cha | agreement 0.633 | n=30</title></circle>
+<circle cx="692.20" cy="1046.11" r="3.62" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bates-ruth_Snack28.cha | agreement 0.889 | n=9</title></circle>
+<circle cx="769.41" cy="1025.00" r="2.67" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Morisset-138m30t_Topeka.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="701.70" cy="1025.00" r="2.67" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bates-ruth_Story28.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="863.49" cy="1025.00" r="3.15" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Gelman-46_1998Books.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="739.72" cy="1045.54" r="5.08" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Demetras2-Jimmy_f020426.cha | agreement 0.892 | n=37</title></circle>
+<circle cx="870.86" cy="1040.83" r="3.84" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Higginson-june_05.cha | agreement 0.917 | n=12</title></circle>
+<circle cx="829.54" cy="1088.33" r="3.36" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | McCune-Jase_010900.cha | agreement 0.667 | n=6</title></circle>
+<circle cx="813.44" cy="1120.00" r="3.54" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_011000.cha | agreement 0.500 | n=8</title></circle>
+<circle cx="739.92" cy="1072.50" r="4.88" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Clark-_020425.cha | agreement 0.750 | n=32</title></circle>
+<circle cx="817.90" cy="1025.00" r="4.09" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | NewEngland-16_20.cha | agreement 1.000 | n=16</title></circle>
+<circle cx="694.33" cy="1025.00" r="3.02" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bates_frank_Free20.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="871.25" cy="1064.58" r="4.52" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Higginson-june_07.cha | agreement 0.792 | n=24</title></circle>
+<circle cx="870.67" cy="1025.00" r="3.02" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Higginson-june_13.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="815.38" cy="1084.38" r="4.09" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_010902.cha | agreement 0.688 | n=16</title></circle>
+<circle cx="816.35" cy="1025.00" r="3.36" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_010916.cha | agreement 1.000 | n=6</title></circle>
+<circle cx="816.55" cy="1215.00" r="2.87" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_010719.cha | agreement 0.000 | n=2</title></circle>
+<circle cx="815.96" cy="1042.27" r="3.77" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_010725.cha | agreement 0.909 | n=11</title></circle>
+<circle cx="755.05" cy="1085.45" r="4.42" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Nelson_020013.cha | agreement 0.682 | n=22</title></circle>
+<circle cx="856.12" cy="1025.00" r="2.67" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bates-jane_Free20.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="688.90" cy="1025.00" r="2.87" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bates-betty_Free20.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="768.63" cy="1120.00" r="2.87" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Morisset-743m30_Seattle.cha | agreement 0.500 | n=2</title></circle>
+<circle cx="817.52" cy="1025.00" r="2.87" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | NewEngland-14_20.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="695.49" cy="1103.62" r="4.75" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Demetras2-Tim_f020130.cha | agreement 0.586 | n=29</title></circle>
+<circle cx="815.19" cy="1046.11" r="3.62" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_020423.cha | agreement 0.889 | n=9</title></circle>
+<circle cx="777.36" cy="1064.58" r="4.52" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Gleason-martin_Mother.cha | agreement 0.792 | n=24</title></circle>
+<circle cx="863.30" cy="1072.50" r="3.54" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bates-ruth_Free20.cha | agreement 0.750 | n=8</title></circle>
+<circle cx="856.70" cy="1025.00" r="3.15" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | McCune-Ronny_011100.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="865.43" cy="1025.00" r="2.67" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Bates-ivy_Snack28.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="813.64" cy="1025.00" r="3.02" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Braunwald_011010.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="767.66" cy="1025.00" r="3.36" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Morisset-720m30_Seattle.cha | agreement 1.000 | n=6</title></circle>
+<circle cx="870.86" cy="1072.50" r="3.15" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Higginson-june_14.cha | agreement 0.750 | n=4</title></circle>
+<circle cx="847.58" cy="1042.27" r="4.42" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | McCune-Alice_010803.cha | agreement 0.909 | n=22</title></circle>
+<circle cx="1112.99" cy="1151.67" r="4.37" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | McCune-Jase_020000.cha | agreement 0.333 | n=21</title></circle>
+<circle cx="1039.66" cy="1055.00" r="5.78" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Nelson_011011.cha | agreement 0.842 | n=57</title></circle>
+<circle cx="1136.27" cy="1101.00" r="3.26" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | McCune-Aurie_010600.cha | agreement 0.600 | n=5</title></circle>
+<circle cx="1053.63" cy="1052.14" r="3.45" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Morisset-815m30_Seattle.cha | agreement 0.857 | n=7</title></circle>
+<circle cx="1024.34" cy="1058.17" r="5.96" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Clark-_020404.cha | agreement 0.825 | n=63</title></circle>
+<circle cx="1053.82" cy="1088.33" r="3.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Morisset-762m30_Seattle.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="1099.99" cy="1068.85" r="3.91" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_010513.cha | agreement 0.769 | n=13</title></circle>
+<circle cx="1103.87" cy="1072.50" r="3.54" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Brown-Eve_010700a.cha | agreement 0.750 | n=8</title></circle>
+<circle cx="984.57" cy="1072.50" r="3.54" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Bates-will_Story28.cha | agreement 0.750 | n=8</title></circle>
+<circle cx="1101.35" cy="1075.81" r="6.59" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Brown-Adam_020304.cha | agreement 0.733 | n=86</title></circle>
+<circle cx="1053.82" cy="1025.00" r="3.26" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Morisset-780m30_Seattle.cha | agreement 1.000 | n=5</title></circle>
+<circle cx="1148.10" cy="1101.00" r="3.26" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Gelman-44_1998Books.cha | agreement 0.600 | n=5</title></circle>
+<circle cx="1100.77" cy="1088.33" r="3.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_020228.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="1161.68" cy="1167.50" r="3.15" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Bates-linda_Free20.cha | agreement 0.250 | n=4</title></circle>
+<circle cx="1040.44" cy="1082.00" r="4.32" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Nelson_011006.cha | agreement 0.700 | n=20</title></circle>
+<circle cx="991.75" cy="1025.00" r="2.67" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Bates-chuck_Snack28.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="1036.17" cy="1025.00" r="3.62" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Gopnik-p06111_prompted.cha | agreement 1.000 | n=9</title></circle>
+<circle cx="1100.58" cy="1183.33" r="3.36" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_020416.cha | agreement 0.167 | n=6</title></circle>
+<circle cx="1035.01" cy="1025.00" r="2.67" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Bernstein-marie_int3.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="1053.63" cy="1025.00" r="3.15" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Morisset-170m30t_Topeka.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="1101.55" cy="1071.72" r="5.90" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Brown-Adam_020512.cha | agreement 0.754 | n=61</title></circle>
+<circle cx="1025.11" cy="1075.67" r="5.38" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Demetras2-Jimmy_f020428.cha | agreement 0.733 | n=45</title></circle>
+<circle cx="1100.38" cy="1025.00" r="4.03" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Kuczaj-Abe_020526.cha | agreement 1.000 | n=15</title></circle>
+<circle cx="1126.38" cy="1167.50" r="3.15" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Brown-Sarah_020507.cha | agreement 0.250 | n=4</title></circle>
+<circle cx="1113.77" cy="1025.00" r="2.67" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | McCune-Jase_010500.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="1156.64" cy="1151.67" r="3.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Higginson-june_09.cha | agreement 0.333 | n=3</title></circle>
+<circle cx="1124.83" cy="1157.17" r="4.47" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Bloom-Peter_011011.cha | agreement 0.304 | n=23</title></circle>
+<circle cx="981.08" cy="1077.78" r="4.21" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Higginson-april_02.cha | agreement 0.722 | n=18</title></circle>
+<circle cx="1041.21" cy="1051.21" r="4.75" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Nelson_020127.cha | agreement 0.862 | n=29</title></circle>
+<circle cx="1052.66" cy="1106.43" r="3.45" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Morisset-111m30t_Topeka.cha | agreement 0.571 | n=7</title></circle>
+<circle cx="1099.02" cy="1167.50" r="3.15" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_020300.cha | agreement 0.250 | n=4</title></circle>
+<circle cx="1140.54" cy="1215.00" r="2.67" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Gopnik-f05711_free.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="1053.44" cy="1151.67" r="3.36" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Morisset-160m30t_Topeka.cha | agreement 0.333 | n=6</title></circle>
+<circle cx="1053.24" cy="1151.67" r="3.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Morisset-804m30_Seattle.cha | agreement 0.333 | n=3</title></circle>
+<circle cx="973.90" cy="1025.00" r="3.26" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Bates-kent_Snack28.cha | agreement 1.000 | n=5</title></circle>
+<circle cx="1055.18" cy="1092.86" r="3.97" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Morisset-796m30_Seattle.cha | agreement 0.643 | n=14</title></circle>
+<circle cx="1099.80" cy="1025.00" r="3.26" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_020115.cha | agreement 1.000 | n=5</title></circle>
+<circle cx="992.13" cy="1025.00" r="2.87" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Bates-gloria_Free28.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="1149.07" cy="1025.00" r="2.67" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Gelman-49_1998Books.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="1119.78" cy="1072.50" r="3.54" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | McCune-Vito_010500.cha | agreement 0.750 | n=8</title></circle>
+<circle cx="1052.66" cy="1025.00" r="3.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Morisset-102m30t_Topeka.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="1132.78" cy="1120.00" r="3.70" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | McCune-Alice_010705.cha | agreement 0.500 | n=10</title></circle>
+<circle cx="1099.61" cy="1067.22" r="3.62" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_020312.cha | agreement 0.778 | n=9</title></circle>
+<circle cx="1041.41" cy="1155.00" r="4.26" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Nelson_011128.cha | agreement 0.316 | n=19</title></circle>
+<circle cx="1104.65" cy="1025.00" r="3.15" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | NewEngland-97_20.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="1101.74" cy="1120.00" r="3.36" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_010819.cha | agreement 0.500 | n=6</title></circle>
+<circle cx="1125.41" cy="1025.00" r="3.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Bates-sue_Free20.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="1147.72" cy="1120.00" r="2.87" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Bates-will_Free28.cha | agreement 0.500 | n=2</title></circle>
+<circle cx="1102.90" cy="1050.91" r="4.42" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Brown-Eve_020000b.cha | agreement 0.864 | n=22</title></circle>
+<circle cx="1054.41" cy="1025.00" r="2.67" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Morisset-174m30t_Topeka.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="1141.51" cy="1025.00" r="3.26" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | McCune-Ronny_020000.cha | agreement 1.000 | n=5</title></circle>
+<circle cx="1099.99" cy="1151.67" r="3.62" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_020305.cha | agreement 0.333 | n=9</title></circle>
+<circle cx="1139.57" cy="1025.00" r="3.15" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Gopnik-f05211_free.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="1054.02" cy="1025.00" r="2.87" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Morisset-118m30t_Topeka.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="1100.58" cy="1056.67" r="3.36" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_010615.cha | agreement 0.833 | n=6</title></circle>
+<circle cx="1054.79" cy="1025.00" r="2.87" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Morisset-785m30_Seattle.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="1143.25" cy="1139.00" r="3.26" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | McMillan-_rachel.cha | agreement 0.400 | n=5</title></circle>
+<circle cx="1099.22" cy="1092.42" r="4.84" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_011103.cha | agreement 0.645 | n=31</title></circle>
+<circle cx="1101.93" cy="1025.00" r="3.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | NewEngland-02_20.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="1101.35" cy="1167.50" r="3.15" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_010619.cha | agreement 0.250 | n=4</title></circle>
+<circle cx="1102.90" cy="1025.00" r="3.97" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | NewEngland-61_20.cha | agreement 1.000 | n=14</title></circle>
+<circle cx="1101.16" cy="1101.00" r="3.26" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_010627.cha | agreement 0.600 | n=5</title></circle>
+<circle cx="1099.99" cy="1052.14" r="3.45" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_020323.cha | agreement 0.857 | n=7</title></circle>
+<circle cx="1014.64" cy="1025.00" r="3.54" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Bates-olivia_Snack28.cha | agreement 1.000 | n=8</title></circle>
+<circle cx="1058.48" cy="1048.75" r="3.54" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Demetras2-Michael_m020222.cha | agreement 0.875 | n=8</title></circle>
+<circle cx="1120.56" cy="1081.49" r="5.08" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | McCune-Vito_010900.cha | agreement 0.703 | n=37</title></circle>
+<circle cx="1103.87" cy="1050.33" r="4.03" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Brown-Eve_010600b.cha | agreement 0.867 | n=15</title></circle>
+<circle cx="1125.60" cy="1088.33" r="5.27" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Bloom-Peter_020303.cha | agreement 0.667 | n=42</title></circle>
+<circle cx="973.12" cy="1044.00" r="3.70" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Bates-pete_Snack28.cha | agreement 0.900 | n=10</title></circle>
+<circle cx="1124.24" cy="1101.00" r="3.70" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Bates-amy_Free20.cha | agreement 0.600 | n=10</title></circle>
+<circle cx="1021.62" cy="1088.33" r="3.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | macw_010425b.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="1099.80" cy="1046.11" r="3.62" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_020124.cha | agreement 0.889 | n=9</title></circle>
+<circle cx="1102.71" cy="1054.23" r="7.86" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Bloom-Eric_010914.cha | agreement 0.846 | n=143</title></circle>
+<circle cx="1053.44" cy="1042.27" r="4.42" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Morisset-724m30_Seattle.cha | agreement 0.909 | n=22</title></circle>
+<circle cx="1101.35" cy="1080.54" r="6.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Brown-Adam_020430.cha | agreement 0.708 | n=65</title></circle>
+<circle cx="1114.16" cy="1025.00" r="2.67" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | McCune-Rick_011000.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="1054.21" cy="1025.00" r="3.15" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Morisset-218m30t_Topeka.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="1041.02" cy="1096.25" r="3.54" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Nelson_010820.cha | agreement 0.625 | n=8</title></circle>
+<circle cx="1103.29" cy="1025.00" r="2.67" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | NewEngland-90_20.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="1159.74" cy="1025.00" r="3.54" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Gelman-20_2004Gender.cha | agreement 1.000 | n=8</title></circle>
+<circle cx="1135.30" cy="1025.00" r="3.97" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | McCune-Aurie_011000.cha | agreement 1.000 | n=14</title></circle>
+<circle cx="1103.49" cy="1025.00" r="3.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | NewEngland-28_20.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="1021.43" cy="1120.00" r="2.87" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | macw_010425a.cha | agreement 0.500 | n=2</title></circle>
+<circle cx="971.76" cy="1025.00" r="3.15" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Bates-keith_Free28.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="1132.20" cy="1108.95" r="5.31" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | McCune-Alice_010900.cha | agreement 0.558 | n=43</title></circle>
+<circle cx="1040.83" cy="1084.71" r="5.00" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Nelson_020512.cha | agreement 0.686 | n=35</title></circle>
+<circle cx="1054.41" cy="1069.71" r="4.15" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Morisset-747m30_Seattle.cha | agreement 0.765 | n=17</title></circle>
+<circle cx="1126.96" cy="1025.00" r="3.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Bates-sue_Free28.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="1112.99" cy="1025.00" r="3.62" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | McCune-Jase_011000.cha | agreement 1.000 | n=9</title></circle>
+<circle cx="1063.14" cy="1042.27" r="3.77" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Feldman-_020213.cha | agreement 0.909 | n=11</title></circle>
+<circle cx="1100.38" cy="1147.94" r="4.15" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_020424.cha | agreement 0.353 | n=17</title></circle>
+<circle cx="1148.30" cy="1025.00" r="3.36" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Bates-sue_Snack28.cha | agreement 1.000 | n=6</title></circle>
+<circle cx="1054.02" cy="1025.00" r="2.87" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Morisset-127m30t_Topeka.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="1102.90" cy="1058.93" r="4.71" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Bloom-Eric_010807.cha | agreement 0.821 | n=28</title></circle>
+<circle cx="1040.44" cy="1139.00" r="3.26" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Nelson_020204.cha | agreement 0.400 | n=5</title></circle>
+<circle cx="1126.18" cy="1096.25" r="3.54" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Brown-Sarah_020326.cha | agreement 0.625 | n=8</title></circle>
+<circle cx="1100.77" cy="1025.00" r="2.67" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_020426.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="1053.05" cy="1025.00" r="2.87" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Morisset-311m30t_Topeka.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="1102.32" cy="1090.14" r="5.00" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Brown-Adam_020318.cha | agreement 0.657 | n=35</title></circle>
+<circle cx="1102.52" cy="1025.00" r="3.36" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | NewEngland-32_20.cha | agreement 1.000 | n=6</title></circle>
+<circle cx="1053.63" cy="1025.00" r="3.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Morisset-851m30_Seattle.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="1099.41" cy="1056.67" r="3.36" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_020023.cha | agreement 0.833 | n=6</title></circle>
+<circle cx="1040.63" cy="1043.10" r="4.37" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Nelson_020007.cha | agreement 0.905 | n=21</title></circle>
+<circle cx="1101.93" cy="1055.65" r="4.84" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | NewEngland-20_20.cha | agreement 0.839 | n=31</title></circle>
+<circle cx="996.79" cy="1025.00" r="2.67" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Bates-betty_Snack28.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="1100.19" cy="1215.00" r="2.67" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_020225.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="1002.42" cy="1104.17" r="3.84" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | macw_010523.cha | agreement 0.583 | n=12</title></circle>
+<circle cx="1100.19" cy="1088.33" r="3.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_010721.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="1101.16" cy="1139.00" r="3.26" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_010708.cha | agreement 0.400 | n=5</title></circle>
+<circle cx="1125.41" cy="1101.00" r="3.26" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Brown-Sarah_020322.cha | agreement 0.600 | n=5</title></circle>
+<circle cx="1136.66" cy="1088.33" r="3.36" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | McCune-Aurie_010800.cha | agreement 0.667 | n=6</title></circle>
+<circle cx="1054.79" cy="1025.00" r="3.15" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Morisset-158m30t_Topeka.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="1154.70" cy="1096.25" r="3.54" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Bates-nan_Story28.cha | agreement 0.625 | n=8</title></circle>
+<circle cx="1103.10" cy="1085.58" r="6.13" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Brown-Eve_020100b.cha | agreement 0.681 | n=69</title></circle>
+<circle cx="1053.82" cy="1025.00" r="3.15" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Morisset-126m30t_Topeka.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="1104.46" cy="1025.00" r="2.87" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | NewEngland-96_20.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="1100.96" cy="1025.00" r="2.67" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_010905.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="1147.52" cy="1120.00" r="2.87" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Gelman-41_1998Books.cha | agreement 0.500 | n=2</title></circle>
+<circle cx="1114.35" cy="1088.33" r="3.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | McCune-Rick_011100.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="1100.58" cy="1079.29" r="3.45" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Braunwald_020227.cha | agreement 0.714 | n=7</title></circle>
+<circle cx="1040.44" cy="1088.33" r="3.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Nelson_020015.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="1001.45" cy="1025.00" r="3.77" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | sach_010806.cha | agreement 1.000 | n=11</title></circle>
+<circle cx="900" cy="982" r="5" fill="#1d4ed8" fill-opacity="0.65"/>
+<text x="910" y="986" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#374151" text-anchor="start">dev_train</text>
+<circle cx="1055" cy="982" r="5" fill="#0891b2" fill-opacity="0.65"/>
+<text x="1065" y="986" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#374151" text-anchor="start">dev_check_1</text>
+<circle cx="900" cy="1000" r="5" fill="#7c3aed" fill-opacity="0.65"/>
+<text x="910" y="1004" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#374151" text-anchor="start">dev_check_2</text>
+<circle cx="1055" cy="1000" r="5" fill="#c2410c" fill-opacity="0.65"/>
+<text x="1065" y="1004" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#374151" text-anchor="start">test_lockbox</text>
+</svg>

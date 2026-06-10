@@ -20,7 +20,7 @@ LLM_DIR = Path(__file__).resolve().parents[1]
 ROOT = LLM_DIR.parents[1] if LLM_DIR.parent.name == "Data" else LLM_DIR.parent
 DATASET_DIR = LLM_DIR / "datasets"
 SPLIT_DIR = LLM_DIR / "splits" / "english"
-FIGURE_DIR = LLM_DIR / "results" / "english_split_diagnostics"
+FIGURE_DIR = LLM_DIR / "splits" / "english" / "diagnostics"
 ENGLISH_WORKBOOK = ROOT / "Data" / "Transcripts" / "English" / "2024-03-04_negation_coding_bloom_choi.xlsx"
 
 INPUT_JSONL = DATASET_DIR / "english_llm_dataset.jsonl"
@@ -412,6 +412,8 @@ def csv_safe_record(record):
         "child_age_raw": record["child_age_raw"],
         "target_negator": record["target_negator"],
         "target_utterance": record["target_utterance"],
+        "negator_index_in_utterance": record.get("negator_index_in_utterance"),
+        "negators_in_utterance": record.get("negators_in_utterance"),
         "coded_by_1": record["coded_by_1"],
         "coded_by_2": record["coded_by_2"],
         "context_before_json": json.dumps(record["context_before"], ensure_ascii=False),

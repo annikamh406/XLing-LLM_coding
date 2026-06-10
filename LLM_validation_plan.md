@@ -12,8 +12,9 @@ Target outputs per negator token:
 - `bloom_label`
 - flags: `foreign_language_negation`, `singing`, `mimicry`, `tag_question`, `repetition`, `not_a_negation`
 
-Reference policy:
-- `Data/XLing-LLM_coding/Bloom_coding_policy_v1.md`
+Reference policy (current version):
+- `Data/XLing-LLM_coding/v2/Bloom_coding_policy_v2.md`
+  (v1 frozen at `Data/XLing-LLM_coding/v1/Bloom_coding_policy_v1.md`)
 
 ## 1. Freeze label policy before modeling
 1. Lock allowed labels and definitions.
@@ -115,10 +116,10 @@ Per negator token record, include:
 
 Output format:
 - strict JSON schema with enum constraints
-- `schema_version` should match the coding policy version, currently `bloom_v1`
+- `schema_version` should match the coding policy version, currently `bloom_v2`
 - one prediction object per negator token, keyed by `record_id`
 - local validation should reject outputs with missing, duplicate, or unexpected `record_id` values
-- reusable schema file: `Data/XLing-LLM_coding/schemas/bloom_v1_output.schema.json`
+- reusable schema file: `Data/XLing-LLM_coding/v2/bloom_v2_output.schema.json`
 
 ## 5. Prompt design (few-shot)
 Prompt sections:
@@ -194,9 +195,10 @@ After Bloom succeeds:
 7. Review top 50 errors and revise examples.
 
 ## Files to maintain in this folder
-- `Data/XLing-LLM_coding/Bloom_coding_policy_v1.md`
 - `Data/XLing-LLM_coding/LLM_validation_plan.md`
-- `Data/XLing-LLM_coding/splits/` (manifests)
-- `Data/XLing-LLM_coding/schemas/` (JSON schemas for LLM output validation)
-- `Data/XLing-LLM_coding/prompts/` (versioned prompts)
-- `Data/XLing-LLM_coding/results/` (dev + lockbox metrics)
+- `Data/XLing-LLM_coding/splits/` (manifests, shared across versions)
+- `Data/XLing-LLM_coding/vN/` per policy/prompt iteration:
+  - `vN/Bloom_coding_policy_vN.md` (versioned policy)
+  - `vN/bloom_vN_english_prompt.md` (versioned prompt)
+  - `vN/bloom_vN_output.schema.json` (JSON schema for LLM output validation)
+  - `vN/results/` (dev + lockbox metrics for that version)

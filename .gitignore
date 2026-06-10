@@ -7,6 +7,11 @@ __pycache__/
 datasets/
 splits/**/*.csv
 
+# Frozen on-disk copies of v1 inputs (same state exists in Git history;
+# see v1/inputs/README.md). The README itself stays tracked.
+v1/inputs/*
+!v1/inputs/README.md
+
 # Model outputs and diagnostics
 results/
 outputs/

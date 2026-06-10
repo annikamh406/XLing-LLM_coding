@@ -150,7 +150,7 @@
   },
   "outputs": {
     "split_dir": "Data/XLing-LLM_coding/splits/english",
-    "diagnostic_svg": "Data/XLing-LLM_coding/results/english_split_diagnostics/english_split_diagnostics.svg",
+    "diagnostic_svg": "Data/XLing-LLM_coding/splits/english/diagnostics/english_split_diagnostics.svg",
     "transcript_manifest": "Data/XLing-LLM_coding/splits/english/transcript_split_manifest.csv"
   }
 }
