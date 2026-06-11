@@ -13,8 +13,8 @@ Target outputs per negator token:
 - flags: `foreign_language_negation`, `singing`, `mimicry`, `tag_question`, `repetition`, `not_a_negation`
 
 Reference policy (current version):
-- `Data/XLing-LLM_coding/v2/Bloom_coding_policy_v2.md`
-  (v1 frozen at `Data/XLing-LLM_coding/v1/Bloom_coding_policy_v1.md`)
+- `Data/XLing-LLM_coding/v3/Bloom_coding_policy_v3.md`
+  (earlier versions frozen under `v1/` and `v2/`)
 
 ## 1. Freeze label policy before modeling
 1. Lock allowed labels and definitions.
@@ -116,10 +116,10 @@ Per negator token record, include:
 
 Output format:
 - strict JSON schema with enum constraints
-- `schema_version` should match the coding policy version, currently `bloom_v2`
+- `schema_version` should match the coding policy version, currently `bloom_v3`
 - one prediction object per negator token, keyed by `record_id`
 - local validation should reject outputs with missing, duplicate, or unexpected `record_id` values
-- reusable schema file: `Data/XLing-LLM_coding/v2/bloom_v2_output.schema.json`
+- reusable schema file: `Data/XLing-LLM_coding/v3/bloom_v3_output.schema.json`
 
 ## 5. Prompt design (few-shot)
 Prompt sections:

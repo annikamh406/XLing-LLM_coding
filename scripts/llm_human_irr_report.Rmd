@@ -1,0 +1,596 @@
+---
+title: "LLM-Human Reliability Report - `r params$run_label`"
+author: "Generated report"
+date: "`r Sys.Date()`"
+params:
+  run_label: "unnamed run"
+  predictions_path: ""
+  raw_responses_path: ""
+  split_path: ""
+  human_reference_path: ""
+  audit_csv_path: ""
+  inspected_ids_path: ""
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    code_folding: hide
+    df_print: paged
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+# Parameterized version of the v1 report
+# (v1/results/2026-06-09_llm-human-irr_dev-train_gemma4-31b_limit-20.Rmd).
+# The analysis is identical; all run-specific paths come in via params so the
+# same template scores every version. Render through
+# scripts/render_irr_report.R rather than knitting directly.
+knitr::opts_chunk$set(
+  echo = FALSE, warning = FALSE, message = FALSE,
+  fig.width = 9, fig.height = 5, dpi = 100
+)
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(stringr)
+library(purrr)
+library(tibble)
+library(knitr)
+library(scales)
+library(jsonlite)
+library(readr)
+
+prediction_path <- params$predictions_path
+raw_response_path <- params$raw_responses_path
+split_path <- params$split_path
+human_reference_path <- params$human_reference_path
+audit_csv_path <- params$audit_csv_path
+
+read_jsonl <- function(path) {
+  jsonlite::stream_in(file(path), verbose = FALSE)
+}
+
+cohen_kappa <- function(tab) {
+  tab <- as.matrix(tab)
+  if (nrow(tab) != ncol(tab)) return(NA_real_)
+  n <- sum(tab)
+  if (n == 0) return(NA_real_)
+  po <- sum(diag(tab)) / n
+  pe <- sum(rowSums(tab) * colSums(tab)) / (n^2)
+  if (pe == 1) return(NA_real_)
+  (po - pe) / (1 - pe)
+}
+
+yes_flag <- function(x) {
+  coalesce(str_to_lower(str_trim(as.character(x))) == "yes", FALSE)
+}
+
+label_bloom <- function(x) {
+  x <- as.character(x)
+  case_when(
+    is.na(x) ~ NA_character_,
+    x %in% c("Nonpossession", "Nonposession") ~ "nonexistence",
+    x == "Nonexistence" ~ "nonexistence",
+    x == "Rejection" ~ "rejection",
+    x == "Denial" ~ "denial",
+    x == "Uncoded" ~ "uncoded",
+    x == "Excluded" ~ "excluded",
+    TRUE ~ "other"
+  )
+}
+
+kappa_fixed <- function(a, b, levels) {
+  cohen_kappa(table(factor(a, levels), factor(b, levels)))
+}
+
+context_to_text <- function(x) {
+  if (is.null(x) || length(x) == 0 || all(is.na(x))) return(NA_character_)
+  if (!is.data.frame(x)) return(as.character(x))
+  x %>%
+    transmute(text = paste0(line, " ", speaker, " ", utterance)) %>%
+    pull(text) %>%
+    paste(collapse = " | ")
+}
+
+flag_cols <- c(
+  "not_a_negation",
+  "foreign_language_negation",
+  "mimicry",
+  "singing",
+  "tag_question",
+  "repetition"
+)
+
+label_levels <- c("nonexistence", "rejection", "denial", "uncoded", "excluded", "other")
+content_label_levels <- c("nonexistence", "rejection", "denial")
+```
+
+# Overview
+
+This report evaluates a Bloom LLM coding run as an additional independent
+coder, following the validation plan in
+`Data/XLing-LLM_coding/LLM_validation_plan.md`.
+
+```{r run-metadata}
+run_meta <- tibble(field = "Predictions file", value = basename(prediction_path))
+if (nzchar(raw_response_path) && file.exists(raw_response_path)) {
+  raw_meta <- read_jsonl(raw_response_path)
+  batch_sizes <- vapply(raw_meta$record_ids, length, integer(1))
+  run_meta <- bind_rows(
+    run_meta,
+    tibble(
+      field = c("Model", "Schema version", "Prompt version", "Run date", "Batches (records per batch)"),
+      value = c(
+        as.character(raw_meta$model[[1]]),
+        as.character(raw_meta$schema_version[[1]]),
+        as.character(raw_meta$prompt_version[[1]]),
+        substr(as.character(raw_meta$raw_response$created_at[[1]]), 1, 10),
+        paste0(length(batch_sizes), " (", paste(unique(batch_sizes), collapse = ", "), ")")
+      )
+    )
+  )
+}
+run_meta <- bind_rows(
+  run_meta,
+  tibble(
+    field = c("Split file", "Human reference file"),
+    value = c(split_path, human_reference_path)
+  )
+)
+run_meta %>% kable(caption = "Run snapshot.")
+```
+
+The denominator rules match the human-human IRR reports:
+
+* Blank human coder rows are missing data, not `not-a-negation` judgments.
+* Bloom agreement requires both sides to have non-missing Bloom labels.
+* `Nonpossession` is collapsed to `nonexistence`.
+* `Uncoded` and `Excluded` remain explicit labels.
+* For flags, only explicit `Yes` counts as `TRUE`.
+
+```{r load-data}
+predictions_raw <- read_jsonl(prediction_path)
+split_raw <- read_jsonl(split_path)
+human_raw <- read_jsonl(human_reference_path)
+
+predictions <- predictions_raw %>%
+  transmute(
+    record_id,
+    llm_bloom_raw = bloom_label,
+    llm_label = label_bloom(bloom_label),
+    llm_comments = comments,
+    llm_not_a_negation = yes_flag(flags$not_a_negation),
+    llm_foreign_language_negation = yes_flag(flags$foreign_language_negation),
+    llm_mimicry = yes_flag(flags$mimicry),
+    llm_singing = yes_flag(flags$singing),
+    llm_tag_question = yes_flag(flags$tag_question),
+    llm_repetition = yes_flag(flags$repetition)
+  )
+
+human <- human_raw %>%
+  transmute(
+    record_id,
+    source_row,
+    coder_1_sheet,
+    coder_2_sheet,
+    coder_1_name = coder_1$coded_by_raw,
+    coder_2_name = coder_2$coded_by_raw,
+    human_1_bloom_raw = coder_1$bloom_label,
+    human_2_bloom_raw = coder_2$bloom_label,
+    human_1_label = label_bloom(coder_1$bloom_label),
+    human_2_label = label_bloom(coder_2$bloom_label),
+    human_1_comments = coder_1$comments,
+    human_2_comments = coder_2$comments,
+    human_1_not_a_negation = yes_flag(coder_1$flags$not_a_negation),
+    human_2_not_a_negation = yes_flag(coder_2$flags$not_a_negation),
+    human_1_foreign_language_negation = yes_flag(coder_1$flags$foreign_language_negation),
+    human_2_foreign_language_negation = yes_flag(coder_2$flags$foreign_language_negation),
+    human_1_mimicry = yes_flag(coder_1$flags$mimicry),
+    human_2_mimicry = yes_flag(coder_2$flags$mimicry),
+    human_1_singing = yes_flag(coder_1$flags$singing),
+    human_2_singing = yes_flag(coder_2$flags$singing),
+    human_1_tag_question = yes_flag(coder_1$flags$tag_question),
+    human_2_tag_question = yes_flag(coder_2$flags$tag_question),
+    human_1_repetition = yes_flag(coder_1$flags$repetition),
+    human_2_repetition = yes_flag(coder_2$flags$repetition)
+  )
+
+split_info <- split_raw %>%
+  transmute(
+    record_id,
+    split,
+    language,
+    transcript_id,
+    half,
+    line,
+    speaker,
+    child_id,
+    child_age_months,
+    child_age_raw,
+    target_negator,
+    target_utterance,
+    context_before = map_chr(context_before, context_to_text),
+    context_after = map_chr(context_after, context_to_text),
+    coded_by_1,
+    coded_by_2
+  )
+
+eval_rows <- predictions %>%
+  left_join(split_info, by = "record_id") %>%
+  left_join(human, by = "record_id") %>%
+  mutate(
+    has_human_1 = !is.na(human_1_label),
+    has_human_2 = !is.na(human_2_label),
+    has_llm = !is.na(llm_label),
+    human_agreed = has_human_1 & has_human_2 & human_1_label == human_2_label,
+    human_disagreed = has_human_1 & has_human_2 & human_1_label != human_2_label
+  )
+
+long_labels <- bind_rows(
+  eval_rows %>% transmute(record_id, coder = "human_1", coder_label = coder_1_sheet, label = human_1_label),
+  eval_rows %>% transmute(record_id, coder = "human_2", coder_label = coder_2_sheet, label = human_2_label),
+  eval_rows %>% transmute(record_id, coder = "llm", coder_label = "LLM", label = llm_label)
+)
+
+pair_data <- list(
+  `human_1 vs human_2` = c("human_1", "human_2"),
+  `human_1 vs LLM` = c("human_1", "llm"),
+  `human_2 vs LLM` = c("human_2", "llm")
+) %>%
+  imap_dfr(function(pair, pair_name) {
+    long_labels %>%
+      filter(coder %in% pair) %>%
+      select(record_id, coder, label) %>%
+      pivot_wider(names_from = coder, values_from = label) %>%
+      transmute(
+        record_id,
+        pair = pair_name,
+        a = .data[[pair[[1]]]],
+        b = .data[[pair[[2]]]]
+      )
+  })
+
+# Inspected rows are development data (read, mined for prompt examples, or
+# adjudicated); headline metrics are computed on the remaining rows.
+inspected_ids <- character(0)
+if (nzchar(params$inspected_ids_path) && file.exists(params$inspected_ids_path)) {
+  inspected_lines <- readLines(params$inspected_ids_path, warn = FALSE)
+  inspected_lines <- trimws(inspected_lines)
+  inspected_ids <- inspected_lines[nzchar(inspected_lines) & !startsWith(inspected_lines, "#")]
+}
+eval_rows <- eval_rows %>% mutate(inspected = record_id %in% inspected_ids)
+pair_data <- pair_data %>% mutate(inspected = record_id %in% inspected_ids)
+```
+
+# Coverage
+
+```{r coverage}
+coverage <- tibble(
+  measure = c(
+    "Predicted rows",
+    "Rows with human coder 1 Bloom label",
+    "Rows with human coder 2 Bloom label",
+    "Rows with both human Bloom labels",
+    "Rows with at least one human Bloom label",
+    "Rows with LLM plus at least one human Bloom label"
+  ),
+  n = c(
+    nrow(eval_rows),
+    sum(eval_rows$has_human_1),
+    sum(eval_rows$has_human_2),
+    sum(eval_rows$has_human_1 & eval_rows$has_human_2),
+    sum(eval_rows$has_human_1 | eval_rows$has_human_2),
+    sum(eval_rows$has_llm & (eval_rows$has_human_1 | eval_rows$has_human_2))
+  )
+)
+
+coverage %>%
+  kable(caption = "Coverage for the predicted subset.")
+```
+
+# Bloom Agreement
+
+```{r bloom-agreement}
+pair_summary <- pair_data %>%
+  filter(!is.na(a), !is.na(b)) %>%
+  group_by(pair) %>%
+  summarise(
+    n_denominator = n(),
+    pct_agreement = mean(a == b),
+    kappa = kappa_fixed(a, b, label_levels),
+    denial_agreement = mean((a == "denial") == (b == "denial")),
+    denial_kappa = kappa_fixed(a == "denial", b == "denial", c(FALSE, TRUE)),
+    excluded_agreement = mean((a == "excluded") == (b == "excluded")),
+    excluded_kappa = kappa_fixed(a == "excluded", b == "excluded", c(FALSE, TRUE)),
+    uncoded_agreement = mean((a == "uncoded") == (b == "uncoded")),
+    uncoded_kappa = kappa_fixed(a == "uncoded", b == "uncoded", c(FALSE, TRUE)),
+    .groups = "drop"
+  )
+
+pair_summary %>%
+  mutate(
+    across(ends_with("agreement"), ~ percent(.x, accuracy = 0.1)),
+    across(ends_with("kappa"), ~ round(.x, 3))
+  ) %>%
+  kable(caption = "Bloom-label agreement. Denominator is rows where both compared coders have non-missing Bloom labels.")
+```
+
+## Headline vs Inspected Rows
+
+```{r inspected-stratification, results='asis'}
+if (!length(inspected_ids)) {
+  cat("No inspected-rows file was supplied; all rows are treated as uninspected.\n")
+} else {
+  n_inspected_here <- sum(eval_rows$inspected)
+  cat(sprintf(
+    paste0(
+      "%d of the %d predicted rows are on the inspected list ",
+      "(`%s`): their content informed prompt examples or adjudications, so ",
+      "they are development data. **Headline numbers are the clean-subset ",
+      "rows**; the inspected rows are a rule-compliance check only.\n\n"
+    ),
+    n_inspected_here, nrow(eval_rows), params$inspected_ids_path
+  ))
+
+  strat_summary <- pair_data %>%
+    filter(!is.na(a), !is.na(b)) %>%
+    mutate(subset = if_else(inspected, "inspected (compliance check)", "clean (headline)")) %>%
+    group_by(subset, pair) %>%
+    summarise(
+      n_denominator = n(),
+      pct_agreement = mean(a == b),
+      kappa = kappa_fixed(a, b, label_levels),
+      .groups = "drop"
+    )
+
+  if (nrow(strat_summary)) {
+    print(
+      strat_summary %>%
+        mutate(
+          pct_agreement = percent(pct_agreement, accuracy = 0.1),
+          kappa = round(kappa, 3)
+        ) %>%
+        arrange(desc(subset == "clean (headline)"), pair) %>%
+        kable(caption = "Bloom-label agreement stratified by inspection status.")
+    )
+  }
+
+  consensus_strat <- eval_rows %>%
+    filter(human_agreed, has_llm) %>%
+    mutate(subset = if_else(inspected, "inspected (compliance check)", "clean (headline)")) %>%
+    group_by(subset) %>%
+    summarise(
+      n_denominator = n(),
+      pct_agreement = mean(llm_label == human_1_label),
+      .groups = "drop"
+    )
+
+  if (nrow(consensus_strat)) {
+    print(
+      consensus_strat %>%
+        mutate(pct_agreement = percent(pct_agreement, accuracy = 0.1)) %>%
+        arrange(desc(subset == "clean (headline)")) %>%
+        kable(caption = "LLM agreement with the agreed-human label, stratified by inspection status.")
+    )
+  }
+}
+```
+
+## Contentful Bloom Agreement Only
+
+```{r content-agreement}
+content_summary <- pair_data %>%
+  filter(a %in% content_label_levels, b %in% content_label_levels) %>%
+  group_by(pair) %>%
+  summarise(
+    n_denominator = n(),
+    pct_agreement = mean(a == b),
+    kappa = kappa_fixed(a, b, content_label_levels),
+    .groups = "drop"
+  )
+
+content_summary %>%
+  mutate(
+    pct_agreement = percent(pct_agreement, accuracy = 0.1),
+    kappa = round(kappa, 3)
+  ) %>%
+  kable(caption = "Content-label agreement only: nonexistence, rejection, and denial.")
+```
+
+## Confusion Tables
+
+```{r confusion-tables, results='asis'}
+for (pair_name in unique(pair_data$pair)) {
+  cat("\n\n### ", pair_name, "\n\n", sep = "")
+  pair_df <- pair_data %>%
+    filter(pair == pair_name, !is.na(a), !is.na(b))
+  print(
+    table(
+      `coder A` = factor(pair_df$a, label_levels),
+      `coder B` = factor(pair_df$b, label_levels)
+    ) %>%
+      as.data.frame.matrix() %>%
+      knitr::kable(caption = paste("Confusion table:", pair_name))
+  )
+}
+```
+
+# Agreed-Human Subset
+
+```{r agreed-human-subset}
+agreed_subset <- eval_rows %>%
+  filter(human_agreed, has_llm) %>%
+  mutate(agreed_human_label = human_1_label)
+
+agreed_summary <- agreed_subset %>%
+  summarise(
+    n_denominator = n(),
+    pct_agreement = mean(llm_label == agreed_human_label),
+    kappa = kappa_fixed(llm_label, agreed_human_label, label_levels)
+  )
+
+agreed_summary %>%
+  mutate(
+    pct_agreement = percent(pct_agreement, accuracy = 0.1),
+    kappa = round(kappa, 3)
+  ) %>%
+  kable(caption = "LLM agreement with the consensus label on rows where both humans agree.")
+```
+
+# Human-Disagreement Siding
+
+```{r disagreement-siding}
+disagreement_siding <- eval_rows %>%
+  filter(human_disagreed, has_llm) %>%
+  mutate(
+    llm_position = case_when(
+      llm_label == human_1_label ~ "agrees with human 1",
+      llm_label == human_2_label ~ "agrees with human 2",
+      llm_label %in% c("uncoded", "excluded") ~ paste("LLM used", llm_label),
+      TRUE ~ "agrees with neither"
+    )
+  ) %>%
+  count(llm_position, name = "n")
+
+if (nrow(disagreement_siding) == 0) {
+  tibble(note = "No rows in this predicted subset where both humans coded and disagreed.") %>%
+    kable(caption = "Human-disagreement siding.")
+} else {
+  disagreement_siding %>%
+    mutate(pct = percent(n / sum(n), accuracy = 0.1)) %>%
+    kable(caption = "How the LLM behaves on rows where both humans disagree.")
+}
+```
+
+# Flag Agreement
+
+```{r flag-agreement}
+flag_pair_summary <- map_dfr(flag_cols, function(flag) {
+  pairs <- list(
+    `human_1 vs human_2` = c(paste0("human_1_", flag), paste0("human_2_", flag)),
+    `human_1 vs LLM` = c(paste0("human_1_", flag), paste0("llm_", flag)),
+    `human_2 vs LLM` = c(paste0("human_2_", flag), paste0("llm_", flag))
+  )
+
+  imap_dfr(pairs, function(cols, pair_name) {
+    df <- eval_rows %>%
+      filter(!is.na(.data[[cols[[1]]]]), !is.na(.data[[cols[[2]]]]))
+    tibble(
+      flag = flag,
+      pair = pair_name,
+      n_denominator = nrow(df),
+      pct_agreement = if_else(nrow(df) > 0, mean(df[[cols[[1]]]] == df[[cols[[2]]]]), NA_real_),
+      kappa = if_else(nrow(df) > 0, kappa_fixed(df[[cols[[1]]]], df[[cols[[2]]]], c(FALSE, TRUE)), NA_real_),
+      n_yes_a = sum(df[[cols[[1]]]], na.rm = TRUE),
+      n_yes_b = sum(df[[cols[[2]]]], na.rm = TRUE),
+      n_both_yes = sum(df[[cols[[1]]]] & df[[cols[[2]]]], na.rm = TRUE),
+      n_one_yes = sum(xor(df[[cols[[1]]]], df[[cols[[2]]]]), na.rm = TRUE)
+    )
+  })
+})
+
+flag_pair_summary %>%
+  mutate(
+    pct_agreement = percent(pct_agreement, accuracy = 0.1),
+    kappa = round(kappa, 3)
+  ) %>%
+  arrange(flag, pair) %>%
+  kable(caption = "Flag agreement. Only explicit Yes values are TRUE; No, blanks, and NA are FALSE.")
+```
+
+# Item-Level Audit
+
+The CSV written next to this report contains every child negation predicted in
+this run, with context, model coding, and both human codings:
+
+`r audit_csv_path`
+
+```{r audit-table}
+audit_table <- eval_rows %>%
+  transmute(
+    record_id,
+    inspected,
+    split,
+    language,
+    transcript_id,
+    half,
+    line,
+    speaker,
+    target_negator,
+    target_utterance,
+    context_before,
+    context_after,
+    llm_bloom = llm_bloom_raw,
+    llm_label_collapsed = llm_label,
+    llm_comments,
+    llm_foreign_language_negation,
+    llm_singing,
+    llm_mimicry,
+    llm_tag_question,
+    llm_repetition,
+    llm_not_a_negation,
+    human_1_sheet = coder_1_sheet,
+    human_1_coder = coder_1_name,
+    human_1_bloom = human_1_bloom_raw,
+    human_1_label_collapsed = human_1_label,
+    human_1_comments,
+    human_1_foreign_language_negation,
+    human_1_singing,
+    human_1_mimicry,
+    human_1_tag_question,
+    human_1_repetition,
+    human_1_not_a_negation,
+    human_2_sheet = coder_2_sheet,
+    human_2_coder = coder_2_name,
+    human_2_bloom = human_2_bloom_raw,
+    human_2_label_collapsed = human_2_label,
+    human_2_comments,
+    human_2_foreign_language_negation,
+    human_2_singing,
+    human_2_mimicry,
+    human_2_tag_question,
+    human_2_repetition,
+    human_2_not_a_negation
+  )
+
+readr::write_csv(audit_table, audit_csv_path, na = "")
+
+audit_table %>%
+  select(
+    record_id,
+    transcript_id,
+    line,
+    target_negator,
+    target_utterance,
+    llm_bloom,
+    human_1_sheet,
+    human_1_bloom,
+    human_2_sheet,
+    human_2_bloom,
+    llm_comments
+  ) %>%
+  kable(caption = "Compact item-level audit table. See the CSV for full before/after context and all flags.")
+```
+
+# Notes
+
+```{r notes, results='asis'}
+n_rows <- nrow(eval_rows)
+n_single_human <- sum(xor(eval_rows$has_human_1, eval_rows$has_human_2))
+cat(sprintf(
+  paste0(
+    "This run predicts %d rows%s, so kappa values should be treated as ",
+    "descriptive diagnostics rather than stable performance estimates when n ",
+    "is small. %d row%s in this subset have only one human Bloom label; those ",
+    "contribute to LLM-vs-human comparisons where applicable but not to the ",
+    "human-human baseline.\n\n"
+  ),
+  n_rows,
+  if (n_rows < 100) " (a smoke-test-sized subset)" else "",
+  n_single_human,
+  if (n_single_human == 1) "" else "s"
+))
+cat("After rendering this report, rebuild the cross-version viewer with `Rscript scripts/build_coding_viewer.R` so the run appears in the run selector and on the agreement-across-versions chart.\n")
+```

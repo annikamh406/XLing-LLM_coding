@@ -15,6 +15,7 @@ v1/inputs/*
 # Model outputs and diagnostics
 results/
 outputs/
+/coding_viewer.html
 
 # Local environment/secrets
 .env

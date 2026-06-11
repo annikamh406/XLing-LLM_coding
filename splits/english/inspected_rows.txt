@@ -1,0 +1,30 @@
+# Record ids that are development data: their content has been read, mined
+# for prompt examples, or adjudicated, so they are excluded from headline
+# agreement metrics (reported separately as a rule-compliance check).
+# See v3/CHANGES_FROM_V2.md, section "Contamination control".
+#
+# Any row whose content informs a future prompt or policy edit must be
+# appended here. One id per line; lines starting with # are comments.
+#
+# 2026-06-11: the v1/v2 smoke-test chunk (first 20 rows of dev_train), used
+# for the v1 and v2 error analyses and the v2/v3 prompt examples.
+eng_000001
+eng_000002
+eng_000003
+eng_000004
+eng_000005
+eng_000006
+eng_000007
+eng_000008
+eng_000009
+eng_000010
+eng_000011
+eng_000012
+eng_000013
+eng_000014
+eng_000015
+eng_000067
+eng_000068
+eng_000069
+eng_000070
+eng_000071

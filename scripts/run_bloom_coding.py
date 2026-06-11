@@ -22,9 +22,14 @@ from pathlib import Path
 # the script portable after the folder is pushed to its own Git repository and
 # cloned onto Oscar.
 LLM_DIR = Path(__file__).resolve().parents[1]
-DEFAULT_PROMPT = LLM_DIR / "v2" / "bloom_v2_english_prompt.md"
+DEFAULT_PROMPT = LLM_DIR / "v3" / "bloom_v3_english_prompt.md"
 DEFAULT_SPLIT_DIR = LLM_DIR / "splits" / "english"
-DEFAULT_RESULTS_DIR = LLM_DIR / "v2" / "results" / "dev"
+# Development runs write directly into the version's results folder; the
+# split name in every output filename keeps runs distinguishable. The one
+# exception is the final lockbox evaluation, which is routed to a lockbox/
+# subfolder automatically so its outputs stay physically separated from dev
+# outputs, per LLM_validation_plan.md.
+DEFAULT_RESULTS_DIR = LLM_DIR / "v3" / "results"
 DEFAULT_OLLAMA_URL = "http://localhost:11434/api/chat"
 
 # These version strings are saved in raw-response metadata and the terminal
@@ -32,8 +37,8 @@ DEFAULT_OLLAMA_URL = "http://localhost:11434/api/chat"
 # compact run locators; the full prompt path stays in metadata. Defaults track
 # the current policy/prompt version; pass --schema-version/--prompt-version
 # (with matching --prompt and --results-dir) to reproduce an older run.
-DEFAULT_SCHEMA_VERSION = "bloom_v2"
-DEFAULT_PROMPT_VERSION = "p002"
+DEFAULT_SCHEMA_VERSION = "bloom_v3"
+DEFAULT_PROMPT_VERSION = "p003"
 
 # Local copies of the schema constraints. Keeping these in code makes validation
 # cheap and avoids depending on external JSON-schema packages on Oscar.
@@ -302,7 +307,13 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--prompt", type=Path, default=DEFAULT_PROMPT)
     parser.add_argument("--split-dir", type=Path, default=DEFAULT_SPLIT_DIR)
-    parser.add_argument("--results-dir", type=Path, default=DEFAULT_RESULTS_DIR)
+    parser.add_argument(
+        "--results-dir",
+        type=Path,
+        default=None,
+        help="Output directory (default: the current version's results folder, "
+        "or its lockbox/ subfolder for test_lockbox runs).",
+    )
     parser.add_argument("--ollama-url", default=DEFAULT_OLLAMA_URL)
     parser.add_argument(
         "--allow-lockbox",
@@ -361,8 +372,15 @@ def main() -> int:
     model_slug = clean_model_name(args.model)
     limit_suffix = f"_limit-{args.limit}" if args.limit is not None else ""
     output_prefix = f"{args.split}_{model_slug}_{args.schema_version}_{args.prompt_version}{limit_suffix}"
-    prediction_path = args.results_dir / f"{output_prefix}_predictions.jsonl"
-    raw_path = args.results_dir / f"{output_prefix}_raw_responses.jsonl"
+    results_dir = args.results_dir
+    if results_dir is None:
+        results_dir = (
+            DEFAULT_RESULTS_DIR / "lockbox"
+            if args.split == "test_lockbox"
+            else DEFAULT_RESULTS_DIR
+        )
+    prediction_path = results_dir / f"{output_prefix}_predictions.jsonl"
+    raw_path = results_dir / f"{output_prefix}_raw_responses.jsonl"
 
     # Avoid clobbering previous runs unless the user explicitly requests it.
     if not args.overwrite and (prediction_path.exists() or raw_path.exists()):
@@ -427,7 +445,7 @@ def main() -> int:
             batch_predictions = []
 
         if last_error is not None:
-            failure_path = args.results_dir / f"{output_prefix}_failed_batch-{batch_number}.json"
+            failure_path = results_dir / f"{output_prefix}_failed_batch-{batch_number}.json"
             failure_path.parent.mkdir(parents=True, exist_ok=True)
             failure_path.write_text(
                 json.dumps(
