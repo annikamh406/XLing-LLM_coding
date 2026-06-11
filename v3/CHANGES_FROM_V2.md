@@ -85,6 +85,28 @@ auto-routed to `v3/results/lockbox/`. v1/v2 runs remain reproducible via
 `--prompt/--schema-version/--prompt-version/--results-dir`
 (and `--split-dir v1/inputs/splits/english` for exact v1 payloads).
 
+**Structured outputs (added 2026-06-11, before the first v3 run).** The first
+v3 attempt (gemma4:31b, `--limit 100`) aborted on batch 5 after the model
+twice emitted a prediction with an invented key (`squeals`) that survived
+`format: "json"` — Ollama's JSON mode only guarantees syntactically valid
+JSON, not conformance to our contract. The runner now sends a full JSON
+schema as the request's `format` field (Ollama structured outputs, >= 0.5.0),
+so the server grammar-constrains decoding: the model cannot emit extra or
+missing keys, out-of-enum labels or flag values, a wrong `schema_version`, or
+a `record_id` outside the current batch (the schema is built per batch with
+that batch's IDs as the `record_id` enum). Two properties the canonical
+`bloom_v3_output.schema.json` pins are preserved because constrained decoding
+emits object properties in schema order: `comments` precedes `bloom_label`
+(reason precedes label at decoding time) and flags keep their policy order.
+`validate_response` and the retry loop are unchanged as a backstop for what a
+grammar cannot express (each expected `record_id` exactly once, no
+duplicates, and the 300-character comment cap, which is deliberately left out
+of the runtime schema rather than trusting grammar support for `maxLength`).
+This changes how the existing output contract is *enforced*, not the
+contract, prompt, or policy themselves; it applies equally to reproductions
+of v1/v2 runs, whose original enforcement was `format: "json"` plus the same
+validator.
+
 ## 5. Contamination control (added 2026-06-11)
 
 Recognized after the v3 draft: the v2/v3 few-shot examples were lifted

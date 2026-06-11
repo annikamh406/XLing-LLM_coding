@@ -50,14 +50,17 @@ ALLOWED_LABELS = {
     "Uncoded",
     "Excluded",
 }
-REQUIRED_FLAGS = {
+# Flag order matches bloom_vN_output.schema.json; constrained decoding emits
+# properties in this order, so it should not be alphabetized.
+FLAG_ORDER = [
     "foreign_language_negation",
     "singing",
     "mimicry",
     "tag_question",
     "repetition",
     "not_a_negation",
-}
+]
+REQUIRED_FLAGS = set(FLAG_ORDER)
 ALLOWED_FLAG_VALUES = {"Yes", "No"}
 
 # Only these fields are sent to the LLM. The split JSONL records also include
@@ -214,12 +217,63 @@ def validate_response(
     return cleaned
 
 
+def build_output_schema(expected_ids: list[str], schema_version: str) -> dict:
+    """Build a per-batch JSON schema for Ollama structured outputs.
+
+    Sent as the request's `format` field (Ollama >= 0.5), this makes the server
+    constrain decoding with a grammar derived from the schema: the model cannot
+    emit extra keys, misspelled enum values, or record IDs outside this batch.
+    validate_response still runs afterwards because a grammar cannot enforce
+    that every expected record_id appears exactly once, nor the comment-length
+    cap (maxLength is omitted here rather than trusting grammar support for it).
+
+    Property order matters: constrained decoding emits properties in the order
+    listed below, so it must match bloom_vN_output.schema.json — in particular
+    comments before bloom_label, so the stated reason precedes the label at
+    decoding time.
+    """
+    flag_value = {"type": "string", "enum": sorted(ALLOWED_FLAG_VALUES)}
+    return {
+        "type": "object",
+        "properties": {
+            "schema_version": {"type": "string", "enum": [schema_version]},
+            "predictions": {
+                "type": "array",
+                "minItems": len(expected_ids),
+                "maxItems": len(expected_ids),
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "record_id": {"type": "string", "enum": expected_ids},
+                        "comments": {"type": "string"},
+                        "bloom_label": {
+                            "type": "string",
+                            "enum": sorted(ALLOWED_LABELS),
+                        },
+                        "flags": {
+                            "type": "object",
+                            "properties": {flag: flag_value for flag in FLAG_ORDER},
+                            "required": FLAG_ORDER,
+                            "additionalProperties": False,
+                        },
+                    },
+                    "required": ["record_id", "comments", "bloom_label", "flags"],
+                    "additionalProperties": False,
+                },
+            },
+        },
+        "required": ["schema_version", "predictions"],
+        "additionalProperties": False,
+    }
+
+
 def ollama_chat(
     *,
     url: str,
     model: str,
     prompt: str,
     records: list[dict],
+    output_schema: dict,
     temperature: float,
     timeout: int,
     validation_feedback: str | None = None,
@@ -237,8 +291,9 @@ def ollama_chat(
             "Return the full corrected JSON object for the same batch. "
             f"Validation error: {validation_feedback}"
         )
-    # format="json" asks Ollama to constrain output toward JSON. We still run
-    # our own validator below because this does not guarantee semantic validity.
+    # Passing a JSON schema as `format` makes Ollama grammar-constrain decoding
+    # to the schema (structured outputs). validate_response below stays as a
+    # backstop for the properties a grammar cannot express.
     request_payload = {
         "model": model,
         "messages": [
@@ -246,7 +301,7 @@ def ollama_chat(
             {"role": "user", "content": user_content},
         ],
         "stream": False,
-        "format": "json",
+        "format": output_schema,
         "options": {"temperature": temperature},
     }
     # Use Python's standard-library HTTP client so the script runs on Oscar
@@ -402,6 +457,7 @@ def main() -> int:
         batch_number = batch_index // args.batch_size + 1
         batch_records = [prompt_record(record) for record in batch]
         expected_ids = [record["record_id"] for record in batch_records]
+        output_schema = build_output_schema(expected_ids, args.schema_version)
         print(
             f"Coding batch {batch_number}: {expected_ids[0]}..{expected_ids[-1]}",
             file=sys.stderr,
@@ -426,6 +482,7 @@ def main() -> int:
                 model=args.model,
                 prompt=prompt,
                 records=batch_records,
+                output_schema=output_schema,
                 temperature=args.temperature,
                 timeout=args.timeout,
                 validation_feedback=validation_feedback,
