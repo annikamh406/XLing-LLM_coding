@@ -1,0 +1,132 @@
+{
+  "language": "German",
+  "seed": 20260527,
+  "n_iterations": 20000,
+  "split_score": 0.2776674221860233,
+  "split_targets": {
+    "dev_train": 0.2,
+    "dev_check_1": 0.25,
+    "dev_check_2": 0.25,
+    "test_lockbox": 0.3
+  },
+  "coder_pair": [
+    "PZ",
+    "MP"
+  ],
+  "age_bins_months": [
+    15.0,
+    17.5,
+    20.0,
+    22.5,
+    25.0,
+    27.5,
+    30.0
+  ],
+  "n_input_rows": 14468,
+  "n_coded_by_at_least_one": 7653,
+  "n_uncoded_by_neither": 6815,
+  "n_transcripts_with_age": 338,
+  "n_transcripts_total": 201,
+  "splits": {
+    "dev_train": {
+      "n_rows": 1502,
+      "n_transcripts": 37,
+      "mean_age_months": 25.684,
+      "min_age_months": 16.0,
+      "max_age_months": 30.0,
+      "both_coders": 1091,
+      "one_coder": 411,
+      "neither": 0,
+      "n_overlap_bloom": 1091,
+      "bloom_exact_agreement": 0.6315,
+      "bloom_cohen_kappa": 0.4621,
+      "coder_counts": {
+        "MP": 1214,
+        "PZ": 1379
+      },
+      "overlap_counts": {
+        "PZ + MP": 1091
+      }
+    },
+    "dev_check_1": {
+      "n_rows": 1976,
+      "n_transcripts": 54,
+      "mean_age_months": 24.8,
+      "min_age_months": 16.0,
+      "max_age_months": 29.986,
+      "both_coders": 1515,
+      "one_coder": 461,
+      "neither": 0,
+      "n_overlap_bloom": 1515,
+      "bloom_exact_agreement": 0.6178,
+      "bloom_cohen_kappa": 0.4402,
+      "coder_counts": {
+        "MP": 1872,
+        "PZ": 1619
+      },
+      "overlap_counts": {
+        "PZ + MP": 1515
+      }
+    },
+    "dev_check_2": {
+      "n_rows": 1908,
+      "n_transcripts": 54,
+      "mean_age_months": 25.172,
+      "min_age_months": 15.329,
+      "max_age_months": 29.591,
+      "both_coders": 1463,
+      "one_coder": 445,
+      "neither": 0,
+      "n_overlap_bloom": 1463,
+      "bloom_exact_agreement": 0.6172,
+      "bloom_cohen_kappa": 0.4469,
+      "coder_counts": {
+        "MP": 1657,
+        "PZ": 1714
+      },
+      "overlap_counts": {
+        "PZ + MP": 1463
+      }
+    },
+    "test_lockbox": {
+      "n_rows": 2267,
+      "n_transcripts": 56,
+      "mean_age_months": 25.88,
+      "min_age_months": 16.099,
+      "max_age_months": 29.821,
+      "both_coders": 1632,
+      "one_coder": 635,
+      "neither": 0,
+      "n_overlap_bloom": 1632,
+      "bloom_exact_agreement": 0.6495,
+      "bloom_cohen_kappa": 0.4702,
+      "coder_counts": {
+        "MP": 1836,
+        "PZ": 2063
+      },
+      "overlap_counts": {
+        "PZ + MP": 1632
+      }
+    },
+    "uncoded_by_neither": {
+      "n_rows": 6815,
+      "n_transcripts": 200,
+      "mean_age_months": 25.719,
+      "min_age_months": 15.953,
+      "max_age_months": 30.0,
+      "both_coders": 0,
+      "one_coder": 0,
+      "neither": 6815,
+      "n_overlap_bloom": 0,
+      "bloom_exact_agreement": null,
+      "bloom_cohen_kappa": null,
+      "coder_counts": {},
+      "overlap_counts": {}
+    }
+  },
+  "outputs": {
+    "split_dir": "Data/XLing-LLM_coding/splits/german",
+    "diagnostic_svg": "Data/XLing-LLM_coding/splits/german/diagnostics/german_split_diagnostics.svg",
+    "transcript_manifest": "Data/XLing-LLM_coding/splits/german/transcript_split_manifest.csv"
+  }
+}

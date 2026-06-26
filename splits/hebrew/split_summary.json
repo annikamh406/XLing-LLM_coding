@@ -1,0 +1,140 @@
+{
+  "language": "Hebrew",
+  "seed": 20260527,
+  "n_iterations": 20000,
+  "split_score": 0.14900305330827568,
+  "split_targets": {
+    "dev_train": 0.2,
+    "dev_check_1": 0.25,
+    "dev_check_2": 0.25,
+    "test_lockbox": 0.3
+  },
+  "coder_pair": [
+    "LL",
+    "YS"
+  ],
+  "age_bins_months": [
+    13.0,
+    16.833333333333332,
+    20.666666666666668,
+    24.5,
+    28.333333333333336,
+    32.16666666666667,
+    36.0
+  ],
+  "n_input_rows": 4786,
+  "n_coded_by_at_least_one": 4786,
+  "n_uncoded_by_neither": 0,
+  "n_transcripts_with_age": 295,
+  "n_transcripts_total": 280,
+  "splits": {
+    "dev_train": {
+      "n_rows": 963,
+      "n_transcripts": 52,
+      "mean_age_months": 24.65,
+      "min_age_months": 16.263,
+      "max_age_months": 35.821,
+      "both_coders": 795,
+      "one_coder": 168,
+      "neither": 0,
+      "n_overlap_bloom": 795,
+      "bloom_exact_agreement": 0.7748,
+      "bloom_cohen_kappa": 0.6834,
+      "coder_counts": {
+        "LL": 940,
+        "Ronnie": 23,
+        "YS": 795
+      },
+      "overlap_counts": {
+        "LL + YS": 772,
+        "Ronnie + YS": 23
+      }
+    },
+    "dev_check_1": {
+      "n_rows": 1199,
+      "n_transcripts": 73,
+      "mean_age_months": 23.993,
+      "min_age_months": 13.624,
+      "max_age_months": 29.821,
+      "both_coders": 966,
+      "one_coder": 233,
+      "neither": 0,
+      "n_overlap_bloom": 966,
+      "bloom_exact_agreement": 0.766,
+      "bloom_cohen_kappa": 0.6621,
+      "coder_counts": {
+        "LL": 1135,
+        "Ronnie": 64,
+        "YS": 966
+      },
+      "overlap_counts": {
+        "LL + YS": 902,
+        "Ronnie + YS": 64
+      }
+    },
+    "dev_check_2": {
+      "n_rows": 1195,
+      "n_transcripts": 77,
+      "mean_age_months": 24.888,
+      "min_age_months": 13.066,
+      "max_age_months": 30.0,
+      "both_coders": 960,
+      "one_coder": 235,
+      "neither": 0,
+      "n_overlap_bloom": 960,
+      "bloom_exact_agreement": 0.7917,
+      "bloom_cohen_kappa": 0.6924,
+      "coder_counts": {
+        "LL": 1168,
+        "Ronnie": 27,
+        "YS": 960
+      },
+      "overlap_counts": {
+        "LL + YS": 933,
+        "Ronnie + YS": 27
+      }
+    },
+    "test_lockbox": {
+      "n_rows": 1429,
+      "n_transcripts": 78,
+      "mean_age_months": 24.363,
+      "min_age_months": 13.099,
+      "max_age_months": 29.723,
+      "both_coders": 1157,
+      "one_coder": 272,
+      "neither": 0,
+      "n_overlap_bloom": 1157,
+      "bloom_exact_agreement": 0.7753,
+      "bloom_cohen_kappa": 0.6786,
+      "coder_counts": {
+        "LL": 1382,
+        "Ronnie": 47,
+        "YS": 1157
+      },
+      "overlap_counts": {
+        "LL + YS": 1110,
+        "Ronnie + YS": 47
+      }
+    },
+    "uncoded_by_neither": {
+      "n_rows": 0,
+      "n_transcripts": 0,
+      "mean_age_months": null,
+      "min_age_months": null,
+      "max_age_months": null,
+      "both_coders": 0,
+      "one_coder": 0,
+      "neither": 0,
+      "n_overlap_bloom": 0,
+      "bloom_exact_agreement": null,
+      "bloom_cohen_kappa": null,
+      "coder_counts": {},
+      "overlap_counts": {}
+    }
+  },
+  "outputs": {
+    "split_dir": "Data/XLing-LLM_coding/splits/hebrew",
+    "diagnostic_svg": "Data/XLing-LLM_coding/splits/hebrew/diagnostics/hebrew_split_diagnostics.svg",
+    "transcript_manifest": "Data/XLing-LLM_coding/splits/hebrew/transcript_split_manifest.csv"
+  }
+}

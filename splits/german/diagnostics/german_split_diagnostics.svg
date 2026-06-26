@@ -1,0 +1,327 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1325" viewBox="0 0 1280 1325">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="40" y="42" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#111827" text-anchor="start">German LLM Split Diagnostics</text>
+<text x="40" y="68" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#4b5563" text-anchor="start">Transcript-level pseudorandom split, seed 20260527; age in months; context split file rows shown.</text>
+<line x1="40" y1="72" x2="1240" y2="72" stroke="#e5e7eb"/>
+<text x="40" y="95" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">dev_train</text>
+<text x="40" y="119" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">1502 rows, 37 transcripts</text>
+<text x="40" y="140" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">age mean 25.7; range 16.0-30.0</text>
+<text x="40" y="161" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Bloom IRR: agreement 0.631; kappa 0.462; n=1091</text>
+<rect x="260" y="89" width="188.8548601864181" height="22" fill="#2563eb"/>
+<rect x="448.85486018641814" y="89" width="71.14513981358189" height="22" fill="#14b8a6"/>
+<rect x="260" y="89" width="260" height="22" fill="none" stroke="#111827" stroke-width="0.7"/>
+<text x="260" y="132" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">both 1091  |  one 411  |  neither 0</text>
+<text x="570" y="75" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">child age distribution</text>
+<rect x="572.0" y="139.1919191919192" width="37.666666666666664" height="3.8080808080808084" fill="#f97316"/>
+<rect x="613.6666666666666" y="134.7979797979798" width="37.666666666666664" height="8.202020202020202" fill="#f97316"/>
+<rect x="655.3333333333334" y="130.7946127946128" width="37.666666666666664" height="12.205387205387206" fill="#f97316"/>
+<rect x="697.0" y="130.30639730639732" width="37.666666666666664" height="12.693602693602694" fill="#f97316"/>
+<rect x="738.6666666666666" y="85.0" width="37.666666666666664" height="58.0" fill="#f97316"/>
+<rect x="780.3333333333333" y="91.24915824915826" width="37.666666666666664" height="51.75084175084175" fill="#f97316"/>
+<line x1="570" y1="143" x2="820" y2="143" stroke="#111827" stroke-width="0.7"/>
+<text x="570" y="159" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="start">15</text>
+<text x="820" y="159" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">30</text>
+<text x="870" y="75" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">coder line counts</text>
+<rect x="870" y="80" width="150.0" height="11" fill="#1d4ed8"/>
+<text x="1028" y="90" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">PZ: 1379</text>
+<rect x="870" y="97" width="132.05221174764324" height="11" fill="#0891b2"/>
+<text x="1028" y="107" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">MP: 1214</text>
+<text x="260" y="172" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">overlap: PZ + MP: 1091</text>
+<line x1="40" y1="242" x2="1240" y2="242" stroke="#e5e7eb"/>
+<text x="40" y="265" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">dev_check_1</text>
+<text x="40" y="289" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">1976 rows, 54 transcripts</text>
+<text x="40" y="310" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">age mean 24.8; range 16.0-30.0</text>
+<text x="40" y="331" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Bloom IRR: agreement 0.618; kappa 0.440; n=1515</text>
+<rect x="260" y="259" width="199.3421052631579" height="22" fill="#2563eb"/>
+<rect x="459.3421052631579" y="259" width="60.6578947368421" height="22" fill="#14b8a6"/>
+<rect x="260" y="259" width="260" height="22" fill="none" stroke="#111827" stroke-width="0.7"/>
+<text x="260" y="302" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">both 1515  |  one 461  |  neither 0</text>
+<text x="570" y="245" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">child age distribution</text>
+<rect x="572.0" y="301.23661971830984" width="37.666666666666664" height="11.763380281690141" fill="#f97316"/>
+<rect x="613.6666666666666" y="308.0169014084507" width="37.666666666666664" height="4.983098591549296" fill="#f97316"/>
+<rect x="655.3333333333334" y="290.20845070422536" width="37.666666666666664" height="22.791549295774647" fill="#f97316"/>
+<rect x="697.0" y="293.6394366197183" width="37.666666666666664" height="19.36056338028169" fill="#f97316"/>
+<rect x="738.6666666666666" y="255.0" width="37.666666666666664" height="58.0" fill="#f97316"/>
+<rect x="780.3333333333333" y="268.4788732394366" width="37.666666666666664" height="44.52112676056338" fill="#f97316"/>
+<line x1="570" y1="313" x2="820" y2="313" stroke="#111827" stroke-width="0.7"/>
+<text x="570" y="329" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="start">15</text>
+<text x="820" y="329" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">30</text>
+<text x="870" y="245" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">coder line counts</text>
+<rect x="870" y="250" width="150.0" height="11" fill="#1d4ed8"/>
+<text x="1028" y="260" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">MP: 1872</text>
+<rect x="870" y="267" width="129.72756410256412" height="11" fill="#0891b2"/>
+<text x="1028" y="277" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">PZ: 1619</text>
+<text x="260" y="342" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">overlap: PZ + MP: 1515</text>
+<line x1="40" y1="412" x2="1240" y2="412" stroke="#e5e7eb"/>
+<text x="40" y="435" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">dev_check_2</text>
+<text x="40" y="459" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">1908 rows, 54 transcripts</text>
+<text x="40" y="480" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">age mean 25.2; range 15.3-29.6</text>
+<text x="40" y="501" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Bloom IRR: agreement 0.617; kappa 0.447; n=1463</text>
+<rect x="260" y="429" width="199.36058700209642" height="22" fill="#2563eb"/>
+<rect x="459.3605870020964" y="429" width="60.63941299790357" height="22" fill="#14b8a6"/>
+<rect x="260" y="429" width="260" height="22" fill="none" stroke="#111827" stroke-width="0.7"/>
+<text x="260" y="472" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">both 1463  |  one 445  |  neither 0</text>
+<text x="570" y="415" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">child age distribution</text>
+<rect x="572.0" y="462.35593220338984" width="37.666666666666664" height="20.64406779661017" fill="#f97316"/>
+<rect x="613.6666666666666" y="477.10169491525426" width="37.666666666666664" height="5.898305084745763" fill="#f97316"/>
+<rect x="655.3333333333334" y="467.89676425269647" width="37.666666666666664" height="15.103235747303545" fill="#f97316"/>
+<rect x="697.0" y="466.020030816641" width="37.666666666666664" height="16.979969183359014" fill="#f97316"/>
+<rect x="738.6666666666666" y="429.11093990755006" width="37.666666666666664" height="53.889060092449924" fill="#f97316"/>
+<rect x="780.3333333333333" y="425.0" width="37.666666666666664" height="58.0" fill="#f97316"/>
+<line x1="570" y1="483" x2="820" y2="483" stroke="#111827" stroke-width="0.7"/>
+<text x="570" y="499" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="start">15</text>
+<text x="820" y="499" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">30</text>
+<text x="870" y="415" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">coder line counts</text>
+<rect x="870" y="420" width="150.0" height="11" fill="#1d4ed8"/>
+<text x="1028" y="430" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">PZ: 1714</text>
+<rect x="870" y="437" width="145.01166861143525" height="11" fill="#0891b2"/>
+<text x="1028" y="447" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">MP: 1657</text>
+<text x="260" y="512" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">overlap: PZ + MP: 1463</text>
+<line x1="40" y1="582" x2="1240" y2="582" stroke="#e5e7eb"/>
+<text x="40" y="605" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">test_lockbox</text>
+<text x="40" y="629" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">2267 rows, 56 transcripts</text>
+<text x="40" y="650" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">age mean 25.9; range 16.1-29.8</text>
+<text x="40" y="671" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Bloom IRR: agreement 0.649; kappa 0.470; n=1632</text>
+<rect x="260" y="599" width="187.17247463608294" height="22" fill="#2563eb"/>
+<rect x="447.17247463608294" y="599" width="72.82752536391708" height="22" fill="#14b8a6"/>
+<rect x="260" y="599" width="260" height="22" fill="none" stroke="#111827" stroke-width="0.7"/>
+<text x="260" y="642" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">both 1632  |  one 635  |  neither 0</text>
+<text x="570" y="585" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">child age distribution</text>
+<rect x="572.0" y="651.5687426556992" width="37.666666666666664" height="1.4312573443008225" fill="#f97316"/>
+<rect x="613.6666666666666" y="650.0011750881316" width="37.666666666666664" height="2.99882491186839" fill="#f97316"/>
+<rect x="655.3333333333334" y="639.0282021151586" width="37.666666666666664" height="13.971797884841363" fill="#f97316"/>
+<rect x="697.0" y="631.5311398354877" width="37.666666666666664" height="21.46886016451234" fill="#f97316"/>
+<rect x="738.6666666666666" y="595.0" width="37.666666666666664" height="58.0" fill="#f97316"/>
+<rect x="780.3333333333333" y="596.3631022326674" width="37.666666666666664" height="56.63689776733255" fill="#f97316"/>
+<line x1="570" y1="653" x2="820" y2="653" stroke="#111827" stroke-width="0.7"/>
+<text x="570" y="669" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="start">15</text>
+<text x="820" y="669" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">30</text>
+<text x="870" y="585" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">coder line counts</text>
+<rect x="870" y="590" width="150.0" height="11" fill="#1d4ed8"/>
+<text x="1028" y="600" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">PZ: 2063</text>
+<rect x="870" y="607" width="133.49491032476976" height="11" fill="#0891b2"/>
+<text x="1028" y="617" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">MP: 1836</text>
+<text x="260" y="682" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">overlap: PZ + MP: 1632</text>
+<line x1="40" y1="752" x2="1240" y2="752" stroke="#e5e7eb"/>
+<text x="40" y="775" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">uncoded_by_neither</text>
+<text x="40" y="799" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">6815 rows, 200 transcripts</text>
+<text x="40" y="820" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">age mean 25.7; range 16.0-30.0</text>
+<text x="40" y="841" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Bloom IRR: not available</text>
+<rect x="260.0" y="769" width="260.0" height="22" fill="#9ca3af"/>
+<rect x="260" y="769" width="260" height="22" fill="none" stroke="#111827" stroke-width="0.7"/>
+<text x="260" y="812" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">both 0  |  one 0  |  neither 6815</text>
+<text x="570" y="755" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">child age distribution</text>
+<rect x="572.0" y="820.348121321865" width="37.666666666666664" height="2.651878678134903" fill="#f97316"/>
+<rect x="613.6666666666666" y="822.973743775464" width="37.666666666666664" height="0.026256224535989137" fill="#f97316"/>
+<rect x="655.3333333333334" y="805.6708918062471" width="37.666666666666664" height="17.32910819375283" fill="#f97316"/>
+<rect x="697.0" y="779.703485740154" width="37.666666666666664" height="43.296514259846084" fill="#f97316"/>
+<rect x="738.6666666666666" y="765.3675871435039" width="37.666666666666664" height="57.63241285649615" fill="#f97316"/>
+<rect x="780.3333333333333" y="765.0" width="37.666666666666664" height="58.0" fill="#f97316"/>
+<line x1="570" y1="823" x2="820" y2="823" stroke="#111827" stroke-width="0.7"/>
+<text x="570" y="839" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="start">15</text>
+<text x="820" y="839" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">30</text>
+<text x="870" y="755" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">coder line counts</text>
+<text x="260" y="852" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">overlap: No overlapping coder pairs</text>
+<line x1="40" y1="959" x2="1240" y2="959" stroke="#e5e7eb"/>
+<text x="40" y="985" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827" text-anchor="start">Transcript-Level Bloom IRR</text>
+<text x="40" y="1007" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Each dot is one transcript with overlapping PZ/MP Bloom codes; y-axis is exact agreement; larger dots have more overlap rows.</text>
+<line x1="70" y1="1215" x2="1210" y2="1215" stroke="#e5e7eb" stroke-width="0.8"/>
+<text x="60" y="1219" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">0.00</text>
+<line x1="70" y1="1167.5" x2="1210" y2="1167.5" stroke="#e5e7eb" stroke-width="0.8"/>
+<text x="60" y="1171.5" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">0.25</text>
+<line x1="70" y1="1120.0" x2="1210" y2="1120.0" stroke="#e5e7eb" stroke-width="0.8"/>
+<text x="60" y="1124.0" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">0.50</text>
+<line x1="70" y1="1072.5" x2="1210" y2="1072.5" stroke="#e5e7eb" stroke-width="0.8"/>
+<text x="60" y="1076.5" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">0.75</text>
+<line x1="70" y1="1025.0" x2="1210" y2="1025.0" stroke="#e5e7eb" stroke-width="0.8"/>
+<text x="60" y="1029.0" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">1.00</text>
+<line x1="70" y1="1025" x2="70" y2="1215" stroke="#111827" stroke-width="0.8"/>
+<line x1="70" y1="1215" x2="1210" y2="1215" stroke="#111827" stroke-width="0.8"/>
+<text x="212.5" y="1239" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="middle">dev_train</text>
+<line x1="70.0" y1="1025" x2="70.0" y2="1215" stroke="#f3f4f6" stroke-width="0.8"/>
+<text x="497.5" y="1239" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="middle">dev_check_1</text>
+<line x1="355.0" y1="1025" x2="355.0" y2="1215" stroke="#f3f4f6" stroke-width="0.8"/>
+<text x="782.5" y="1239" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="middle">dev_check_2</text>
+<line x1="640.0" y1="1025" x2="640.0" y2="1215" stroke="#f3f4f6" stroke-width="0.8"/>
+<text x="1067.5" y="1239" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="middle">test_lockbox</text>
+<line x1="925.0" y1="1025" x2="925.0" y2="1215" stroke="#f3f4f6" stroke-width="0.8"/>
+<circle cx="179.81" cy="1086.86" r="6.05" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /TD-Rahel_020224.cha | agreement 0.674 | n=86</title></circle>
+<circle cx="260.32" cy="1025.00" r="2.92" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /TD-Sino_020112.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="139.27" cy="1120.00" r="2.79" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /TD-Soeren_020400.cha | agreement 0.500 | n=2</title></circle>
+<circle cx="283.79" cy="1025.00" r="2.92" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /German-Caroline_010829.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="134.03" cy="1049.78" r="4.19" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /German-Caroline_020524.cha | agreement 0.870 | n=23</title></circle>
+<circle cx="130.73" cy="1060.19" r="4.36" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /German-Caroline_020322.cha | agreement 0.815 | n=27</title></circle>
+<circle cx="203.67" cy="1088.33" r="4.59" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /TD-Rahel_010623.cha | agreement 0.667 | n=33</title></circle>
+<circle cx="250.62" cy="1187.86" r="3.75" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /TD-Soeren_010400.cha | agreement 0.143 | n=14</title></circle>
+<circle cx="263.81" cy="1097.77" r="5.05" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /Wagner-Andreas_020100(3).cha | agreement 0.617 | n=47</title></circle>
+<circle cx="234.32" cy="1091.50" r="4.06" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /German-Caroline_010906.cha | agreement 0.650 | n=20</title></circle>
+<circle cx="293.30" cy="1080.88" r="3.91" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /TD-Falko_010800.cha | agreement 0.706 | n=17</title></circle>
+<circle cx="144.70" cy="1073.86" r="4.66" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /TD-Isabel_020111.cha | agreement 0.743 | n=35</title></circle>
+<circle cx="172.44" cy="1052.14" r="4.10" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /German-Caroline_010914.cha | agreement 0.857 | n=21</title></circle>
+<circle cx="121.81" cy="1165.97" r="5.47" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /Miller-Kerstin_020414.cha | agreement 0.258 | n=62</title></circle>
+<circle cx="287.28" cy="1112.69" r="5.55" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /TD-Emely_020403.cha | agreement 0.538 | n=65</title></circle>
+<circle cx="214.92" cy="1161.67" r="5.34" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /TD-Anna_020006.cha | agreement 0.281 | n=57</title></circle>
+<circle cx="284.76" cy="1025.00" r="2.79" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /German-Caroline_020600.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="193.97" cy="1025.00" r="3.03" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /TD-Marlou_010409.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="271.18" cy="1074.26" r="4.36" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /TD-Isabel_010801.cha | agreement 0.741 | n=27</title></circle>
+<circle cx="237.43" cy="1025.00" r="2.79" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /Miller-Simone_011027.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="224.82" cy="1167.50" r="3.37" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /German-Caroline_020428.cha | agreement 0.250 | n=8</title></circle>
+<circle cx="200.96" cy="1180.45" r="3.58" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /German-Caroline_020005.cha | agreement 0.182 | n=11</title></circle>
+<circle cx="230.64" cy="1079.29" r="4.40" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /TD-Ems_020100.cha | agreement 0.714 | n=28</title></circle>
+<circle cx="292.91" cy="1112.30" r="4.73" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /TD-Lisa_010802.cha | agreement 0.541 | n=37</title></circle>
+<circle cx="247.71" cy="1074.69" r="5.55" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /TD-Neele_020504.cha | agreement 0.738 | n=65</title></circle>
+<circle cx="119.87" cy="1095.18" r="6.58" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /TD-Falko_020304.cha | agreement 0.631 | n=111</title></circle>
+<circle cx="262.65" cy="1025.00" r="3.22" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /TD-Isabel_010420.cha | agreement 1.000 | n=6</title></circle>
+<circle cx="192.62" cy="1151.67" r="2.92" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /German-Caroline_010400.cha | agreement 0.333 | n=3</title></circle>
+<circle cx="192.42" cy="1025.00" r="3.30" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /TD-Leo_020111.cha | agreement 1.000 | n=7</title></circle>
+<circle cx="135.00" cy="1077.78" r="7.49" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /TD-Sina_020510.cha | agreement 0.722 | n=162</title></circle>
+<circle cx="281.46" cy="1081.37" r="6.16" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /TD-Anna_020112.cha | agreement 0.703 | n=91</title></circle>
+<circle cx="131.90" cy="1088.33" r="3.64" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | /TD-Falko_020411.cha | agreement 0.667 | n=12</title></circle>
+<circle cx="571.12" cy="1076.15" r="5.20" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /TD-Ina_020105.cha | agreement 0.731 | n=52</title></circle>
+<circle cx="493.72" cy="1088.33" r="4.69" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /TD-Sina_010803.cha | agreement 0.667 | n=36</title></circle>
+<circle cx="435.71" cy="1074.26" r="5.25" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /Miller-Kerstin_011120.cha | agreement 0.741 | n=54</title></circle>
+<circle cx="405.45" cy="1045.36" r="4.40" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /German-Caroline_020521.cha | agreement 0.893 | n=28</title></circle>
+<circle cx="431.83" cy="1072.50" r="3.03" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /TD-Leon_010405.cha | agreement 0.750 | n=4</title></circle>
+<circle cx="535.04" cy="1101.00" r="3.13" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /German-Caroline_011110.cha | agreement 0.600 | n=5</title></circle>
+<circle cx="425.04" cy="1120.00" r="3.22" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /TD-Ina_010400.cha | agreement 0.500 | n=6</title></circle>
+<circle cx="507.49" cy="1088.33" r="2.92" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /TD-Martin_010412.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="575.19" cy="1025.00" r="3.13" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /German-Caroline_020520.cha | agreement 1.000 | n=5</title></circle>
+<circle cx="421.94" cy="1025.00" r="2.62" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /German-Caroline_020318.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="510.79" cy="1056.67" r="3.22" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /German-Caroline_020324.cha | agreement 0.833 | n=6</title></circle>
+<circle cx="569.37" cy="1099.35" r="4.19" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /Wagner-Andreas_020100(5).cha | agreement 0.609 | n=23</title></circle>
+<circle cx="477.03" cy="1072.50" r="3.03" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /TD-Sino_010400.cha | agreement 0.750 | n=4</title></circle>
+<circle cx="475.48" cy="1025.00" r="2.62" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /Miller-Kerstin_010822.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="571.90" cy="1077.41" r="6.07" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /TD-Jores_020113.cha | agreement 0.724 | n=87</title></circle>
+<circle cx="482.66" cy="1025.00" r="3.03" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /German-Caroline_020309.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="569.76" cy="1101.00" r="4.06" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /TD-Jores_010412.cha | agreement 0.600 | n=20</title></circle>
+<circle cx="561.62" cy="1052.14" r="3.30" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /TD-Rahel_011015.cha | agreement 0.857 | n=7</title></circle>
+<circle cx="514.47" cy="1111.36" r="5.84" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /German-Caroline_020530.cha | agreement 0.545 | n=77</title></circle>
+<circle cx="592.85" cy="1088.33" r="5.50" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /TD-Soeren_020214.cha | agreement 0.667 | n=63</title></circle>
+<circle cx="449.29" cy="1077.89" r="6.29" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /TD-Leo_010800.cha | agreement 0.722 | n=97</title></circle>
+<circle cx="499.34" cy="1088.33" r="3.81" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /German-Caroline_010904.cha | agreement 0.667 | n=15</title></circle>
+<circle cx="525.53" cy="1025.00" r="2.79" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /Miller-Simone_020023.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="582.57" cy="1025.00" r="2.62" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /TD-Finn_020508.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="505.74" cy="1068.58" r="6.54" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /Wagner-Nicole_nicole.cha | agreement 0.771 | n=109</title></circle>
+<circle cx="423.88" cy="1025.00" r="2.92" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /German-Caroline_020209.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="574.61" cy="1144.43" r="4.66" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /Wagner-Andreas_020100(2).cha | agreement 0.371 | n=35</title></circle>
+<circle cx="471.60" cy="1074.57" r="5.02" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /TD-Soeren_010623.cha | agreement 0.739 | n=46</title></circle>
+<circle cx="412.82" cy="1152.64" r="8.00" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /TD-Soeren_020509.cha | agreement 0.328 | n=195</title></circle>
+<circle cx="412.63" cy="1088.33" r="4.36" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /German-Caroline_020416.cha | agreement 0.667 | n=27</title></circle>
+<circle cx="450.26" cy="1025.00" r="3.03" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /German-Caroline_020204.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="564.52" cy="1139.00" r="3.13" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /Miller-Simone_020207.cha | agreement 0.400 | n=5</title></circle>
+<circle cx="562.97" cy="1073.91" r="6.37" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /TD-Finn_020114.cha | agreement 0.743 | n=101</title></circle>
+<circle cx="562.39" cy="1125.94" r="4.55" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /German-Caroline_020206.cha | agreement 0.469 | n=32</title></circle>
+<circle cx="532.71" cy="1079.29" r="3.30" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /German-Caroline_011018.cha | agreement 0.714 | n=7</title></circle>
+<circle cx="474.32" cy="1040.83" r="4.69" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /TD-Anna_010515.cha | agreement 0.917 | n=36</title></circle>
+<circle cx="431.64" cy="1072.50" r="3.03" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /TD-Finn_010405.cha | agreement 0.750 | n=4</title></circle>
+<circle cx="546.68" cy="1025.00" r="2.79" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /German-Caroline_020213.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="510.79" cy="1092.86" r="3.75" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /TD-Rahel_010402.cha | agreement 0.643 | n=14</title></circle>
+<circle cx="493.33" cy="1145.91" r="4.15" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /German-Caroline_020216.cha | agreement 0.364 | n=22</title></circle>
+<circle cx="512.53" cy="1215.00" r="2.62" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /German-Caroline_020028.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="539.89" cy="1135.83" r="6.75" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /Miller-Simone_020003.cha | agreement 0.417 | n=120</title></circle>
+<circle cx="581.79" cy="1039.62" r="4.79" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /Miller-Simone_011020.cha | agreement 0.923 | n=39</title></circle>
+<circle cx="434.74" cy="1025.00" r="2.62" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /German-Caroline_020528.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="456.66" cy="1126.33" r="3.81" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /TD-Rahel_010516.cha | agreement 0.467 | n=15</title></circle>
+<circle cx="409.91" cy="1094.80" r="5.11" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /German-Caroline_020501.cha | agreement 0.633 | n=49</title></circle>
+<circle cx="561.81" cy="1110.81" r="4.51" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /German-Caroline_020311.cha | agreement 0.548 | n=31</title></circle>
+<circle cx="456.08" cy="1179.38" r="3.86" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | /Wagner-Andreas_020100(7).cha | agreement 0.188 | n=16</title></circle>
+<circle cx="870.28" cy="1185.00" r="4.01" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /German-Caroline_020509.cha | agreement 0.158 | n=19</title></circle>
+<circle cx="847.58" cy="1106.43" r="4.10" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /German-Caroline_020327.cha | agreement 0.571 | n=21</title></circle>
+<circle cx="809.95" cy="1215.00" r="2.62" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Rahel_010907.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="722.65" cy="1025.00" r="3.13" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Anna_010804.cha | agreement 1.000 | n=5</title></circle>
+<circle cx="785.12" cy="1025.00" r="2.62" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /German-Caroline_020508.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="747.68" cy="1108.12" r="4.55" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Emely_020301.cha | agreement 0.562 | n=32</title></circle>
+<circle cx="706.94" cy="1120.00" r="3.86" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /Miller-Simone_020119.cha | agreement 0.500 | n=16</title></circle>
+<circle cx="815.58" cy="1215.00" r="3.13" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Emely_010407.cha | agreement 0.000 | n=5</title></circle>
+<circle cx="711.40" cy="1082.18" r="6.42" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Konstantin_020429.cha | agreement 0.699 | n=103</title></circle>
+<circle cx="871.83" cy="1064.12" r="4.62" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /Miller-Simone_020118.cha | agreement 0.794 | n=34</title></circle>
+<circle cx="847.78" cy="1167.50" r="3.03" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /German-Caroline_010423.cha | agreement 0.250 | n=4</title></circle>
+<circle cx="803.35" cy="1025.00" r="2.62" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /German-Caroline_010427.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="868.54" cy="1060.62" r="5.52" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Soeren_020002.cha | agreement 0.812 | n=64</title></circle>
+<circle cx="742.25" cy="1133.57" r="3.30" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Falko_010907.cha | agreement 0.429 | n=7</title></circle>
+<circle cx="819.26" cy="1093.40" r="5.80" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Martin_020503.cha | agreement 0.640 | n=75</title></circle>
+<circle cx="758.15" cy="1075.11" r="6.16" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Ina_020511.cha | agreement 0.736 | n=91</title></circle>
+<circle cx="687.15" cy="1048.75" r="4.55" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Anna_010626.cha | agreement 0.875 | n=32</title></circle>
+<circle cx="717.42" cy="1025.00" r="2.62" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /German-Caroline_020026.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="710.82" cy="1071.53" r="5.11" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /Miller-Simone_010911.cha | agreement 0.755 | n=49</title></circle>
+<circle cx="826.63" cy="1025.00" r="2.62" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /Miller-Kerstin_010506.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="794.43" cy="1215.00" r="2.92" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /Miller-Kerstin_010710.cha | agreement 0.000 | n=3</title></circle>
+<circle cx="754.27" cy="1088.33" r="5.57" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Emely_020014.cha | agreement 0.667 | n=66</title></circle>
+<circle cx="709.27" cy="1025.00" r="3.30" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Ems_020509.cha | agreement 1.000 | n=7</title></circle>
+<circle cx="741.86" cy="1107.50" r="7.32" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /Wagner-Katrin_katrin.cha | agreement 0.566 | n=152</title></circle>
+<circle cx="699.18" cy="1215.00" r="2.62" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Falko_010618.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="718.97" cy="1056.67" r="3.64" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Martin_010728.cha | agreement 0.833 | n=12</title></circle>
+<circle cx="804.91" cy="1120.00" r="3.03" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /German-Caroline_020424.cha | agreement 0.500 | n=4</title></circle>
+<circle cx="831.10" cy="1151.67" r="2.92" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /German-Caroline_010903.cha | agreement 0.333 | n=3</title></circle>
+<circle cx="714.70" cy="1082.00" r="3.51" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /Miller-Kerstin_010724.cha | agreement 0.700 | n=10</title></circle>
+<circle cx="870.48" cy="1145.00" r="4.01" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /German-Caroline_020417.cha | agreement 0.368 | n=19</title></circle>
+<circle cx="698.21" cy="1195.00" r="4.01" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /German-Caroline_010926.cha | agreement 0.105 | n=19</title></circle>
+<circle cx="869.31" cy="1117.56" r="4.79" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /German-Caroline_020212.cha | agreement 0.513 | n=39</title></circle>
+<circle cx="742.44" cy="1088.33" r="3.22" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /German-Caroline_011030.cha | agreement 0.667 | n=6</title></circle>
+<circle cx="816.74" cy="1082.75" r="6.39" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Neele_020110.cha | agreement 0.696 | n=102</title></circle>
+<circle cx="834.01" cy="1131.31" r="7.58" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Falko_020516.cha | agreement 0.440 | n=168</title></circle>
+<circle cx="727.31" cy="1059.55" r="3.58" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Ems_010406.cha | agreement 0.818 | n=11</title></circle>
+<circle cx="812.08" cy="1025.00" r="2.62" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /German-Caroline_020229.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="727.31" cy="1151.67" r="2.92" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /German-Caroline_010602.cha | agreement 0.333 | n=3</title></circle>
+<circle cx="814.02" cy="1025.00" r="3.37" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Leon_020109.cha | agreement 1.000 | n=8</title></circle>
+<circle cx="718.77" cy="1025.00" r="2.79" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Ina_010805.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="719.16" cy="1106.07" r="5.80" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Emely_020518.cha | agreement 0.573 | n=75</title></circle>
+<circle cx="815.38" cy="1124.32" r="4.96" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Mario_020509.cha | agreement 0.477 | n=44</title></circle>
+<circle cx="755.63" cy="1103.99" r="6.12" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Martin_020121.cha | agreement 0.584 | n=89</title></circle>
+<circle cx="719.55" cy="1063.00" r="4.28" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Soeren_010509.cha | agreement 0.800 | n=25</title></circle>
+<circle cx="747.68" cy="1215.00" r="2.62" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Neele_010310.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="689.09" cy="1055.65" r="4.51" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | /TD-Lisa_010508.cha | agreement 0.839 | n=31</title></circle>
+<circle cx="1046.06" cy="1076.38" r="7.44" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /TD-Leo_020509.cha | agreement 0.730 | n=159</title></circle>
+<circle cx="1128.71" cy="1025.00" r="2.92" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /Miller-Simone_020522.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="1136.08" cy="1051.08" r="5.17" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /Miller-Kerstin_020302.cha | agreement 0.863 | n=51</title></circle>
+<circle cx="1013.86" cy="1025.00" r="3.22" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /Miller-Simone_011113.cha | agreement 1.000 | n=6</title></circle>
+<circle cx="1124.05" cy="1082.62" r="6.79" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /TD-Jores_020500.cha | agreement 0.697 | n=122</title></circle>
+<circle cx="1039.08" cy="1215.00" r="2.62" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /German-Caroline_010408.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="1152.57" cy="1025.00" r="3.37" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /Miller-Kerstin_020101.cha | agreement 1.000 | n=8</title></circle>
+<circle cx="1042.18" cy="1025.00" r="2.62" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /TD-Anna_020324.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="1029.96" cy="1053.91" r="5.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /Miller-Kerstin_020512.cha | agreement 0.848 | n=46</title></circle>
+<circle cx="1088.35" cy="1074.14" r="5.36" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /TD-Lisa_020217.cha | agreement 0.741 | n=58</title></circle>
+<circle cx="977.39" cy="1077.78" r="5.25" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /Wagner-Andreas_020100(4).cha | agreement 0.722 | n=54</title></circle>
+<circle cx="1100.19" cy="1045.00" r="4.01" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /German-Caroline_011114.cha | agreement 0.895 | n=19</title></circle>
+<circle cx="1029.19" cy="1135.20" r="5.14" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /TD-Lisa_020406.cha | agreement 0.420 | n=50</title></circle>
+<circle cx="971.76" cy="1092.29" r="5.08" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /Wagner-Andreas_020100(8).cha | agreement 0.646 | n=48</title></circle>
+<circle cx="1122.69" cy="1025.00" r="2.62" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /German-Caroline_020525.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="1102.71" cy="1071.81" r="5.65" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /TD-Emely_010922.cha | agreement 0.754 | n=69</title></circle>
+<circle cx="1121.14" cy="1086.55" r="5.70" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /Miller-Simone_020420.cha | agreement 0.676 | n=71</title></circle>
+<circle cx="1158.58" cy="1025.00" r="2.62" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /German-Caroline_020423.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="998.15" cy="1080.16" r="5.47" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /TD-Marlou_020507.cha | agreement 0.710 | n=62</title></circle>
+<circle cx="1100.38" cy="1039.62" r="3.70" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /Miller-Simone_020221.cha | agreement 0.923 | n=13</title></circle>
+<circle cx="1059.64" cy="1113.67" r="4.99" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /TD-Ems_010800.cha | agreement 0.533 | n=45</title></circle>
+<circle cx="1086.61" cy="1215.00" r="2.79" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /German-Caroline_010928.cha | agreement 0.000 | n=2</title></circle>
+<circle cx="995.24" cy="1113.67" r="3.81" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /German-Caroline_011029.cha | agreement 0.533 | n=15</title></circle>
+<circle cx="1141.70" cy="1137.81" r="6.90" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /Miller-Simone_020220.cha | agreement 0.406 | n=128</title></circle>
+<circle cx="1163.24" cy="1046.11" r="3.45" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /TD-Lisa_010613.cha | agreement 0.889 | n=9</title></circle>
+<circle cx="1008.82" cy="1120.00" r="3.22" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /Miller-Kerstin_010517.cha | agreement 0.500 | n=6</title></circle>
+<circle cx="1138.21" cy="1183.33" r="3.64" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /German-Caroline_020007.cha | agreement 0.167 | n=12</title></circle>
+<circle cx="1064.11" cy="1147.14" r="3.75" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /German-Caroline_011027.cha | agreement 0.357 | n=14</title></circle>
+<circle cx="1067.79" cy="1133.57" r="4.66" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /Miller-Kerstin_020220.cha | agreement 0.429 | n=35</title></circle>
+<circle cx="1053.82" cy="1094.09" r="5.28" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /Wagner-Andreas_020100(1).cha | agreement 0.636 | n=55</title></circle>
+<circle cx="994.66" cy="1094.09" r="4.15" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /German-Caroline_020402.cha | agreement 0.636 | n=22</title></circle>
+<circle cx="1069.34" cy="1055.00" r="5.82" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /TD-Falko_020114.cha | agreement 0.842 | n=76</title></circle>
+<circle cx="1113.96" cy="1059.20" r="5.14" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /Miller-Simone_020417.cha | agreement 0.820 | n=50</title></circle>
+<circle cx="1093.40" cy="1025.00" r="2.62" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /Miller-Kerstin_010524.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="1127.35" cy="1150.57" r="6.65" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /TD-Anna_011030.cha | agreement 0.339 | n=115</title></circle>
+<circle cx="993.69" cy="1215.00" r="2.92" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /German-Caroline_020001.cha | agreement 0.000 | n=3</title></circle>
+<circle cx="1156.06" cy="1025.00" r="3.03" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /German-Caroline_020405.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="1015.22" cy="1120.00" r="2.79" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /German-Caroline_010920.cha | agreement 0.500 | n=2</title></circle>
+<circle cx="1054.60" cy="1025.00" r="3.37" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /TD-Anna_010920.cha | agreement 1.000 | n=8</title></circle>
+<circle cx="1138.40" cy="1025.00" r="3.30" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /Miller-Simone_020001.cha | agreement 1.000 | n=7</title></circle>
+<circle cx="1132.97" cy="1025.00" r="2.92" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /TD-Soeren_010800.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="1053.24" cy="1073.86" r="4.66" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /Miller-Simone_020112.cha | agreement 0.743 | n=35</title></circle>
+<circle cx="1024.14" cy="1082.00" r="3.51" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /German-Caroline_010601.cha | agreement 0.700 | n=10</title></circle>
+<circle cx="1143.45" cy="1088.33" r="3.96" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /German-Caroline_010403.cha | agreement 0.667 | n=18</title></circle>
+<circle cx="1020.46" cy="1098.33" r="6.63" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | /TD-Rahel_020400.cha | agreement 0.614 | n=114</title></circle>
+<circle cx="900" cy="982" r="5" fill="#1d4ed8" fill-opacity="0.65"/>
+<text x="910" y="986" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#374151" text-anchor="start">dev_train</text>
+<circle cx="1055" cy="982" r="5" fill="#0891b2" fill-opacity="0.65"/>
+<text x="1065" y="986" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#374151" text-anchor="start">dev_check_1</text>
+<circle cx="900" cy="1000" r="5" fill="#7c3aed" fill-opacity="0.65"/>
+<text x="910" y="1004" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#374151" text-anchor="start">dev_check_2</text>
+<circle cx="1055" cy="1000" r="5" fill="#c2410c" fill-opacity="0.65"/>
+<text x="1065" y="1004" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#374151" text-anchor="start">test_lockbox</text>
+</svg>

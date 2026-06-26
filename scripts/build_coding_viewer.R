@@ -14,7 +14,10 @@
 #
 # The audit CSV rows are embedded verbatim; all agreement/kappa numbers are
 # computed in the browser from the same collapsed-label columns and
-# denominators as the IRR reports.
+# denominators as the IRR reports. Rows on the inspected list
+# (splits/english/inspected_rows.txt) are badged, and both the run explorer
+# and the trends tab can restrict their stats to the clean (headline) subset,
+# mirroring the IRR report's clean-vs-inspected stratification.
 #
 # Supersedes v1/results/build_visualization_tool.R (kept frozen as the v1
 # single-run artifact builder).
@@ -54,11 +57,36 @@ first_existing <- function(paths) {
   NA_character_
 }
 
+# Canonical inspected-rows list (development rows: content was read, mined for
+# prompt examples, or adjudicated; excluded from headline metrics). Audits
+# rendered since 2026-06-11 carry an `inspected` column written at scoring
+# time, which is kept verbatim; the frozen v1 audit predates the column, so
+# membership is derived from this list instead.
+inspected_path <- file.path(llm_dir, "splits", "english", "inspected_rows.txt")
+inspected_ids <- character(0)
+if (file.exists(inspected_path)) {
+  insp_lines <- trimws(readLines(inspected_path, warn = FALSE))
+  inspected_ids <- insp_lines[nzchar(insp_lines) & !startsWith(insp_lines, "#")]
+}
+
+# record_id prefix -> language folder under splits/. Each run is shown against
+# its own language's split and human reference.
+lang_by_prefix <- c(eng = "english", ger = "german", heb = "hebrew", spa = "spanish")
+lang_from_id <- function(record_id) {
+  prefix <- sub("^([a-z]+)_.*", "\\1", record_id)
+  lang <- lang_by_prefix[[prefix]]
+  if (is.null(lang)) "english" else lang
+}
+
 build_run <- function(audit_path, version) {
   rows <- readr::read_csv(audit_path, col_types = readr::cols(.default = readr::col_character()))
   rows[is.na(rows)] <- ""
+  if (!"inspected" %in% names(rows)) {
+    rows$inspected <- ifelse(rows$record_id %in% inspected_ids, "TRUE", "FALSE")
+  }
   audit_ids <- rows$record_id
   split_name <- chr1(rows$split[1])
+  lang <- lang_from_id(chr1(rows$record_id[1]))
   results_dir <- dirname(audit_path)
 
   # Pair the raw-responses file by record-id overlap, so multiple runs can
@@ -109,12 +137,12 @@ build_run <- function(audit_path, version) {
   # Prefer the frozen per-version inputs so each run is shown against the
   # exact split files it consumed; fall back to the shared splits.
   split_path <- first_existing(c(
-    file.path(llm_dir, version, "inputs", "splits", "english", paste0(split_name, ".jsonl")),
-    file.path(llm_dir, "splits", "english", paste0(split_name, ".jsonl"))
+    file.path(llm_dir, version, "inputs", "splits", lang, paste0(split_name, ".jsonl")),
+    file.path(llm_dir, "splits", lang, paste0(split_name, ".jsonl"))
   ))
   ref_path <- first_existing(c(
-    file.path(llm_dir, version, "inputs", "splits", "english", paste0(split_name, "_human_reference.jsonl")),
-    file.path(llm_dir, "splits", "english", paste0(split_name, "_human_reference.jsonl"))
+    file.path(llm_dir, version, "inputs", "splits", lang, paste0(split_name, "_human_reference.jsonl")),
+    file.path(llm_dir, "splits", lang, paste0(split_name, "_human_reference.jsonl"))
   ))
 
   split_records <- list()
@@ -235,7 +263,7 @@ html <- paste0(
       line-height: 1.45;
     }
 
-    .page { max-width: 1500px; margin: 0 auto; padding: 18px 22px 40px; }
+    .page { max-width: 1680px; margin: 0 auto; padding: 18px 22px 40px; }
 
     h1, h2, h3 { margin: 0; }
     h1 { font-size: 21px; line-height: 1.2; }
@@ -307,6 +335,14 @@ html <- paste0(
       color: var(--accent); text-transform: uppercase;
     }
 
+    .scope-bar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 10px; }
+    .scope-bar .seg-btn:disabled { opacity: 0.45; cursor: default; }
+    .scope-note { color: var(--muted); font-size: 11.5px; max-width: 60ch; }
+    .insp-chip {
+      font-size: 10.5px; padding: 1px 7px; border-radius: 999px; font-weight: 700;
+      background: #f1e9f6; color: #6d4a8f; border: 1px solid #d9c8e8; white-space: nowrap;
+    }
+
     .triage-strip { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; margin-bottom: 14px; }
     .triage-label { font-size: 12px; color: var(--muted); margin-right: 2px; }
     .triage-chip {
@@ -332,9 +368,13 @@ html <- paste0(
 
     .workspace {
       display: grid;
-      grid-template-columns: 390px minmax(0, 1fr);
+      grid-template-columns: 380px minmax(0, 1fr);
       gap: 14px;
-      align-items: start;
+      align-items: stretch;
+      /* Height is set in JS (sizeWorkspace) to fill the viewport below the
+         header, so the two panels stay balanced and each scrolls internally
+         instead of the record list growing into a tall wall. */
+      min-height: 480px;
     }
 
     .list-panel, .detail-panel, .table-panel {
@@ -343,6 +383,8 @@ html <- paste0(
       border-radius: 10px;
       min-width: 0;
     }
+    .list-panel { display: flex; flex-direction: column; min-height: 0; }
+    .list-panel .list-controls, .list-panel .list-meta { flex: none; }
 
     .list-controls { padding: 12px; border-bottom: 1px solid var(--border); display: grid; gap: 8px; }
     .control-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -376,7 +418,7 @@ html <- paste0(
     }
 
     .list-meta { padding: 8px 12px; border-bottom: 1px solid var(--border); color: var(--muted); font-size: 12px; }
-    .record-list { max-height: calc(100vh - 200px); overflow: auto; border-radius: 0 0 10px 10px; }
+    .record-list { flex: 1 1 auto; min-height: 0; overflow: auto; border-radius: 0 0 10px 10px; }
 
     .record-row {
       width: 100%;
@@ -427,7 +469,7 @@ html <- paste0(
     .lab-other { background: #fbe7f1; color: #9c3970; border-color: #eec4da; }
     .lab-missing { background: #fff; color: #9aa3a9; border: 1px dashed #c4cbd0; font-weight: 600; }
 
-    .detail-panel { padding: 14px 16px 16px; }
+    .detail-panel { padding: 14px 16px 16px; overflow-y: auto; }
     .detail-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
     .nav-btn {
       border: 1px solid var(--border); border-radius: 6px; background: var(--panel);
@@ -559,6 +601,19 @@ html <- paste0(
     tr:last-child td { border-bottom: 0; }
     td.numeric, th.numeric { text-align: right; font-variant-numeric: tabular-nums; }
 
+    .denial-subhead { margin-top: 18px; margin-bottom: 4px; }
+    .denial-detect { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start; }
+    .detect-block { flex: 1 1 320px; min-width: 280px; }
+    .detect-block .block-title { font-size: 12.5px; font-weight: 650; margin-bottom: 6px; }
+    .detect-block .block-title .muted { font-weight: 400; }
+    .detect-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 12px; align-items: start; }
+    .confusion th, .confusion td { padding: 5px 8px; font-size: 12.5px; }
+    .confusion td.tp { background: var(--good-weak); }
+    .confusion td.tn { background: var(--good-weak); }
+    .confusion td.fp, .confusion td.fn { background: var(--bad-weak); }
+    .metric-table td { padding: 4px 8px; font-size: 12.5px; }
+    .detect-empty { color: var(--muted); font-size: 12.5px; }
+
     .footnote { margin-top: 14px; color: var(--muted); font-size: 12px; max-width: 100ch; }
 
     .trend-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
@@ -570,8 +625,9 @@ html <- paste0(
     .trend-legend .shape { font-family: var(--mono); margin-right: 4px; color: var(--ink); }
 
     @media (max-width: 1100px) {
-      .workspace { grid-template-columns: 1fr; }
-      .record-list { max-height: 380px; }
+      .workspace { grid-template-columns: 1fr; height: auto !important; }
+      .list-panel, .detail-panel { display: block; overflow: visible; }
+      .record-list { max-height: 420px; }
       .summary-strip { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 720px) {
@@ -601,6 +657,7 @@ html <- paste0(
 
     <div id="tabExplorer">
       <div class="run-chips" id="runChips"></div>
+      <section class="scope-bar" id="scopeBar"></section>
       <section class="summary-strip" id="summaryStrip"></section>
       <section class="triage-strip" id="triageStrip"></section>
 
@@ -654,6 +711,15 @@ html <- paste0(
       </section>
 
       <section class="table-panel">
+        <h2>Denial vs. not-denial</h2>
+        <p class="caption" id="denialCaption"></p>
+        <div id="denialTable"></div>
+        <h3 class="denial-subhead">LLM denial detection vs. human consensus</h3>
+        <p class="caption" id="denialDetectCaption"></p>
+        <div id="denialDetection"></div>
+      </section>
+
+      <section class="table-panel">
         <h2>Label distribution</h2>
         <p class="caption" id="countsCaption"></p>
         <div id="labelCounts"></div>
@@ -671,11 +737,22 @@ html <- paste0(
         <div class="trend-head">
           <div>
             <h2>Agreement across versions</h2>
-            <p class="subhead">One column per scored run, ordered by version. Marker shape shows which dev split the run used; the human&ndash;human pair on the same rows is the baseline band.</p>
+            <p class="subhead">One column per scored run, ordered by version. Marker shape shows which dev split the run used; the human&ndash;human pair on the same rows is the baseline band. &ldquo;Clean only&rdquo; drops inspected rows (development data) &mdash; the headline view. The <b>Full label</b> / <b>Denial</b> toggle switches between the six-way Bloom comparison and the binary denial-vs-not-denial distinction.</p>
           </div>
-          <div class="trend-controls segmented" style="grid-template-columns: 1fr 1fr;">
-            <button id="trendAgreement" class="seg-btn active" type="button">Agreement %</button>
-            <button id="trendKappa" class="seg-btn" type="button">Cohen&rsquo;s &kappa;</button>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <div class="trend-controls segmented" style="grid-template-columns: repeat(3, auto);">
+              <button id="trendBasisFull" class="seg-btn active" type="button">Full label</button>
+              <button id="trendBasisDenialAll" class="seg-btn" type="button">Denial (all)</button>
+              <button id="trendBasisDenialNeg" class="seg-btn" type="button">Denial (neg only)</button>
+            </div>
+            <div class="trend-controls segmented" style="grid-template-columns: 1fr 1fr;">
+              <button id="trendScopeAll" class="seg-btn active" type="button">All rows</button>
+              <button id="trendScopeClean" class="seg-btn" type="button">Clean only</button>
+            </div>
+            <div class="trend-controls segmented" style="grid-template-columns: 1fr 1fr;">
+              <button id="trendAgreement" class="seg-btn active" type="button">Agreement %</button>
+              <button id="trendKappa" class="seg-btn" type="button">Cohen&rsquo;s &kappa;</button>
+            </div>
           </div>
         </div>
         <div class="trend-svg-wrap" id="trendChart"></div>
@@ -684,7 +761,7 @@ html <- paste0(
 
       <section class="table-panel">
         <h2>Run-by-run numbers</h2>
-        <p class="caption">Same conventions as the run explorer: collapsed labels, denominator = rows where both compared coders have a non-missing Bloom label.</p>
+        <p class="caption" id="trendTableCaption"></p>
         <div id="trendTable"></div>
       </section>
     </div>
@@ -721,13 +798,42 @@ html <- paste0(
       return bits.join(" \\u00b7 ");
     }
 
+    // Make the master/detail workspace fill the viewport below the header so
+    // the two panels stay balanced and scroll internally, rather than letting
+    // the record list grow into a tall wall. Sized in JS because the header
+    // height varies with the run chips / scope note / summary cards.
+    function sizeWorkspace() {
+      const ws = document.querySelector(".workspace");
+      if (!ws || document.getElementById("tabExplorer").classList.contains("hidden")) return;
+      if (window.innerWidth <= 1100) { ws.style.height = ""; return; }
+      const top = ws.getBoundingClientRect().top + window.scrollY;
+      ws.style.height = Math.max(480, Math.round(window.innerHeight - top - 16)) + "px";
+    }
+
     // ---- per-run state (recomputed by loadRun) ----
     let rows = [];
     let meta = {};
     let coderName = {};
     let coderShort = {};
     let pairDefs = [];
-    const state = { runIdx: 0, selectedId: null, sort: "line", trendMetric: "agreement" };
+    const state = { runIdx: 0, selectedId: null, sort: "line", scope: "all", trendMetric: "agreement", trendScope: "all", trendBasis: "full" };
+
+    // Inspected rows are development data (read, mined for prompt examples,
+    // or adjudicated) and are excluded from headline metrics; see
+    // splits/english/inspected_rows.txt. The clean subset is everything else.
+    const isInspected = (r) => isTrue(r.inspected);
+    const inspectedDesc = "Development row: its content was read, mined for prompt examples, or adjudicated, so it is excluded from headline metrics and reported as a rule-compliance check.";
+    function scopedRows() {
+      if (state.scope === "clean") return rows.filter(r => !isInspected(r));
+      if (state.scope === "inspected") return rows.filter(isInspected);
+      return rows;
+    }
+    function scopeDesc() {
+      const base = scopedRows();
+      if (state.scope === "clean") return `the ${base.length} clean (headline) rows`;
+      if (state.scope === "inspected") return `the ${base.length} inspected (compliance-check) rows`;
+      return `all ${base.length} rows`;
+    }
 
     const statusDefs = [
       { key: "llm-diff",   text: "LLM differs",        desc: "Humans agree on a label, the LLM coded something else", cls: "bad",     rank: 0 },
@@ -838,6 +944,82 @@ html <- paste0(
       };
     }
 
+    // ---- Denial vs. not-denial (binary) ----
+    // Collapse every label to a two-way distinction: denial vs. everything
+    // else (nonexistence, rejection, uncoded, excluded). The "negation codes
+    // only" scope additionally drops uncoded/excluded rows so the contrast is
+    // among true negation meanings (denial vs. nonexistence/rejection), the
+    // same restriction the content-only IRR columns use.
+    const denialLevels = ["denial", "not-denial"];
+    const isContentLabel = (v) => contentLevels.includes(clean(v));
+    const denialBin = (v) => { const c = clean(v); return c ? (c === "denial" ? "denial" : "not-denial") : ""; };
+
+    function binPairStats(rowSet, aKey, bKey, negOnly) {
+      let pairs = rowSet
+        .filter(r => !negOnly || (isContentLabel(r[aKey]) && isContentLabel(r[bKey])))
+        .map(r => [denialBin(r[aKey]), denialBin(r[bKey])])
+        .filter(([a, b]) => a && b);
+      return {
+        n: pairs.length,
+        agreement: pairs.length ? pairs.filter(([a, b]) => a === b).length / pairs.length : NaN,
+        kappa: kappa(pairs, denialLevels),
+        base: pairs.length ? pairs.filter(([, b]) => b === "denial").length / pairs.length : NaN
+      };
+    }
+
+    // Binary analogue of consensusStats: among rows where the two humans agree
+    // on the denial-vs-not distinction, how often the LLM binary label matches.
+    // negOnly drops rows whose human or LLM label is not a negation code.
+    function binConsensusStats(rowSet, negOnly) {
+      const agreed = rowSet.filter(r => {
+        if (negOnly && !(isContentLabel(r.human_1_label_collapsed) &&
+                         isContentLabel(r.human_2_label_collapsed) &&
+                         isContentLabel(r.llm_label_collapsed))) return false;
+        const a = denialBin(r.human_1_label_collapsed);
+        return a && a === denialBin(r.human_2_label_collapsed);
+      });
+      const pairs = agreed
+        .map(r => [denialBin(r.llm_label_collapsed), denialBin(r.human_1_label_collapsed)])
+        .filter(([a, b]) => a && b);
+      return {
+        n: pairs.length,
+        agreement: pairs.length ? pairs.filter(([a, b]) => a === b).length / pairs.length : NaN,
+        kappa: kappa(pairs, denialLevels)
+      };
+    }
+
+    // Treat the human binary consensus (both humans agree on denial vs. not)
+    // as ground truth and score the LLM as a detector of denial (positive
+    // class). Rows without consensus, or where the LLM has no label, are
+    // dropped; negOnly also drops any row whose human or LLM label is not a
+    // negation code.
+    function denialDetection(rowSet, negOnly) {
+      let tp = 0, fp = 0, fn = 0, tn = 0;
+      rowSet.forEach(r => {
+        if (negOnly && !(isContentLabel(r.human_1_label_collapsed) &&
+                         isContentLabel(r.human_2_label_collapsed) &&
+                         isContentLabel(r.llm_label_collapsed))) return;
+        const h1 = denialBin(r.human_1_label_collapsed);
+        const h2 = denialBin(r.human_2_label_collapsed);
+        const llm = denialBin(r.llm_label_collapsed);
+        if (!h1 || !h2 || !llm || h1 !== h2) return;
+        const truthDenial = h1 === "denial";
+        const predDenial = llm === "denial";
+        if (truthDenial && predDenial) tp++;
+        else if (!truthDenial && predDenial) fp++;
+        else if (truthDenial && !predDenial) fn++;
+        else tn++;
+      });
+      const n = tp + fp + fn + tn;
+      const safe = (num, den) => den ? num / den : NaN;
+      const sens = safe(tp, tp + fn);
+      const spec = safe(tn, tn + fp);
+      const prec = safe(tp, tp + fp);
+      const f1 = Number.isFinite(prec) && Number.isFinite(sens) && (prec + sens) > 0
+        ? 2 * prec * sens / (prec + sens) : NaN;
+      return { n, tp, fp, fn, tn, acc: safe(tp + tn, n), sens, spec, prec, f1, nDenial: tp + fn };
+    }
+
     function loadRun(idx) {
       state.runIdx = idx;
       const run = payload.runs[idx];
@@ -859,17 +1041,55 @@ html <- paste0(
 
       state.selectedId = rows[0] && rows[0].record_id;
       state.sort = "line";
+      if (!scopedRows().length) state.scope = "all";
       $("sortLine").classList.add("active");
       $("sortReview").classList.remove("active");
       $("search").value = "";
 
       renderHeader();
+      renderScopeBar();
       populateFilters();
       renderSummary();
       renderTriage();
       renderIrr();
+      renderDenial();
       renderFootnote();
       renderList();
+      sizeWorkspace();
+    }
+
+    function renderScopeBar() {
+      const nIns = rows.filter(isInspected).length;
+      const nClean = rows.length - nIns;
+      const defs = [
+        { key: "all", text: `All rows (${rows.length})`, n: rows.length },
+        { key: "clean", text: `Clean &mdash; headline (${nClean})`, n: nClean },
+        { key: "inspected", text: `Inspected &mdash; compliance (${nIns})`, n: nIns }
+      ];
+      const note = nIns === rows.length
+        ? "Every row of this run is on the inspected list: it provides rule-compliance evidence only, no headline (generalization) evidence."
+        : nIns === 0
+          ? "No row of this run is on the inspected list."
+          : "Inspected rows are development data (read, mined for prompt examples, or adjudicated) and are excluded from headline metrics.";
+      $("scopeBar").innerHTML = `<span class="triage-label">Stats subset:</span>` +
+        defs.map(d => `<button class="seg-btn ${state.scope === d.key ? "active" : ""}" type="button"
+            data-scope="${d.key}" ${d.n ? "" : "disabled"}>${d.text}</button>`).join("") +
+        `<span class="scope-note">${note}</span>`;
+      document.querySelectorAll("#scopeBar .seg-btn").forEach(btn => {
+        btn.addEventListener("click", () => setScope(btn.dataset.scope));
+      });
+    }
+
+    function setScope(scope) {
+      state.scope = scope;
+      renderScopeBar();
+      populateFilters();
+      renderSummary();
+      renderTriage();
+      renderIrr();
+      renderDenial();
+      renderList();
+      sizeWorkspace();
     }
 
     function renderHeader() {
@@ -887,10 +1107,11 @@ html <- paste0(
     }
 
     function renderSummary() {
-      const hh = pairStatsRows(rows, pairDefs[0].a, pairDefs[0].b, false);
-      const l1 = pairStatsRows(rows, pairDefs[1].a, pairDefs[1].b, false);
-      const l2 = pairStatsRows(rows, pairDefs[2].a, pairDefs[2].b, false);
-      const cons = consensusStats(rows);
+      const base = scopedRows();
+      const hh = pairStatsRows(base, pairDefs[0].a, pairDefs[0].b, false);
+      const l1 = pairStatsRows(base, pairDefs[1].a, pairDefs[1].b, false);
+      const l2 = pairStatsRows(base, pairDefs[2].a, pairDefs[2].b, false);
+      const cons = consensusStats(base);
       const cards = [
         { name: pairDefs[0].name, stat: hh, sub: `&kappa; ${num(hh.kappa)} &middot; n=${hh.n}`, baseline: true },
         { name: pairDefs[1].name, stat: l1, sub: `&kappa; ${num(l1.kappa)} &middot; n=${l1.n}`, baseline: false },
@@ -908,14 +1129,14 @@ html <- paste0(
 
     function statusCounts() {
       const counts = {};
-      rows.forEach(r => { const k = statusFor(r).key; counts[k] = (counts[k] || 0) + 1; });
+      scopedRows().forEach(r => { const k = statusFor(r).key; counts[k] = (counts[k] || 0) + 1; });
       return counts;
     }
 
     function renderTriage() {
       const counts = statusCounts();
       const active = $("statusFilter").value;
-      const nFlagMismatch = flagMismatchRows(rows).length;
+      const nFlagMismatch = flagMismatchRows(scopedRows()).length;
       const flagActive = $("flagFilter").value === "mismatch";
       $("triageStrip").innerHTML = `<span class="triage-label">Jump to:</span>` + statusDefs
         .filter(s => counts[s.key])
@@ -940,25 +1161,35 @@ html <- paste0(
     }
 
     function populateFilters() {
+      // Counts reflect the active stats subset; current selections are kept
+      // when they still exist after a scope change.
+      const keep = Object.fromEntries(
+        ["statusFilter", "llmLabelFilter", "transcriptFilter", "flagFilter"].map(id => [id, $(id).value])
+      );
+      const base = scopedRows();
       const counts = statusCounts();
-      $("statusFilter").innerHTML = `<option value="all">All rows (${rows.length})</option>` + statusDefs
+      $("statusFilter").innerHTML = `<option value="all">All rows (${base.length})</option>` + statusDefs
         .filter(s => counts[s.key])
         .map(s => `<option value="${s.key}">${esc(s.text)} (${counts[s.key]})</option>`).join("");
 
-      const labels = [...new Set(rows.map(r => clean(r.llm_label_collapsed)).filter(Boolean))].sort();
+      const labels = [...new Set(base.map(r => clean(r.llm_label_collapsed)).filter(Boolean))].sort();
       $("llmLabelFilter").innerHTML = `<option value="all">All labels</option>` +
         labels.map(l => `<option value="${esc(l)}">${esc(l)}</option>`).join("");
 
-      const transcripts = [...new Set(rows.map(r => clean(r.transcript_id)).filter(Boolean))].sort();
+      const transcripts = [...new Set(base.map(r => clean(r.transcript_id)).filter(Boolean))].sort();
       $("transcriptFilter").innerHTML = `<option value="all">All transcripts (${transcripts.length})</option>` +
         transcripts.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join("");
       $("transcriptCell").style.display = transcripts.length < 2 ? "none" : "";
 
-      const nRaised = rows.filter(r => flagInfo(r).length).length;
-      const nMismatch = flagMismatchRows(rows).length;
+      const nRaised = base.filter(r => flagInfo(r).length).length;
+      const nMismatch = flagMismatchRows(base).length;
       $("flagFilter").innerHTML = `<option value="all">All rows</option>
         <option value="raised">Any flag raised (${nRaised})</option>
         <option value="mismatch">Flag mismatches (${nMismatch})</option>`;
+
+      Object.entries(keep).forEach(([id, val]) => {
+        if (val && [...$(id).options].some(o => o.value === val)) $(id).value = val;
+      });
     }
 
     function bindControls() {
@@ -987,6 +1218,13 @@ html <- paste0(
 
       $("trendAgreement").addEventListener("click", () => setTrendMetric("agreement"));
       $("trendKappa").addEventListener("click", () => setTrendMetric("kappa"));
+      $("trendScopeAll").addEventListener("click", () => setTrendScope("all"));
+      $("trendScopeClean").addEventListener("click", () => setTrendScope("clean"));
+      $("trendBasisFull").addEventListener("click", () => setTrendBasis("full"));
+      $("trendBasisDenialAll").addEventListener("click", () => setTrendBasis("denialAll"));
+      $("trendBasisDenialNeg").addEventListener("click", () => setTrendBasis("denialNeg"));
+
+      window.addEventListener("resize", sizeWorkspace);
     }
 
     function setTab(tab) {
@@ -995,6 +1233,7 @@ html <- paste0(
       $("tabBtnExplorer").classList.toggle("active", tab === "explorer");
       $("tabBtnTrends").classList.toggle("active", tab === "trends");
       if (tab === "trends") renderTrends();
+      else sizeWorkspace();
     }
 
     function setTrendMetric(metric) {
@@ -1017,7 +1256,7 @@ html <- paste0(
       const llmLabel = $("llmLabelFilter").value;
       const transcript = $("transcriptFilter").value;
       const flagMode = $("flagFilter").value;
-      let out = rows.filter(row => {
+      let out = scopedRows().filter(row => {
         if (status !== "all" && statusFor(row).key !== status) return false;
         if (llmLabel !== "all" && clean(row.llm_label_collapsed) !== llmLabel) return false;
         if (transcript !== "all" && clean(row.transcript_id) !== transcript) return false;
@@ -1044,9 +1283,11 @@ html <- paste0(
       if (!visible.some(r => r.record_id === state.selectedId)) {
         state.selectedId = visible[0] ? visible[0].record_id : null;
       }
-      $("visibleCount").textContent = visible.length === rows.length
-        ? `All ${rows.length} coded tokens`
-        : `${visible.length} of ${rows.length} coded tokens match`;
+      const base = scopedRows();
+      const scopeWord = state.scope === "all" ? "" : state.scope === "clean" ? " clean" : " inspected";
+      $("visibleCount").textContent = visible.length === base.length
+        ? `All ${base.length}${scopeWord} coded tokens`
+        : `${visible.length} of ${base.length}${scopeWord} coded tokens match`;
       $("recordList").innerHTML = visible.map(row => {
         const s = statusFor(row);
         const sel = row.record_id === state.selectedId ? " selected" : "";
@@ -1057,13 +1298,15 @@ html <- paste0(
         const flagChips = flagInfo(row).map(f =>
           `<span class="flagmini ${f.mismatch ? "bad" : (f.solo ? "solo" : "ok")}" title="${esc(flagTooltip(f))}">&#9873; ${esc(f.flag.replaceAll("_", " "))}</span>`
         ).join("");
+        const inspChip = isInspected(row)
+          ? `<span class="insp-chip" title="${esc(inspectedDesc)}">inspected</span>` : "";
         return `<button class="record-row${sel}" type="button" data-id="${esc(row.record_id)}">
           <span class="row-head">
             <span class="row-loc">L${esc(row.line)}</span>
             <span class="row-utt">${esc(row.target_utterance)}</span>
             <span class="status ${s.cls}">${esc(s.text)}</span>
           </span>
-          <span class="row-chips">${chips}${flagChips}</span>
+          <span class="row-chips">${chips}${flagChips}${inspChip}</span>
         </button>`;
       }).join("") || `<p class="muted" style="padding:12px">No rows match the current filters.</p>`;
       document.querySelectorAll(".record-row").forEach(btn => {
@@ -1259,7 +1502,10 @@ html <- paste0(
             <h2>${esc(row.record_id)}</h2>
             <p class="detail-meta">${metaBits}</p>
           </div>
-          <span class="status ${s.cls}" title="${esc(s.desc)}">${esc(s.text)}</span>
+          <span style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
+            ${isInspected(row) ? `<span class="insp-chip" title="${esc(inspectedDesc)}">inspected &mdash; excluded from headline</span>` : ""}
+            <span class="status ${s.cls}" title="${esc(s.desc)}">${esc(s.text)}</span>
+          </span>
         </div>
         <div class="convo-box">
           <div class="convo-head">
@@ -1286,14 +1532,15 @@ html <- paste0(
     }
 
     function renderIrr() {
-      $("irrCaption").innerHTML = `Computed on all ${rows.length} rows of this run with the same conventions as the IRR report: collapsed labels, denominator = rows where both coders have a non-missing Bloom label. Content-only columns restrict both labels to nonexistence / rejection / denial.`;
+      const base = scopedRows();
+      $("irrCaption").innerHTML = `Computed on ${scopeDesc()} of this run with the same conventions as the IRR report: collapsed labels, denominator = rows where both coders have a non-missing Bloom label. Content-only columns restrict both labels to nonexistence / rejection / denial.`;
       $("irrTable").innerHTML = `<table><thead><tr>
           <th>Pair</th><th class="numeric">n</th><th class="numeric">Agreement</th><th class="numeric">&kappa;</th>
           <th class="numeric">Content n</th><th class="numeric">Content agreement</th><th class="numeric">Content &kappa;</th>
         </tr></thead><tbody>${
         pairDefs.map(p => {
-          const all = pairStatsRows(rows, p.a, p.b, false);
-          const content = pairStatsRows(rows, p.a, p.b, true);
+          const all = pairStatsRows(base, p.a, p.b, false);
+          const content = pairStatsRows(base, p.a, p.b, true);
           return `<tr>
             <td>${esc(p.name)}${p.baseline ? ` <span class="muted">(baseline)</span>` : ""}</td>
             <td class="numeric">${all.n}</td><td class="numeric">${pct(all.agreement)}</td><td class="numeric">${num(all.kappa)}</td>
@@ -1303,9 +1550,71 @@ html <- paste0(
       }</tbody></table>`;
     }
 
+    function renderDenial() {
+      const base = scopedRows();
+      $("denialCaption").innerHTML =
+        `Every label collapsed to a two-way <b>denial</b> vs. <b>not-denial</b> distinction, computed on ${scopeDesc()}. ` +
+        `<b>All coded</b> treats nonexistence, rejection, uncoded and excluded all as not-denial; ` +
+        `<b>negation codes only</b> drops uncoded/excluded rows so the contrast is denial vs. nonexistence/rejection. ` +
+        `Denominator = rows where both compared coders have a non-missing (and, for negation-codes-only, content) label.`;
+      $("denialTable").innerHTML = `<table><thead><tr>
+          <th>Pair</th>
+          <th class="numeric">n</th><th class="numeric">Agreement</th><th class="numeric">&kappa;</th><th class="numeric">Denial rate</th>
+          <th class="numeric">Neg n</th><th class="numeric">Neg agreement</th><th class="numeric">Neg &kappa;</th><th class="numeric">Neg denial rate</th>
+        </tr></thead><tbody>${
+        pairDefs.map(p => {
+          const all = binPairStats(base, p.a, p.b, false);
+          const neg = binPairStats(base, p.a, p.b, true);
+          return `<tr>
+            <td>${esc(p.name)}${p.baseline ? ` <span class="muted">(baseline)</span>` : ""}</td>
+            <td class="numeric">${all.n}</td><td class="numeric">${pct(all.agreement)}</td><td class="numeric">${num(all.kappa)}</td><td class="numeric">${pct(all.base)}</td>
+            <td class="numeric">${neg.n}</td><td class="numeric">${pct(neg.agreement)}</td><td class="numeric">${num(neg.kappa)}</td><td class="numeric">${pct(neg.base)}</td>
+          </tr>`;
+        }).join("")
+      }</tbody></table>`;
+
+      $("denialDetectCaption").innerHTML =
+        `On rows where both humans agree on denial vs. not-denial (their consensus is the ground truth) and the LLM also coded the row. ` +
+        `Positive class = denial; scored on ${scopeDesc()}.`;
+      const blocks = [
+        { title: "All coded rows", neg: false },
+        { title: "Negation codes only", neg: true }
+      ].map(b => {
+        const d = denialDetection(base, b.neg);
+        if (!d.n) {
+          return `<div class="detect-block">
+            <div class="block-title">${b.title}</div>
+            <p class="detect-empty">No rows with a human binary consensus and an LLM label in this scope.</p>
+          </div>`;
+        }
+        const metrics = [
+          ["Accuracy", pct(d.acc)],
+          ["Sensitivity (recall)", pct(d.sens)],
+          ["Specificity", pct(d.spec)],
+          ["Precision", pct(d.prec)],
+          ["F1", num(d.f1)]
+        ];
+        return `<div class="detect-block">
+          <div class="block-title">${b.title} <span class="muted">&middot; n=${d.n} (${d.nDenial} denial)</span></div>
+          <div class="detect-grid">
+            <table class="confusion"><thead><tr>
+                <th></th><th class="numeric">Consensus denial</th><th class="numeric">Consensus not</th>
+              </tr></thead><tbody>
+              <tr><td>LLM denial</td><td class="numeric tp">${d.tp}</td><td class="numeric fp">${d.fp}</td></tr>
+              <tr><td>LLM not</td><td class="numeric fn">${d.fn}</td><td class="numeric tn">${d.tn}</td></tr>
+            </tbody></table>
+            <table class="metric-table"><tbody>${
+              metrics.map(([k, v]) => `<tr><td>${k}</td><td class="numeric"><b>${v}</b></td></tr>`).join("")
+            }</tbody></table>
+          </div>
+        </div>`;
+      }).join("");
+      $("denialDetection").innerHTML = `<div class="denial-detect">${blocks}</div>`;
+    }
+
     function renderCounts(visible) {
-      $("countsCaption").textContent = visible.length === rows.length
-        ? `Collapsed labels per coder, all ${rows.length} rows.`
+      $("countsCaption").textContent = visible.length === scopedRows().length
+        ? `Collapsed labels per coder, ${scopeDesc()}.`
         : `Collapsed labels per coder, restricted to the ${visible.length} rows matching the current filters.`;
       const coders = [["LLM", "llm_label_collapsed"], [coderName.human_1, "human_1_label_collapsed"], [coderName.human_2, "human_2_label_collapsed"]];
       $("labelCounts").innerHTML = `<table><thead><tr><th>Coder</th>${
@@ -1320,8 +1629,8 @@ html <- paste0(
     }
 
     function renderFlagTable(visible) {
-      $("flagTableCaption").textContent = (visible.length === rows.length
-        ? `All ${rows.length} rows. `
+      $("flagTableCaption").textContent = (visible.length === scopedRows().length
+        ? `Computed on ${scopeDesc()}. `
         : `Restricted to the ${visible.length} rows matching the current filters. `) +
         `Yes counts per coder; mismatch = rows where one coder raised the flag and another said No (rows a human never coded are excluded from their counts).`;
       $("flagTable").innerHTML = `<table><thead><tr>
@@ -1348,6 +1657,8 @@ html <- paste0(
         `Conventions: <b>Nonpossession</b> is collapsed into <b>nonexistence</b> before comparison; ` +
         `<b>Uncoded</b> and <b>Excluded</b> stay explicit labels; blank human rows are missing data, not judgments; ` +
         `flags count as raised only when the coder wrote an explicit Yes. ` +
+        `<b>Inspected</b> rows (per <span style="font-family:var(--mono)">splits/english/inspected_rows.txt</span>) are development data whose content informed prompt or policy edits; ` +
+        `headline metrics use the clean subset and the inspected subset is a rule-compliance check only. ` +
         `These match the human&ndash;human IRR report. Small runs are smoke tests; treat their &kappa; values as descriptive. ` +
         `Current run data comes verbatim from <span style="font-family:var(--mono)">${esc(meta.version)}/results/${esc(meta.audit_csv)}</span>.`;
     }
@@ -1362,14 +1673,49 @@ html <- paste0(
     ];
     const splitShapes = ["circle", "square", "diamond", "triangle"];
 
+    const trendBasisDefs = {
+      full: { label: "full Bloom labels", short: "Full label" },
+      denialAll: { label: "denial vs. not-denial (all coded rows)", short: "Denial (all)" },
+      denialNeg: { label: "denial vs. not-denial (negation codes only)", short: "Denial (neg only)" }
+    };
+
     function trendStats() {
-      return payload.runs.map(run => ({
-        meta: run.meta,
-        hh: pairStatsRows(run.rows, "human_1_label_collapsed", "human_2_label_collapsed", false),
-        l1: pairStatsRows(run.rows, "llm_label_collapsed", "human_1_label_collapsed", false),
-        l2: pairStatsRows(run.rows, "llm_label_collapsed", "human_2_label_collapsed", false),
-        cons: consensusStats(run.rows)
-      }));
+      const basis = state.trendBasis;
+      const H1 = "human_1_label_collapsed", H2 = "human_2_label_collapsed", L = "llm_label_collapsed";
+      return payload.runs.map(run => {
+        const base = state.trendScope === "clean"
+          ? run.rows.filter(r => !isInspected(r))
+          : run.rows;
+        let hh, l1, l2, cons;
+        if (basis === "full") {
+          hh = pairStatsRows(base, H1, H2, false);
+          l1 = pairStatsRows(base, L, H1, false);
+          l2 = pairStatsRows(base, L, H2, false);
+          cons = consensusStats(base);
+        } else {
+          const negOnly = basis === "denialNeg";
+          hh = binPairStats(base, H1, H2, negOnly);
+          l1 = binPairStats(base, L, H1, negOnly);
+          l2 = binPairStats(base, L, H2, negOnly);
+          cons = binConsensusStats(base, negOnly);
+        }
+        return { meta: run.meta, nScope: base.length, hh, l1, l2, cons };
+      });
+    }
+
+    function setTrendScope(scope) {
+      state.trendScope = scope;
+      $("trendScopeAll").classList.toggle("active", scope === "all");
+      $("trendScopeClean").classList.toggle("active", scope === "clean");
+      renderTrends();
+    }
+
+    function setTrendBasis(basis) {
+      state.trendBasis = basis;
+      $("trendBasisFull").classList.toggle("active", basis === "full");
+      $("trendBasisDenialAll").classList.toggle("active", basis === "denialAll");
+      $("trendBasisDenialNeg").classList.toggle("active", basis === "denialNeg");
+      renderTrends();
     }
 
     function shapeMarkup(shape, x, y, r, color) {
@@ -1416,8 +1762,9 @@ html <- paste0(
         const x = xPos(i);
         if (i > 0) parts.push(`<line x1="${ml + colW * i}" y1="${mt}" x2="${ml + colW * i}" y2="${mt + plotH}" stroke="#f0f2ef" stroke-width="1"/>`);
         parts.push(`<text x="${x}" y="${mt + plotH + 22}" text-anchor="middle" font-size="13" font-weight="700" fill="#202124">${esc(s.meta.version)}</text>`);
-        parts.push(`<text x="${x}" y="${mt + plotH + 38}" text-anchor="middle" font-size="11" fill="#687076">${esc(s.meta.split)} &middot; n=${s.meta.n_rows}</text>`);
+        parts.push(`<text x="${x}" y="${mt + plotH + 38}" text-anchor="middle" font-size="11" fill="#687076">${esc(s.meta.split)} &middot; n=${s.nScope}${state.trendScope === "clean" ? " clean" : ""}</text>`);
         parts.push(`<text x="${x}" y="${mt + plotH + 52}" text-anchor="middle" font-size="10.5" fill="#9aa3a9">${esc(s.meta.model || "")}${s.meta.run_date ? " &middot; " + esc(s.meta.run_date) : ""}</text>`);
+        if (!s.nScope) parts.push(`<text x="${x}" y="${mt + plotH / 2}" text-anchor="middle" font-size="11" fill="#9aa3a9" transform="rotate(-90 ${x} ${mt + plotH / 2})">all rows inspected &mdash; no headline evidence</text>`);
       });
 
       const labelCols = stats.map(() => []);
@@ -1457,6 +1804,12 @@ html <- paste0(
         `<span style="margin-left:8px; border-left:1px solid var(--border); padding-left:14px;">Split:</span>` +
         splits.map(sp => `<span><span class="shape">${shapeGlyph[shapeFor[sp]]}</span>${esc(sp)}</span>`).join("");
 
+      $("trendTableCaption").innerHTML =
+        `Comparison: <b>${esc(trendBasisDefs[state.trendBasis].label)}</b>. ` +
+        (state.trendScope === "clean"
+          ? `Clean rows only (inspected development rows excluded) &mdash; the headline view. `
+          : `All rows, including inspected development rows; switch to &ldquo;Clean only&rdquo; for headline numbers. `) +
+        `Same conventions as the run explorer: collapsed labels, denominator = rows where both compared coders have a non-missing Bloom label.`;
       $("trendTable").innerHTML = `<table><thead><tr>
           <th>Run</th><th>Split</th><th class="numeric">n</th>
           <th class="numeric">Human&ndash;human</th><th class="numeric">LLM vs consensus</th>
@@ -1464,7 +1817,7 @@ html <- paste0(
         </tr></thead><tbody>${
         stats.map(s => `<tr>
           <td><b>${esc(s.meta.version)}</b> ${esc(s.meta.model || "")} ${esc(s.meta.prompt_version || "")}${s.meta.run_date ? " &middot; " + esc(s.meta.run_date) : ""}</td>
-          <td>${esc(s.meta.split)}</td><td class="numeric">${s.meta.n_rows}</td>
+          <td>${esc(s.meta.split)}</td><td class="numeric">${s.nScope}${s.nScope === s.meta.n_rows ? "" : ` <span class="muted">of ${s.meta.n_rows}</span>`}</td>
           <td class="numeric">${pct(s.hh.agreement)} <span class="muted">(&kappa; ${num(s.hh.kappa)}, n=${s.hh.n})</span></td>
           <td class="numeric">${pct(s.cons.agreement)} <span class="muted">(n=${s.cons.n})</span></td>
           <td class="numeric">${pct(s.l1.agreement)} <span class="muted">(&kappa; ${num(s.l1.kappa)}, n=${s.l1.n})</span></td>

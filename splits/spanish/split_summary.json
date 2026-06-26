@@ -1,0 +1,148 @@
+{
+  "language": "Spanish",
+  "seed": 20260527,
+  "n_iterations": 20000,
+  "split_score": 0.17855191525308944,
+  "split_targets": {
+    "dev_train": 0.2,
+    "dev_check_1": 0.25,
+    "dev_check_2": 0.25,
+    "test_lockbox": 0.3
+  },
+  "coder_pair": [
+    "AP",
+    "JEC"
+  ],
+  "age_bins_months": [
+    16.0,
+    18.333333333333332,
+    20.666666666666668,
+    23.0,
+    25.333333333333336,
+    27.666666666666668,
+    30.0
+  ],
+  "n_input_rows": 11763,
+  "n_coded_by_at_least_one": 7345,
+  "n_uncoded_by_neither": 4418,
+  "n_transcripts_with_age": 404,
+  "n_transcripts_total": 245,
+  "splits": {
+    "dev_train": {
+      "n_rows": 1478,
+      "n_transcripts": 61,
+      "mean_age_months": 25.334,
+      "min_age_months": 19.0,
+      "max_age_months": 29.953,
+      "both_coders": 1021,
+      "one_coder": 457,
+      "neither": 0,
+      "n_overlap_bloom": 1021,
+      "bloom_exact_agreement": 0.7728,
+      "bloom_cohen_kappa": 0.6385,
+      "coder_counts": {
+        "AP": 891,
+        "Daliza": 136,
+        "Grethell": 126,
+        "JEC": 1346
+      },
+      "overlap_counts": {
+        "AP + JEC": 891,
+        "Daliza + Grethell": 126,
+        "Daliza + JEC": 4
+      }
+    },
+    "dev_check_1": {
+      "n_rows": 1813,
+      "n_transcripts": 62,
+      "mean_age_months": 25.698,
+      "min_age_months": 16.0,
+      "max_age_months": 29.559,
+      "both_coders": 1242,
+      "one_coder": 571,
+      "neither": 0,
+      "n_overlap_bloom": 1242,
+      "bloom_exact_agreement": 0.744,
+      "bloom_cohen_kappa": 0.6025,
+      "coder_counts": {
+        "AP": 1032,
+        "Daliza": 317,
+        "Grethell": 174,
+        "JEC": 1532
+      },
+      "overlap_counts": {
+        "AP + JEC": 1032,
+        "Daliza + Grethell": 174,
+        "Daliza + JEC": 36
+      }
+    },
+    "dev_check_2": {
+      "n_rows": 1807,
+      "n_transcripts": 64,
+      "mean_age_months": 25.21,
+      "min_age_months": 17.0,
+      "max_age_months": 30.0,
+      "both_coders": 1240,
+      "one_coder": 567,
+      "neither": 0,
+      "n_overlap_bloom": 1240,
+      "bloom_exact_agreement": 0.7306,
+      "bloom_cohen_kappa": 0.5867,
+      "coder_counts": {
+        "AP": 895,
+        "Daliza": 345,
+        "Grethell": 178,
+        "JEC": 1629
+      },
+      "overlap_counts": {
+        "AP + JEC": 895,
+        "Daliza + Grethell": 178,
+        "Daliza + JEC": 167
+      }
+    },
+    "test_lockbox": {
+      "n_rows": 2247,
+      "n_transcripts": 58,
+      "mean_age_months": 25.583,
+      "min_age_months": 16.0,
+      "max_age_months": 29.854,
+      "both_coders": 1481,
+      "one_coder": 766,
+      "neither": 0,
+      "n_overlap_bloom": 1481,
+      "bloom_exact_agreement": 0.7806,
+      "bloom_cohen_kappa": 0.6402,
+      "coder_counts": {
+        "AP": 977,
+        "Daliza": 506,
+        "Grethell": 491,
+        "JEC": 1754
+      },
+      "overlap_counts": {
+        "AP + JEC": 977,
+        "Daliza + Grethell": 491,
+        "Daliza + JEC": 13
+      }
+    },
+    "uncoded_by_neither": {
+      "n_rows": 4418,
+      "n_transcripts": 157,
+      "mean_age_months": 25.2,
+      "min_age_months": 17.657,
+      "max_age_months": 30.0,
+      "both_coders": 0,
+      "one_coder": 0,
+      "neither": 4418,
+      "n_overlap_bloom": 0,
+      "bloom_exact_agreement": null,
+      "bloom_cohen_kappa": null,
+      "coder_counts": {},
+      "overlap_counts": {}
+    }
+  },
+  "outputs": {
+    "split_dir": "Data/XLing-LLM_coding/splits/spanish",
+    "diagnostic_svg": "Data/XLing-LLM_coding/splits/spanish/diagnostics/spanish_split_diagnostics.svg",
+    "transcript_manifest": "Data/XLing-LLM_coding/splits/spanish/transcript_split_manifest.csv"
+  }
+}

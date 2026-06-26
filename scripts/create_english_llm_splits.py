@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import math
 import random
@@ -612,7 +613,7 @@ def render_transcript_irr_panel(split_records, split_names, top, width):
 
     for point in points:
         i = split_names.index(point["split"])
-        jitter_seed = sum(ord(char) for char in point["transcript_id"]) % 1000
+        jitter_seed = int(hashlib.md5(point["transcript_id"].encode()).hexdigest(), 16) % 1000
         jitter = (jitter_seed / 999 - 0.5) * split_w * 0.68
         x = panel_x + i * split_w + split_w / 2 + jitter
         y = panel_y + panel_h - point["agreement"] * panel_h

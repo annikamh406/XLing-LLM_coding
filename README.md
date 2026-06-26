@@ -33,6 +33,49 @@ which token of a multi-negator utterance it is coding (needed for the
 repetition flag). Regenerating with these fields was verified to change
 nothing else: identical record ids, split membership, and all other fields.
 
+## Multilingual splits (German, Hebrew, Spanish)
+
+The English splits come from the dedicated `scripts/build_english_llm_dataset.py`
+and `scripts/create_english_llm_splits.py`. The other languages are built by
+generalized ports that share one config module:
+
+- `scripts/_pipeline_config.py`: per-language workbook paths, coder pair,
+  transcript-sheet layout, exclusion rule, and the canonical Bloom-label map.
+- `scripts/build_llm_dataset.py [langs...]`: token-level dataset + human
+  reference (defaults to german, hebrew, spanish). Writes
+  `datasets/<lang>_llm_dataset.jsonl` etc.
+- `scripts/create_llm_splits.py [langs...]`: transcript-level splits into
+  `splits/<lang>/` with the same 20/25/25/30 targets, balancing objective, and
+  SVG diagnostics. **Needs pandas/numpy** — run with the x86_64 interpreter at
+  `/Users/annika/miniconda/bin/python3` (the arm64 `python3.10` has a broken
+  pandas build); the builder has no such dependency.
+
+Per-language quirks handled by the generalized reader, and decisions made
+(2026-06-25), because the source workbooks are messier than English:
+
+- **Single `Transcript` sheet** (no First/Second-half split, no `Half` column);
+  ages still parse from the same `@ID:` lines.
+- **No `exclusion` column**, so there is no "RED ... TT5" pre-output drop step
+  (0 rows dropped for these languages).
+- **Mixed header styles** (spaced "Not a negation?" vs R-dotted
+  "Not.a.negation?") matched case/separator-insensitively; some masters lack
+  `Tag Question?` / `Not a negation?` (read from coder sheets) and `Child_ID`.
+- **`coded_by` carries real names** (Hebrew "Ronnie", Spanish "Daliza"/
+  "Grethell"), surfaced as coders in the diagnostics.
+- **Bloom labels are normalized** to the canonical six (Nonexistence,
+  Rejection, Denial, Nonpossession, Uncoded, Excluded); the raw coder sheets
+  contain spelling/case variants (`Nonposession`, `Nonexistance`, lowercase
+  `denial`/`excluded`, ...). The dataset summary's `unmapped_bloom_labels`
+  flags any label the map does not cover (currently empty for all three).
+  Coder records keep `bloom_label_raw` alongside the normalized `bloom_label`.
+- **German has three coder workbooks** (PZ, MP, AR); the canonical IRR pair is
+  **PZ + MP** (project decision 2026-06-25). All three are row-aligned to the
+  master, but only PZ+MP are used for German.
+
+All coder workbooks are row-aligned to their master `Code` sheet (verified: 0
+alignment mismatches, 0 missing context windows, no record/transcript leakage
+across splits).
+
 Per version (current version: **v3**):
 
 - `v3/CHANGES_FROM_V2.md`: complete v2 -> v3 change log — every change with
@@ -73,7 +116,7 @@ git push
 
 ```bash
 ssh <user>@ssh.ccv.brown.edu
-cd /oscar/data/rfeiman/amcderm6/XLing-LLM_coding
+cd data/amcderm6/XLing-LLM_coding
 git pull
 
 interact -n 4 -m 32g -q gpu -g 1 -t 1:00:00
@@ -95,7 +138,7 @@ on the order of `-t 8:00:00` for that.
 ssh <user>@ssh.ccv.brown.edu   # new terminal
 ssh <gpu-node-name>            # hop to the node running ollama serve
 module load ollama
-cd /oscar/data/rfeiman/amcderm6/XLing-LLM_coding
+cd data/amcderm6/XLing-LLM_coding
 # first time only, if the model is not yet in ~/.ollama:
 ollama pull gemma4:31b
 

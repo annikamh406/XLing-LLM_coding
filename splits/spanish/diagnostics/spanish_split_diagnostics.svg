@@ -1,0 +1,345 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1325" viewBox="0 0 1280 1325">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="40" y="42" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#111827" text-anchor="start">Spanish LLM Split Diagnostics</text>
+<text x="40" y="68" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#4b5563" text-anchor="start">Transcript-level pseudorandom split, seed 20260527; age in months; context split file rows shown.</text>
+<line x1="40" y1="72" x2="1240" y2="72" stroke="#e5e7eb"/>
+<text x="40" y="95" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">dev_train</text>
+<text x="40" y="119" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">1478 rows, 61 transcripts</text>
+<text x="40" y="140" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">age mean 25.3; range 19.0-30.0</text>
+<text x="40" y="161" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Bloom IRR: agreement 0.773; kappa 0.638; n=1021</text>
+<rect x="260" y="89" width="179.60757780784846" height="22" fill="#2563eb"/>
+<rect x="439.60757780784843" y="89" width="80.39242219215154" height="22" fill="#14b8a6"/>
+<rect x="260" y="89" width="260" height="22" fill="none" stroke="#111827" stroke-width="0.7"/>
+<text x="260" y="132" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">both 1021  |  one 457  |  neither 0</text>
+<text x="570" y="75" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">child age distribution</text>
+<rect x="572.0" y="143.0" width="37.666666666666664" height="0.0" fill="#f97316"/>
+<rect x="613.6666666666666" y="128.27191011235956" width="37.666666666666664" height="14.728089887640449" fill="#f97316"/>
+<rect x="655.3333333333334" y="109.37303370786518" width="37.666666666666664" height="33.62696629213483" fill="#f97316"/>
+<rect x="697.0" y="98.68539325842697" width="37.666666666666664" height="44.31460674157303" fill="#f97316"/>
+<rect x="738.6666666666666" y="101.0314606741573" width="37.666666666666664" height="41.96853932584269" fill="#f97316"/>
+<rect x="780.3333333333333" y="85.0" width="37.666666666666664" height="58.0" fill="#f97316"/>
+<line x1="570" y1="143" x2="820" y2="143" stroke="#111827" stroke-width="0.7"/>
+<text x="570" y="159" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="start">16</text>
+<text x="820" y="159" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">30</text>
+<text x="870" y="75" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">coder line counts</text>
+<rect x="870" y="80" width="150.0" height="11" fill="#1d4ed8"/>
+<text x="1028" y="90" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">JEC: 1346</text>
+<rect x="870" y="97" width="99.29420505200594" height="11" fill="#0891b2"/>
+<text x="1028" y="107" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">AP: 891</text>
+<rect x="870" y="114" width="15.156017830609212" height="11" fill="#7c3aed"/>
+<text x="1028" y="124" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">Daliza: 136</text>
+<rect x="870" y="131" width="14.041604754829123" height="11" fill="#c2410c"/>
+<text x="1028" y="141" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">Grethell: 126</text>
+<text x="260" y="172" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">overlap: AP + JEC: 891; Daliza + Grethell: 126; Daliza + JEC: 4</text>
+<line x1="40" y1="242" x2="1240" y2="242" stroke="#e5e7eb"/>
+<text x="40" y="265" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">dev_check_1</text>
+<text x="40" y="289" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">1813 rows, 62 transcripts</text>
+<text x="40" y="310" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">age mean 25.7; range 16.0-29.6</text>
+<text x="40" y="331" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Bloom IRR: agreement 0.744; kappa 0.603; n=1242</text>
+<rect x="260" y="259" width="178.11362382790952" height="22" fill="#2563eb"/>
+<rect x="438.1136238279095" y="259" width="81.88637617209045" height="22" fill="#14b8a6"/>
+<rect x="260" y="259" width="260" height="22" fill="none" stroke="#111827" stroke-width="0.7"/>
+<text x="260" y="302" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">both 1242  |  one 571  |  neither 0</text>
+<text x="570" y="245" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">child age distribution</text>
+<rect x="572.0" y="312.78793418647166" width="37.666666666666664" height="0.21206581352833637" fill="#f97316"/>
+<rect x="613.6666666666666" y="299.5338208409506" width="37.666666666666664" height="13.466179159049359" fill="#f97316"/>
+<rect x="655.3333333333334" y="289.46069469835464" width="37.666666666666664" height="23.53930530164534" fill="#f97316"/>
+<rect x="697.0" y="267.82998171846435" width="37.666666666666664" height="45.17001828153565" fill="#f97316"/>
+<rect x="738.6666666666666" y="261.14990859232176" width="37.666666666666664" height="51.85009140767824" fill="#f97316"/>
+<rect x="780.3333333333333" y="255.0" width="37.666666666666664" height="58.0" fill="#f97316"/>
+<line x1="570" y1="313" x2="820" y2="313" stroke="#111827" stroke-width="0.7"/>
+<text x="570" y="329" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="start">16</text>
+<text x="820" y="329" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">30</text>
+<text x="870" y="245" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">coder line counts</text>
+<rect x="870" y="250" width="150.0" height="11" fill="#1d4ed8"/>
+<text x="1028" y="260" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">JEC: 1532</text>
+<rect x="870" y="267" width="101.0443864229765" height="11" fill="#0891b2"/>
+<text x="1028" y="277" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">AP: 1032</text>
+<rect x="870" y="284" width="31.0378590078329" height="11" fill="#7c3aed"/>
+<text x="1028" y="294" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">Daliza: 317</text>
+<rect x="870" y="301" width="17.036553524804177" height="11" fill="#c2410c"/>
+<text x="1028" y="311" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">Grethell: 174</text>
+<text x="260" y="342" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">overlap: AP + JEC: 1032; Daliza + Grethell: 174; Daliza + JEC: 36</text>
+<line x1="40" y1="412" x2="1240" y2="412" stroke="#e5e7eb"/>
+<text x="40" y="435" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">dev_check_2</text>
+<text x="40" y="459" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">1807 rows, 64 transcripts</text>
+<text x="40" y="480" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">age mean 25.2; range 17.0-30.0</text>
+<text x="40" y="501" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Bloom IRR: agreement 0.731; kappa 0.587; n=1240</text>
+<rect x="260" y="429" width="178.41726618705036" height="22" fill="#2563eb"/>
+<rect x="438.41726618705036" y="429" width="81.58273381294964" height="22" fill="#14b8a6"/>
+<rect x="260" y="429" width="260" height="22" fill="none" stroke="#111827" stroke-width="0.7"/>
+<text x="260" y="472" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">both 1240  |  one 567  |  neither 0</text>
+<text x="570" y="415" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">child age distribution</text>
+<rect x="572.0" y="482.4117647058824" width="37.666666666666664" height="0.5882352941176471" fill="#f97316"/>
+<rect x="613.6666666666666" y="467.47058823529414" width="37.666666666666664" height="15.529411764705882" fill="#f97316"/>
+<rect x="655.3333333333334" y="449.8235294117647" width="37.666666666666664" height="33.1764705882353" fill="#f97316"/>
+<rect x="697.0" y="433.8235294117647" width="37.666666666666664" height="49.1764705882353" fill="#f97316"/>
+<rect x="738.6666666666666" y="425.0" width="37.666666666666664" height="58.0" fill="#f97316"/>
+<rect x="780.3333333333333" y="426.88235294117646" width="37.666666666666664" height="56.11764705882353" fill="#f97316"/>
+<line x1="570" y1="483" x2="820" y2="483" stroke="#111827" stroke-width="0.7"/>
+<text x="570" y="499" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="start">16</text>
+<text x="820" y="499" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">30</text>
+<text x="870" y="415" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">coder line counts</text>
+<rect x="870" y="420" width="150.0" height="11" fill="#1d4ed8"/>
+<text x="1028" y="430" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">JEC: 1629</text>
+<rect x="870" y="437" width="82.41252302025784" height="11" fill="#0891b2"/>
+<text x="1028" y="447" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">AP: 895</text>
+<rect x="870" y="454" width="31.76795580110497" height="11" fill="#7c3aed"/>
+<text x="1028" y="464" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">Daliza: 345</text>
+<rect x="870" y="471" width="16.390423572744016" height="11" fill="#c2410c"/>
+<text x="1028" y="481" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">Grethell: 178</text>
+<text x="260" y="512" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">overlap: AP + JEC: 895; Daliza + Grethell: 178; Daliza + JEC: 167</text>
+<line x1="40" y1="582" x2="1240" y2="582" stroke="#e5e7eb"/>
+<text x="40" y="605" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">test_lockbox</text>
+<text x="40" y="629" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">2247 rows, 58 transcripts</text>
+<text x="40" y="650" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">age mean 25.6; range 16.0-29.9</text>
+<text x="40" y="671" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Bloom IRR: agreement 0.781; kappa 0.640; n=1481</text>
+<rect x="260" y="599" width="171.36626613262126" height="22" fill="#2563eb"/>
+<rect x="431.36626613262126" y="599" width="88.63373386737872" height="22" fill="#14b8a6"/>
+<rect x="260" y="599" width="260" height="22" fill="none" stroke="#111827" stroke-width="0.7"/>
+<text x="260" y="642" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">both 1481  |  one 766  |  neither 0</text>
+<text x="570" y="585" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">child age distribution</text>
+<rect x="572.0" y="652.671388101983" width="37.666666666666664" height="0.3286118980169972" fill="#f97316"/>
+<rect x="613.6666666666666" y="644.456090651558" width="37.666666666666664" height="8.543909348441925" fill="#f97316"/>
+<rect x="655.3333333333334" y="626.2181303116147" width="37.666666666666664" height="26.781869688385267" fill="#f97316"/>
+<rect x="697.0" y="595.0" width="37.666666666666664" height="58.0" fill="#f97316"/>
+<rect x="738.6666666666666" y="604.8583569405099" width="37.666666666666664" height="48.141643059490086" fill="#f97316"/>
+<rect x="780.3333333333333" y="610.1983002832861" width="37.666666666666664" height="42.80169971671388" fill="#f97316"/>
+<line x1="570" y1="653" x2="820" y2="653" stroke="#111827" stroke-width="0.7"/>
+<text x="570" y="669" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="start">16</text>
+<text x="820" y="669" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">30</text>
+<text x="870" y="585" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">coder line counts</text>
+<rect x="870" y="590" width="150.0" height="11" fill="#1d4ed8"/>
+<text x="1028" y="600" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">JEC: 1754</text>
+<rect x="870" y="607" width="83.55188141391106" height="11" fill="#0891b2"/>
+<text x="1028" y="617" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">AP: 977</text>
+<rect x="870" y="624" width="43.27251995438996" height="11" fill="#7c3aed"/>
+<text x="1028" y="634" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">Daliza: 506</text>
+<rect x="870" y="641" width="41.989737742303305" height="11" fill="#c2410c"/>
+<text x="1028" y="651" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">Grethell: 491</text>
+<text x="260" y="682" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">overlap: AP + JEC: 977; Daliza + Grethell: 491; Daliza + JEC: 13</text>
+<line x1="40" y1="752" x2="1240" y2="752" stroke="#e5e7eb"/>
+<text x="40" y="775" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">uncoded_by_neither</text>
+<text x="40" y="799" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">4418 rows, 157 transcripts</text>
+<text x="40" y="820" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">age mean 25.2; range 17.7-30.0</text>
+<text x="40" y="841" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Bloom IRR: not available</text>
+<rect x="260.0" y="769" width="260.0" height="22" fill="#9ca3af"/>
+<rect x="260" y="769" width="260" height="22" fill="none" stroke="#111827" stroke-width="0.7"/>
+<text x="260" y="812" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">both 0  |  one 0  |  neither 4418</text>
+<text x="570" y="755" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">child age distribution</text>
+<rect x="572.0" y="822.5883280757098" width="37.666666666666664" height="0.4116719242902208" fill="#f97316"/>
+<rect x="613.6666666666666" y="804.8406940063091" width="37.666666666666664" height="18.15930599369085" fill="#f97316"/>
+<rect x="655.3333333333334" y="792.1703470031546" width="37.666666666666664" height="30.82965299684543" fill="#f97316"/>
+<rect x="697.0" y="779.6829652996845" width="37.666666666666664" height="43.31703470031546" fill="#f97316"/>
+<rect x="738.6666666666666" y="771.6324921135647" width="37.666666666666664" height="51.367507886435334" fill="#f97316"/>
+<rect x="780.3333333333333" y="765.0" width="37.666666666666664" height="58.0" fill="#f97316"/>
+<line x1="570" y1="823" x2="820" y2="823" stroke="#111827" stroke-width="0.7"/>
+<text x="570" y="839" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="start">16</text>
+<text x="820" y="839" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">30</text>
+<text x="870" y="755" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">coder line counts</text>
+<text x="260" y="852" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">overlap: No overlapping coder pairs</text>
+<line x1="40" y1="959" x2="1240" y2="959" stroke="#e5e7eb"/>
+<text x="40" y="985" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827" text-anchor="start">Transcript-Level Bloom IRR</text>
+<text x="40" y="1007" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Each dot is one transcript with overlapping AP/JEC Bloom codes; y-axis is exact agreement; larger dots have more overlap rows.</text>
+<line x1="70" y1="1215" x2="1210" y2="1215" stroke="#e5e7eb" stroke-width="0.8"/>
+<text x="60" y="1219" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">0.00</text>
+<line x1="70" y1="1167.5" x2="1210" y2="1167.5" stroke="#e5e7eb" stroke-width="0.8"/>
+<text x="60" y="1171.5" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">0.25</text>
+<line x1="70" y1="1120.0" x2="1210" y2="1120.0" stroke="#e5e7eb" stroke-width="0.8"/>
+<text x="60" y="1124.0" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">0.50</text>
+<line x1="70" y1="1072.5" x2="1210" y2="1072.5" stroke="#e5e7eb" stroke-width="0.8"/>
+<text x="60" y="1076.5" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">0.75</text>
+<line x1="70" y1="1025.0" x2="1210" y2="1025.0" stroke="#e5e7eb" stroke-width="0.8"/>
+<text x="60" y="1029.0" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">1.00</text>
+<line x1="70" y1="1025" x2="70" y2="1215" stroke="#111827" stroke-width="0.8"/>
+<line x1="70" y1="1215" x2="1210" y2="1215" stroke="#111827" stroke-width="0.8"/>
+<text x="212.5" y="1239" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="middle">dev_train</text>
+<line x1="70.0" y1="1025" x2="70.0" y2="1215" stroke="#f3f4f6" stroke-width="0.8"/>
+<text x="497.5" y="1239" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="middle">dev_check_1</text>
+<line x1="355.0" y1="1025" x2="355.0" y2="1215" stroke="#f3f4f6" stroke-width="0.8"/>
+<text x="782.5" y="1239" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="middle">dev_check_2</text>
+<line x1="640.0" y1="1025" x2="640.0" y2="1215" stroke="#f3f4f6" stroke-width="0.8"/>
+<text x="1067.5" y="1239" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="middle">test_lockbox</text>
+<line x1="925.0" y1="1025" x2="925.0" y2="1215" stroke="#f3f4f6" stroke-width="0.8"/>
+<circle cx="236.46" cy="1215.00" r="2.62" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | JacksonThal-Pedro_28sb08.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="155.76" cy="1104.17" r="4.72" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Montes-Koki_020227.cha | agreement 0.583 | n=36</title></circle>
+<circle cx="287.28" cy="1025.00" r="3.04" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | OreaPine-Lucía_020410.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="243.25" cy="1215.00" r="3.04" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | JacksonThal-Jorge_28m12.cha | agreement 0.000 | n=4</title></circle>
+<circle cx="141.60" cy="1215.00" r="3.46" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | JacksonThal-Nathaly_28sd25.cha | agreement 0.000 | n=9</title></circle>
+<circle cx="163.32" cy="1058.53" r="4.65" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | OreaPine-Juan_020310.cha | agreement 0.824 | n=34</title></circle>
+<circle cx="216.67" cy="1058.53" r="3.93" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | OreaPine-Juan_020304.cha | agreement 0.824 | n=17</title></circle>
+<circle cx="191.65" cy="1170.29" r="3.93" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | JacksonThal-Francisco_20sd05.cha | agreement 0.235 | n=17</title></circle>
+<circle cx="241.89" cy="1079.75" r="5.42" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | OreaPine-Juan_020514.cha | agreement 0.712 | n=59</title></circle>
+<circle cx="247.90" cy="1183.33" r="3.23" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | JacksonThal-Alfredo_28sb06.cha | agreement 0.167 | n=6</title></circle>
+<circle cx="201.93" cy="1083.46" r="3.71" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Vila-Emilio_020301.cha | agreement 0.692 | n=13</title></circle>
+<circle cx="215.70" cy="1067.22" r="3.46" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Remedi-Vicky_020121.cha | agreement 0.778 | n=9</title></circle>
+<circle cx="209.30" cy="1061.19" r="4.12" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | OreaPine-Juan_020100.cha | agreement 0.810 | n=21</title></circle>
+<circle cx="123.17" cy="1088.33" r="3.83" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | OreaPine-Lucía_020415.cha | agreement 0.667 | n=15</title></circle>
+<circle cx="245.58" cy="1064.24" r="6.23" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Nieva-Mendía_011003.cha | agreement 0.793 | n=92</title></circle>
+<circle cx="203.09" cy="1072.50" r="3.65" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | JacksonThal-Natalia_28m11.cha | agreement 0.750 | n=12</title></circle>
+<circle cx="194.94" cy="1215.00" r="3.04" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | JacksonThal-Christopher_28sd07.cha | agreement 0.000 | n=4</title></circle>
+<circle cx="183.30" cy="1074.26" r="4.38" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Ornat-María_011000f.cha | agreement 0.741 | n=27</title></circle>
+<circle cx="244.99" cy="1025.00" r="2.62" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | JacksonThal-Paulina_20q14.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="266.53" cy="1048.21" r="7.00" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Marrero-Alfonso_020307.cha | agreement 0.878 | n=131</title></circle>
+<circle cx="195.72" cy="1025.00" r="3.23" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | JacksonThal-Fausto_28q01.cha | agreement 1.000 | n=6</title></circle>
+<circle cx="224.82" cy="1071.22" r="4.75" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | SerraSole-Eduard_020000.cha | agreement 0.757 | n=37</title></circle>
+<circle cx="217.83" cy="1091.28" r="4.95" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | OreaPine-Lucía_020328.cha | agreement 0.651 | n=43</title></circle>
+<circle cx="243.05" cy="1096.25" r="4.26" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | OreaPine-Juan_020529b.cha | agreement 0.625 | n=24</title></circle>
+<circle cx="255.66" cy="1046.11" r="3.98" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Ornat-María_011000g.cha | agreement 0.889 | n=18</title></circle>
+<circle cx="164.29" cy="1088.33" r="3.65" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | JacksonThal-Diana_20q12.cha | agreement 0.667 | n=12</title></circle>
+<circle cx="126.08" cy="1045.00" r="4.79" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | OreaPine-Juan_020417.cha | agreement 0.895 | n=38</title></circle>
+<circle cx="133.06" cy="1065.00" r="4.03" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | JacksonThal-Eduardo_28m13.cha | agreement 0.789 | n=19</title></circle>
+<circle cx="234.91" cy="1025.00" r="3.04" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | OreaPine-Juan_020012.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="191.06" cy="1052.14" r="4.42" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | OreaPine-Lucía_020505.cha | agreement 0.857 | n=28</title></circle>
+<circle cx="194.17" cy="1050.91" r="4.17" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Vila-Emilio_010919.cha | agreement 0.864 | n=22</title></circle>
+<circle cx="189.90" cy="1072.50" r="4.26" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | OreaPine-Juan_020529a.cha | agreement 0.750 | n=24</title></circle>
+<circle cx="289.22" cy="1047.80" r="4.30" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | OreaPine-Lucía_020312a.cha | agreement 0.880 | n=25</title></circle>
+<circle cx="303.97" cy="1050.33" r="4.50" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Ornat-María_010700l.cha | agreement 0.867 | n=30</title></circle>
+<circle cx="270.21" cy="1075.41" r="5.14" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | OreaPine-Juan_020412.cha | agreement 0.735 | n=49</title></circle>
+<circle cx="277.78" cy="1052.14" r="4.42" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Aguirre_011020.cha | agreement 0.857 | n=28</title></circle>
+<circle cx="120.84" cy="1059.10" r="4.82" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Aguirre_020000.cha | agreement 0.821 | n=39</title></circle>
+<circle cx="180.59" cy="1025.00" r="3.14" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Aguirre_011016.cha | agreement 1.000 | n=5</title></circle>
+<circle cx="236.65" cy="1038.57" r="4.42" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Aguirre_010815.cha | agreement 0.929 | n=28</title></circle>
+<circle cx="239.37" cy="1037.67" r="4.50" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Aguirre_011100.cha | agreement 0.933 | n=30</title></circle>
+<circle cx="465.39" cy="1067.79" r="6.62" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Aguirre_020310.cha | agreement 0.775 | n=111</title></circle>
+<circle cx="503.80" cy="1147.94" r="3.93" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | OreaPine-Juan_020517.cha | agreement 0.353 | n=17</title></circle>
+<circle cx="483.63" cy="1215.00" r="3.83" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | JacksonThal-Pablo_28m18.cha | agreement 0.000 | n=15</title></circle>
+<circle cx="544.74" cy="1215.00" r="2.62" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | JacksonThal-Andrea_20q11.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="503.80" cy="1056.67" r="3.23" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Ornat-María_020500c.cha | agreement 0.833 | n=6</title></circle>
+<circle cx="550.95" cy="1215.00" r="3.77" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | JacksonThal-Sofia_28m17.cha | agreement 0.000 | n=14</title></circle>
+<circle cx="551.53" cy="1025.00" r="2.79" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Vila-Emilio_010400.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="469.08" cy="1074.18" r="6.07" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Nieva-Mendía_011013.cha | agreement 0.741 | n=85</title></circle>
+<circle cx="508.07" cy="1043.10" r="4.92" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | OreaPine-Lucía_020411.cha | agreement 0.905 | n=42</title></circle>
+<circle cx="403.90" cy="1049.05" r="5.93" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | OreaPine-Juan_020104.cha | agreement 0.873 | n=79</title></circle>
+<circle cx="582.57" cy="1032.04" r="4.38" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | OreaPine-Juan_020312.cha | agreement 0.963 | n=27</title></circle>
+<circle cx="515.44" cy="1151.67" r="3.23" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | JacksonThal-Perla_20sd11.cha | agreement 0.333 | n=6</title></circle>
+<circle cx="445.80" cy="1025.00" r="2.79" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Ornat-María_020500a.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="571.31" cy="1063.00" r="3.14" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | JacksonThal-Esther_20m07.cha | agreement 0.800 | n=5</title></circle>
+<circle cx="525.34" cy="1054.23" r="3.71" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | OreaPine-Juan_020129.cha | agreement 0.846 | n=13</title></circle>
+<circle cx="513.89" cy="1025.00" r="2.79" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | JacksonThal-Aldo_20m03.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="409.14" cy="1069.71" r="3.93" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | OreaPine-Juan_020303.cha | agreement 0.765 | n=17</title></circle>
+<circle cx="510.40" cy="1063.00" r="4.50" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Aguirre_011120.cha | agreement 0.800 | n=30</title></circle>
+<circle cx="547.26" cy="1078.59" r="4.82" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | OreaPine-Lucía_020416.cha | agreement 0.718 | n=39</title></circle>
+<circle cx="475.68" cy="1061.29" r="6.16" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | OreaPine-Juan_020505.cha | agreement 0.809 | n=89</title></circle>
+<circle cx="433.38" cy="1215.00" r="3.93" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | JacksonThal-Julio_28sd19.cha | agreement 0.000 | n=17</title></circle>
+<circle cx="551.72" cy="1039.62" r="4.34" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Ornat-María_020500d.cha | agreement 0.923 | n=26</title></circle>
+<circle cx="447.35" cy="1215.00" r="3.88" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | JacksonThal-Andrea_28sd15.cha | agreement 0.000 | n=16</title></circle>
+<circle cx="404.09" cy="1215.00" r="3.77" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | JacksonThal-Marylee_28sd16.cha | agreement 0.000 | n=14</title></circle>
+<circle cx="593.04" cy="1065.71" r="4.42" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Nieva-Mendía_010914.cha | agreement 0.786 | n=28</title></circle>
+<circle cx="427.95" cy="1215.00" r="3.39" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | JacksonThal-Frederic_28sd18.cha | agreement 0.000 | n=8</title></circle>
+<circle cx="520.29" cy="1025.00" r="2.79" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Ornat-María_020500g.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="487.12" cy="1056.12" r="6.72" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Nieva-Mendía_020220.cha | agreement 0.836 | n=116</title></circle>
+<circle cx="541.44" cy="1048.75" r="3.39" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | JacksonThal-Dalia_20sb08.cha | agreement 0.875 | n=8</title></circle>
+<circle cx="450.46" cy="1040.83" r="3.65" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | OreaPine-Lucía_020507.cha | agreement 0.917 | n=12</title></circle>
+<circle cx="456.66" cy="1098.08" r="3.71" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | JacksonThal-Pablo_28q09.cha | agreement 0.615 | n=13</title></circle>
+<circle cx="489.06" cy="1044.00" r="4.50" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Ornat-María_020100e.cha | agreement 0.900 | n=30</title></circle>
+<circle cx="432.42" cy="1039.62" r="3.71" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Remedi-Vicky_020421.cha | agreement 0.923 | n=13</title></circle>
+<circle cx="465.39" cy="1025.00" r="3.46" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Aguirre_010700.cha | agreement 1.000 | n=9</title></circle>
+<circle cx="575.00" cy="1094.09" r="4.17" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | OreaPine-Lucía_020316.cha | agreement 0.636 | n=22</title></circle>
+<circle cx="588.19" cy="1080.66" r="6.38" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Nieva-Mendía_011106.cha | agreement 0.707 | n=99</title></circle>
+<circle cx="526.31" cy="1088.33" r="3.98" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | JacksonThal-Ariela_20m02.cha | agreement 0.667 | n=18</title></circle>
+<circle cx="591.68" cy="1076.82" r="3.59" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | OreaPine-Juan_020006.cha | agreement 0.727 | n=11</title></circle>
+<circle cx="556.77" cy="1038.26" r="4.95" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | OreaPine-Juan_011026.cha | agreement 0.930 | n=43</title></circle>
+<circle cx="407.20" cy="1036.18" r="3.93" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | JacksonThal-Viridiana_20sb03.cha | agreement 0.941 | n=17</title></circle>
+<circle cx="488.67" cy="1025.00" r="2.79" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | JacksonThal-Pedro_20q10.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="510.01" cy="1071.60" r="5.26" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Aguirre_011027.cha | agreement 0.755 | n=53</title></circle>
+<circle cx="560.84" cy="1068.43" r="4.68" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Vila-Emilio_020100a.cha | agreement 0.771 | n=35</title></circle>
+<circle cx="501.86" cy="1075.67" r="3.83" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Ornat-María_010700h.cha | agreement 0.733 | n=15</title></circle>
+<circle cx="513.50" cy="1039.62" r="3.71" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Aguirre_010901.cha | agreement 0.923 | n=13</title></circle>
+<circle cx="791.52" cy="1030.28" r="4.72" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | SerraSole-Eduard_020300.cha | agreement 0.972 | n=36</title></circle>
+<circle cx="858.64" cy="1070.24" r="4.12" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | OreaPine-Lucía_020405.cha | agreement 0.762 | n=21</title></circle>
+<circle cx="760.29" cy="1187.86" r="3.77" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | JacksonThal-Sergio_28sd09.cha | agreement 0.143 | n=14</title></circle>
+<circle cx="802.38" cy="1033.64" r="4.17" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | OreaPine-Juan_020112.cha | agreement 0.955 | n=22</title></circle>
+<circle cx="725.37" cy="1092.06" r="3.93" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | OreaPine-Juan_020528.cha | agreement 0.647 | n=17</title></circle>
+<circle cx="771.93" cy="1056.44" r="7.15" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Nieva-Mendía_020030.cha | agreement 0.835 | n=139</title></circle>
+<circle cx="813.25" cy="1091.03" r="7.18" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Aguirre_020500.cha | agreement 0.652 | n=141</title></circle>
+<circle cx="852.43" cy="1025.00" r="3.83" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | JacksonThal-Marisol_28sb05.cha | agreement 1.000 | n=15</title></circle>
+<circle cx="823.34" cy="1038.57" r="3.77" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Ornat-María_020500e.cha | agreement 0.929 | n=14</title></circle>
+<circle cx="734.29" cy="1054.23" r="3.71" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | OreaPine-Juan_011120.cha | agreement 0.846 | n=13</title></circle>
+<circle cx="724.20" cy="1083.27" r="5.83" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Aguirre_020115.cha | agreement 0.693 | n=75</title></circle>
+<circle cx="821.59" cy="1050.33" r="4.50" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Nieva-Mendía_010900.cha | agreement 0.867 | n=30</title></circle>
+<circle cx="789.97" cy="1075.29" r="4.65" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | OreaPine-Juan_020328.cha | agreement 0.735 | n=34</title></circle>
+<circle cx="859.81" cy="1063.00" r="3.14" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | JacksonThal-Ornela_20q13.cha | agreement 0.800 | n=5</title></circle>
+<circle cx="864.27" cy="1151.67" r="2.93" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | JacksonThal-Jorge_28sd22.cha | agreement 0.333 | n=3</title></circle>
+<circle cx="833.04" cy="1104.17" r="3.65" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | OreaPine-Lucía_020400.cha | agreement 0.583 | n=12</title></circle>
+<circle cx="740.50" cy="1120.00" r="2.79" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Linaza-Juan_010702.cha | agreement 0.500 | n=2</title></circle>
+<circle cx="832.26" cy="1063.00" r="3.83" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Ornat-María_010700j.cha | agreement 0.800 | n=15</title></circle>
+<circle cx="865.82" cy="1067.22" r="3.46" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Remedi-Vicky_020024.cha | agreement 0.778 | n=9</title></circle>
+<circle cx="785.12" cy="1025.00" r="2.62" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | OreaPine-Juan_020004.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="733.71" cy="1215.00" r="3.23" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | JacksonThal-Alderly_20sd09.cha | agreement 0.000 | n=6</title></circle>
+<circle cx="876.10" cy="1063.00" r="4.85" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | OreaPine-Juan_020207.cha | agreement 0.800 | n=40</title></circle>
+<circle cx="862.33" cy="1091.09" r="4.21" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Vila-Emilio_020100b.cha | agreement 0.652 | n=23</title></circle>
+<circle cx="750.01" cy="1215.00" r="2.62" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | JacksonThal-Adrian_28sd05.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="859.42" cy="1215.00" r="3.65" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | JacksonThal-Hector_28sd29.cha | agreement 0.000 | n=12</title></circle>
+<circle cx="802.19" cy="1161.80" r="4.30" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Ornat-María_010700i.cha | agreement 0.280 | n=25</title></circle>
+<circle cx="821.59" cy="1069.25" r="5.79" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Aguirre_010927.cha | agreement 0.767 | n=73</title></circle>
+<circle cx="802.77" cy="1215.00" r="3.23" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | JacksonThal-Norma_20sd10.cha | agreement 0.000 | n=6</title></circle>
+<circle cx="801.03" cy="1167.50" r="3.04" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | OreaPine-Juan_020211.cha | agreement 0.250 | n=4</title></circle>
+<circle cx="740.11" cy="1085.00" r="4.03" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Ornat-María_020100g.cha | agreement 0.684 | n=19</title></circle>
+<circle cx="854.96" cy="1063.00" r="3.83" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Ornat-María_020100f.cha | agreement 0.800 | n=15</title></circle>
+<circle cx="720.32" cy="1215.00" r="3.04" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | JacksonThal-Marilyn_28sd13.cha | agreement 0.000 | n=4</title></circle>
+<circle cx="762.62" cy="1139.00" r="3.14" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | JacksonThal-Deborah_20m04.cha | agreement 0.400 | n=5</title></circle>
+<circle cx="731.96" cy="1061.03" r="5.40" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | OreaPine-Lucía_020303.cha | agreement 0.810 | n=58</title></circle>
+<circle cx="834.98" cy="1046.11" r="3.46" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Ornat-María_011000d.cha | agreement 0.889 | n=9</title></circle>
+<circle cx="744.38" cy="1088.33" r="4.26" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | OreaPine-Juan_020402.cha | agreement 0.667 | n=24</title></circle>
+<circle cx="822.17" cy="1066.78" r="8.00" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Nieva-Mendía_020127.cha | agreement 0.780 | n=191</title></circle>
+<circle cx="781.05" cy="1088.33" r="3.65" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Ornat-María_010900i.cha | agreement 0.667 | n=12</title></circle>
+<circle cx="720.71" cy="1075.00" r="4.03" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Aguirre_011000c.cha | agreement 0.737 | n=19</title></circle>
+<circle cx="694.91" cy="1076.82" r="4.61" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Aguirre_020410.cha | agreement 0.727 | n=33</title></circle>
+<circle cx="841.18" cy="1064.77" r="4.95" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Aguirre_010915.cha | agreement 0.791 | n=43</title></circle>
+<circle cx="1073.22" cy="1088.33" r="2.93" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | JacksonThal-Karina_28sd24.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="1045.48" cy="1215.00" r="3.23" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | JacksonThal-Raúl_28q03.cha | agreement 0.000 | n=6</title></circle>
+<circle cx="1154.31" cy="1082.00" r="3.53" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Ornat-María_020500b.cha | agreement 0.700 | n=10</title></circle>
+<circle cx="978.75" cy="1215.00" r="4.03" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | JacksonThal-MaryJosé_20q09.cha | agreement 0.000 | n=19</title></circle>
+<circle cx="1163.24" cy="1215.00" r="2.62" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | JacksonThal-Andrea_20sd15.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="1072.45" cy="1025.00" r="4.26" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | OreaPine-Lucía_020413.cha | agreement 1.000 | n=24</title></circle>
+<circle cx="1146.55" cy="1041.47" r="7.34" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | OreaPine-Juan_020500.cha | agreement 0.913 | n=150</title></circle>
+<circle cx="1111.63" cy="1090.52" r="4.46" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Montes-Koki_010720.cha | agreement 0.655 | n=29</title></circle>
+<circle cx="1015.80" cy="1215.00" r="2.93" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | JacksonThal-Edgar_20sd24.cha | agreement 0.000 | n=3</title></circle>
+<circle cx="1024.34" cy="1025.00" r="3.14" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | OreaPine-Juan_020313.cha | agreement 1.000 | n=5</title></circle>
+<circle cx="1015.99" cy="1048.17" r="4.89" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Aguirre_020100.cha | agreement 0.878 | n=41</title></circle>
+<circle cx="1105.43" cy="1215.00" r="2.62" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | JacksonThal-Alejandro_20sb05.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="1075.55" cy="1075.00" r="4.03" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | OreaPine-Juan_020317.cha | agreement 0.737 | n=19</title></circle>
+<circle cx="1050.33" cy="1070.24" r="6.05" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Aguirre_020302.cha | agreement 0.762 | n=84</title></circle>
+<circle cx="1078.65" cy="1215.00" r="3.04" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | SerraSole-Eduard_010400.cha | agreement 0.000 | n=4</title></circle>
+<circle cx="1075.94" cy="1052.68" r="7.36" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Nieva-Mendía_020020.cha | agreement 0.854 | n=151</title></circle>
+<circle cx="1095.34" cy="1025.00" r="3.71" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | JacksonThal-Miguel_28q04.cha | agreement 1.000 | n=13</title></circle>
+<circle cx="1043.74" cy="1025.00" r="4.26" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | OreaPine-Lucía_020417.cha | agreement 1.000 | n=24</title></circle>
+<circle cx="1009.59" cy="1056.67" r="4.92" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Montes-Koki_020418.cha | agreement 0.833 | n=42</title></circle>
+<circle cx="1062.36" cy="1215.00" r="3.93" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | JacksonThal-Carlos_28sd14.cha | agreement 0.000 | n=17</title></circle>
+<circle cx="1018.90" cy="1107.61" r="4.21" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Ornat-María_020500f.cha | agreement 0.565 | n=23</title></circle>
+<circle cx="1071.09" cy="1088.33" r="4.26" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | OreaPine-Juan_020507.cha | agreement 0.667 | n=24</title></circle>
+<circle cx="1066.63" cy="1072.50" r="3.04" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | JacksonThal-Ana_28sb09.cha | agreement 0.750 | n=4</title></circle>
+<circle cx="1035.39" cy="1050.33" r="3.83" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | JacksonThal-Mariana_28q05.cha | agreement 0.867 | n=15</title></circle>
+<circle cx="1126.96" cy="1025.00" r="3.93" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Ornat-María_020100d.cha | agreement 1.000 | n=17</title></circle>
+<circle cx="980.49" cy="1035.00" r="4.03" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | OreaPine-Lucía_020513.cha | agreement 0.947 | n=19</title></circle>
+<circle cx="1037.33" cy="1120.00" r="3.39" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | JacksonThal-Adrián_28sb07.cha | agreement 0.500 | n=8</title></circle>
+<circle cx="979.52" cy="1090.14" r="4.68" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | OreaPine-Lucía_020314.cha | agreement 0.657 | n=35</title></circle>
+<circle cx="982.24" cy="1025.00" r="3.14" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | JacksonThal-Daniela_20sb09.cha | agreement 1.000 | n=5</title></circle>
+<circle cx="1041.21" cy="1075.67" r="5.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Linaza-Juan_020300.cha | agreement 0.733 | n=45</title></circle>
+<circle cx="1108.14" cy="1104.17" r="4.26" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Vila-Emilio_020417.cha | agreement 0.583 | n=24</title></circle>
+<circle cx="970.79" cy="1068.85" r="4.34" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Ornat-María_010700k.cha | agreement 0.769 | n=26</title></circle>
+<circle cx="1014.83" cy="1025.00" r="3.59" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Ornat-María_011000e.cha | agreement 1.000 | n=11</title></circle>
+<circle cx="1003.19" cy="1085.24" r="4.89" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Linaza-Juan_020100.cha | agreement 0.683 | n=41</title></circle>
+<circle cx="1105.23" cy="1120.00" r="3.04" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Remedi-Vicky_020219.cha | agreement 0.500 | n=4</title></circle>
+<circle cx="1160.13" cy="1055.40" r="4.30" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Vila-Emilio_011019.cha | agreement 0.840 | n=25</title></circle>
+<circle cx="1152.57" cy="1088.33" r="2.93" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | JacksonThal-Juan_28sb01.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="988.45" cy="1072.50" r="3.04" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | JacksonThal-Mariana_20m05.cha | agreement 0.750 | n=4</title></circle>
+<circle cx="1046.06" cy="1063.00" r="3.53" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | OreaPine-Juan_020204.cha | agreement 0.800 | n=10</title></circle>
+<circle cx="1113.57" cy="1077.25" r="4.85" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Aguirre_011000b.cha | agreement 0.725 | n=40</title></circle>
+<circle cx="1148.69" cy="1060.62" r="3.88" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | JacksonThal-Alejandra_28m10.cha | agreement 0.812 | n=16</title></circle>
+<circle cx="1057.32" cy="1051.21" r="4.46" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Nieva-Mendía_020309.cha | agreement 0.862 | n=29</title></circle>
+<circle cx="1052.08" cy="1058.53" r="4.65" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Montes-Koki_020524.cha | agreement 0.824 | n=34</title></circle>
+<circle cx="1072.06" cy="1025.00" r="2.62" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | JacksonThal-Daniel_20m06.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="1037.53" cy="1075.23" r="7.74" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Aguirre_020015.cha | agreement 0.736 | n=174</title></circle>
+<circle cx="1049.94" cy="1049.36" r="6.74" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Aguirre_011015.cha | agreement 0.872 | n=117</title></circle>
+<circle cx="1031.71" cy="1057.84" r="5.98" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Aguirre_011001.cha | agreement 0.827 | n=81</title></circle>
+<circle cx="900" cy="982" r="5" fill="#1d4ed8" fill-opacity="0.65"/>
+<text x="910" y="986" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#374151" text-anchor="start">dev_train</text>
+<circle cx="1055" cy="982" r="5" fill="#0891b2" fill-opacity="0.65"/>
+<text x="1065" y="986" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#374151" text-anchor="start">dev_check_1</text>
+<circle cx="900" cy="1000" r="5" fill="#7c3aed" fill-opacity="0.65"/>
+<text x="910" y="1004" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#374151" text-anchor="start">dev_check_2</text>
+<circle cx="1055" cy="1000" r="5" fill="#c2410c" fill-opacity="0.65"/>
+<text x="1065" y="1004" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#374151" text-anchor="start">test_lockbox</text>
+</svg>

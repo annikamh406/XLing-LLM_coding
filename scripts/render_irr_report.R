@@ -1,7 +1,7 @@
 # Render the LLM-human IRR report for a version's run(s).
 #
 # Usage:
-#   Rscript scripts/render_irr_report.R <version> [--overwrite] [--outdir DIR]
+#   Rscript scripts/render_irr_report.R <version> [--overwrite] [--outdir DIR] [--lang LANG]
 #
 # Example:
 #   Rscript scripts/render_irr_report.R v2
@@ -16,20 +16,40 @@
 # viewer (scripts/build_coding_viewer.R) sees exactly one audit per run.
 # Existing reports are skipped unless --overwrite is passed.
 #
-# Split files are resolved with the same preference as the viewer: the frozen
-# copy in <version>/inputs/splits/english/ if present, otherwise the shared
-# splits/english/.
+# Language is detected per run from the record_id prefix in the predictions
+# file (eng_/ger_/heb_/spa_ -> english/german/hebrew/spanish), so a version
+# folder may hold runs from several languages and each is scored against its
+# own split and human reference. Pass --lang LANG to force a language for runs
+# whose prefix is not recognized. Split files are resolved with the same
+# preference as the viewer: for English, the frozen copy in
+# <version>/inputs/splits/english/ if present, otherwise the shared
+# splits/<lang>/.
 
 args <- commandArgs(trailingOnly = TRUE)
 flags <- args[startsWith(args, "--")]
 positional <- args[!startsWith(args, "--")]
 if (length(positional) < 1) {
-  stop("Usage: Rscript scripts/render_irr_report.R <version> [--overwrite] [--outdir DIR]")
+  stop("Usage: Rscript scripts/render_irr_report.R <version> [--overwrite] [--outdir DIR] [--lang LANG]")
 }
 version <- positional[[1]]
 overwrite <- "--overwrite" %in% flags
 outdir_flag <- which(args == "--outdir")
 outdir_override <- if (length(outdir_flag) && outdir_flag < length(args)) args[[outdir_flag + 1]] else NA_character_
+lang_flag <- which(args == "--lang")
+lang_override <- if (length(lang_flag) && lang_flag < length(args)) args[[lang_flag + 1]] else NA_character_
+
+# record_id prefix -> language folder under splits/.
+lang_by_prefix <- c(eng = "english", ger = "german", heb = "hebrew", spa = "spanish")
+
+detect_lang <- function(prediction_path) {
+  if (!is.na(lang_override)) return(lang_override)
+  con <- file(prediction_path, "r")
+  on.exit(close(con))
+  line <- readLines(con, n = 1, warn = FALSE)
+  prefix <- if (length(line)) sub('.*"record_id"\\s*:\\s*"([a-z]+)_.*', "\\1", line, perl = TRUE) else ""
+  lang <- lang_by_prefix[[prefix]]
+  if (is.null(lang)) NA_character_ else lang
+}
 
 script_arg <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
 script_path <- if (length(script_arg)) sub("^--file=", "", script_arg[[1]]) else NA_character_
@@ -69,19 +89,28 @@ for (prediction_path in sort(prediction_files)) {
     next
   }
 
+  lang <- detect_lang(prediction_path)
+  if (is.na(lang)) {
+    warning("Cannot determine language for ", basename(prediction_path),
+            " (use --lang); skipping.")
+    next
+  }
+
   raw_path <- file.path(dirname(prediction_path), paste0(prefix, "_raw_responses.jsonl"))
   if (!file.exists(raw_path)) raw_path <- ""
 
+  # The frozen <version>/inputs/splits/english/ copy only exists for English
+  # (v1's frozen inputs); other languages use the shared splits/<lang>/.
   split_path <- first_existing(c(
-    file.path(llm_dir, version, "inputs", "splits", "english", paste0(split_name, ".jsonl")),
-    file.path(llm_dir, "splits", "english", paste0(split_name, ".jsonl"))
+    file.path(llm_dir, version, "inputs", "splits", lang, paste0(split_name, ".jsonl")),
+    file.path(llm_dir, "splits", lang, paste0(split_name, ".jsonl"))
   ))
   ref_path <- first_existing(c(
-    file.path(llm_dir, version, "inputs", "splits", "english", paste0(split_name, "_human_reference.jsonl")),
-    file.path(llm_dir, "splits", "english", paste0(split_name, "_human_reference.jsonl"))
+    file.path(llm_dir, version, "inputs", "splits", lang, paste0(split_name, "_human_reference.jsonl")),
+    file.path(llm_dir, "splits", lang, paste0(split_name, "_human_reference.jsonl"))
   ))
   if (is.na(split_path) || is.na(ref_path)) {
-    warning("Missing split or reference file for ", split_name, "; skipping ", prefix)
+    warning("Missing split or reference file for ", lang, " ", split_name, "; skipping ", prefix)
     next
   }
 
@@ -93,10 +122,12 @@ for (prediction_path in sort(prediction_files)) {
     next
   }
 
-  inspected_path <- file.path(llm_dir, "splits", "english", "inspected_rows.txt")
+  # inspected_rows.txt (dev examples mined for the prompt) currently exists for
+  # English only; other languages have no inspected chunk to carve out.
+  inspected_path <- file.path(llm_dir, "splits", lang, "inspected_rows.txt")
   if (!file.exists(inspected_path)) inspected_path <- ""
 
-  message("Rendering ", version, " run: ", prefix)
+  message("Rendering ", version, " ", lang, " run: ", prefix)
   rmarkdown::render(
     rmd_path,
     params = list(

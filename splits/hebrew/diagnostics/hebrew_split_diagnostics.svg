@@ -1,0 +1,408 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1325" viewBox="0 0 1280 1325">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="40" y="42" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#111827" text-anchor="start">Hebrew LLM Split Diagnostics</text>
+<text x="40" y="68" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#4b5563" text-anchor="start">Transcript-level pseudorandom split, seed 20260527; age in months; context split file rows shown.</text>
+<line x1="40" y1="72" x2="1240" y2="72" stroke="#e5e7eb"/>
+<text x="40" y="95" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">dev_train</text>
+<text x="40" y="119" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">963 rows, 52 transcripts</text>
+<text x="40" y="140" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">age mean 24.6; range 16.3-35.8</text>
+<text x="40" y="161" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Bloom IRR: agreement 0.775; kappa 0.683; n=795</text>
+<rect x="260" y="89" width="214.6417445482866" height="22" fill="#2563eb"/>
+<rect x="474.6417445482866" y="89" width="45.35825545171339" height="22" fill="#14b8a6"/>
+<rect x="260" y="89" width="260" height="22" fill="none" stroke="#111827" stroke-width="0.7"/>
+<text x="260" y="132" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">both 795  |  one 168  |  neither 0</text>
+<text x="570" y="75" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">child age distribution</text>
+<rect x="572.0" y="131.73381294964028" width="37.666666666666664" height="11.266187050359713" fill="#f97316"/>
+<rect x="613.6666666666666" y="136.18465227817745" width="37.666666666666664" height="6.815347721822542" fill="#f97316"/>
+<rect x="655.3333333333334" y="102.38609112709833" width="37.666666666666664" height="40.613908872901675" fill="#f97316"/>
+<rect x="697.0" y="85.0" width="37.666666666666664" height="58.0" fill="#f97316"/>
+<rect x="738.6666666666666" y="126.86570743405275" width="37.666666666666664" height="16.13429256594724" fill="#f97316"/>
+<rect x="780.3333333333333" y="141.8872901678657" width="37.666666666666664" height="1.1127098321342925" fill="#f97316"/>
+<line x1="570" y1="143" x2="820" y2="143" stroke="#111827" stroke-width="0.7"/>
+<text x="570" y="159" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="start">13</text>
+<text x="820" y="159" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">36</text>
+<text x="870" y="75" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">coder line counts</text>
+<rect x="870" y="80" width="150.0" height="11" fill="#1d4ed8"/>
+<text x="1028" y="90" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">LL: 940</text>
+<rect x="870" y="97" width="126.86170212765957" height="11" fill="#0891b2"/>
+<text x="1028" y="107" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">YS: 795</text>
+<rect x="870" y="114" width="3.670212765957447" height="11" fill="#7c3aed"/>
+<text x="1028" y="124" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">Ronnie: 23</text>
+<text x="260" y="172" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">overlap: LL + YS: 772; Ronnie + YS: 23</text>
+<line x1="40" y1="242" x2="1240" y2="242" stroke="#e5e7eb"/>
+<text x="40" y="265" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">dev_check_1</text>
+<text x="40" y="289" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">1199 rows, 73 transcripts</text>
+<text x="40" y="310" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">age mean 24.0; range 13.6-29.8</text>
+<text x="40" y="331" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Bloom IRR: agreement 0.766; kappa 0.662; n=966</text>
+<rect x="260" y="259" width="209.4745621351126" height="22" fill="#2563eb"/>
+<rect x="469.4745621351126" y="259" width="50.5254378648874" height="22" fill="#14b8a6"/>
+<rect x="260" y="259" width="260" height="22" fill="none" stroke="#111827" stroke-width="0.7"/>
+<text x="260" y="302" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">both 966  |  one 233  |  neither 0</text>
+<text x="570" y="245" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">child age distribution</text>
+<rect x="572.0" y="303.16738197424894" width="37.666666666666664" height="9.832618025751074" fill="#f97316"/>
+<rect x="613.6666666666666" y="290.47210300429185" width="37.666666666666664" height="22.527896995708154" fill="#f97316"/>
+<rect x="655.3333333333334" y="274.78969957081546" width="37.666666666666664" height="38.21030042918455" fill="#f97316"/>
+<rect x="697.0" y="255.0" width="37.666666666666664" height="58.0" fill="#f97316"/>
+<rect x="738.6666666666666" y="292.3390557939914" width="37.666666666666664" height="20.660944206008583" fill="#f97316"/>
+<rect x="780.3333333333333" y="313.0" width="37.666666666666664" height="0.0" fill="#f97316"/>
+<line x1="570" y1="313" x2="820" y2="313" stroke="#111827" stroke-width="0.7"/>
+<text x="570" y="329" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="start">13</text>
+<text x="820" y="329" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">36</text>
+<text x="870" y="245" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">coder line counts</text>
+<rect x="870" y="250" width="150.0" height="11" fill="#1d4ed8"/>
+<text x="1028" y="260" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">LL: 1135</text>
+<rect x="870" y="267" width="127.66519823788546" height="11" fill="#0891b2"/>
+<text x="1028" y="277" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">YS: 966</text>
+<rect x="870" y="284" width="8.458149779735683" height="11" fill="#7c3aed"/>
+<text x="1028" y="294" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">Ronnie: 64</text>
+<text x="260" y="342" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">overlap: LL + YS: 902; Ronnie + YS: 64</text>
+<line x1="40" y1="412" x2="1240" y2="412" stroke="#e5e7eb"/>
+<text x="40" y="435" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">dev_check_2</text>
+<text x="40" y="459" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">1195 rows, 77 transcripts</text>
+<text x="40" y="480" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">age mean 24.9; range 13.1-30.0</text>
+<text x="40" y="501" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Bloom IRR: agreement 0.792; kappa 0.692; n=960</text>
+<rect x="260" y="429" width="208.87029288702928" height="22" fill="#2563eb"/>
+<rect x="468.8702928870293" y="429" width="51.12970711297071" height="22" fill="#14b8a6"/>
+<rect x="260" y="429" width="260" height="22" fill="none" stroke="#111827" stroke-width="0.7"/>
+<text x="260" y="472" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">both 960  |  one 235  |  neither 0</text>
+<text x="570" y="415" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">child age distribution</text>
+<rect x="572.0" y="477.1159420289855" width="37.666666666666664" height="5.884057971014493" fill="#f97316"/>
+<rect x="613.6666666666666" y="467.14906832298135" width="37.666666666666664" height="15.850931677018634" fill="#f97316"/>
+<rect x="655.3333333333334" y="447.5755693581781" width="37.666666666666664" height="35.42443064182194" fill="#f97316"/>
+<rect x="697.0" y="425.0" width="37.666666666666664" height="58.0" fill="#f97316"/>
+<rect x="738.6666666666666" y="454.66045548654245" width="37.666666666666664" height="28.339544513457557" fill="#f97316"/>
+<rect x="780.3333333333333" y="483.0" width="37.666666666666664" height="0.0" fill="#f97316"/>
+<line x1="570" y1="483" x2="820" y2="483" stroke="#111827" stroke-width="0.7"/>
+<text x="570" y="499" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="start">13</text>
+<text x="820" y="499" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">36</text>
+<text x="870" y="415" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">coder line counts</text>
+<rect x="870" y="420" width="150.0" height="11" fill="#1d4ed8"/>
+<text x="1028" y="430" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">LL: 1168</text>
+<rect x="870" y="437" width="123.2876712328767" height="11" fill="#0891b2"/>
+<text x="1028" y="447" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">YS: 960</text>
+<rect x="870" y="454" width="3.467465753424657" height="11" fill="#7c3aed"/>
+<text x="1028" y="464" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">Ronnie: 27</text>
+<text x="260" y="512" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">overlap: LL + YS: 933; Ronnie + YS: 27</text>
+<line x1="40" y1="582" x2="1240" y2="582" stroke="#e5e7eb"/>
+<text x="40" y="605" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">test_lockbox</text>
+<text x="40" y="629" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">1429 rows, 78 transcripts</text>
+<text x="40" y="650" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">age mean 24.4; range 13.1-29.7</text>
+<text x="40" y="671" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Bloom IRR: agreement 0.775; kappa 0.679; n=1157</text>
+<rect x="260" y="599" width="210.5108467459762" height="22" fill="#2563eb"/>
+<rect x="470.5108467459762" y="599" width="49.4891532540238" height="22" fill="#14b8a6"/>
+<rect x="260" y="599" width="260" height="22" fill="none" stroke="#111827" stroke-width="0.7"/>
+<text x="260" y="642" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">both 1157  |  one 272  |  neither 0</text>
+<text x="570" y="585" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">child age distribution</text>
+<rect x="572.0" y="643.5073649754501" width="37.666666666666664" height="9.49263502454992" fill="#f97316"/>
+<rect x="613.6666666666666" y="636.4828150572831" width="37.666666666666664" height="16.51718494271686" fill="#f97316"/>
+<rect x="655.3333333333334" y="616.4533551554828" width="37.666666666666664" height="36.54664484451718" fill="#f97316"/>
+<rect x="697.0" y="595.0" width="37.666666666666664" height="58.0" fill="#f97316"/>
+<rect x="738.6666666666666" y="637.9067103109657" width="37.666666666666664" height="15.09328968903437" fill="#f97316"/>
+<rect x="780.3333333333333" y="653.0" width="37.666666666666664" height="0.0" fill="#f97316"/>
+<line x1="570" y1="653" x2="820" y2="653" stroke="#111827" stroke-width="0.7"/>
+<text x="570" y="669" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="start">13</text>
+<text x="820" y="669" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">36</text>
+<text x="870" y="585" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">coder line counts</text>
+<rect x="870" y="590" width="150.0" height="11" fill="#1d4ed8"/>
+<text x="1028" y="600" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">LL: 1382</text>
+<rect x="870" y="607" width="125.57887120115774" height="11" fill="#0891b2"/>
+<text x="1028" y="617" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">YS: 1157</text>
+<rect x="870" y="624" width="5.101302460202605" height="11" fill="#7c3aed"/>
+<text x="1028" y="634" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#111827" text-anchor="start">Ronnie: 47</text>
+<text x="260" y="682" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">overlap: LL + YS: 1110; Ronnie + YS: 47</text>
+<line x1="40" y1="752" x2="1240" y2="752" stroke="#e5e7eb"/>
+<text x="40" y="775" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">uncoded_by_neither</text>
+<text x="40" y="799" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">0 rows, 0 transcripts</text>
+<text x="40" y="820" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">age unavailable</text>
+<text x="40" y="841" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Bloom IRR: not available</text>
+<rect x="260" y="769" width="260" height="22" fill="none" stroke="#111827" stroke-width="0.7"/>
+<text x="260" y="812" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">both 0  |  one 0  |  neither 0</text>
+<text x="570" y="755" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">child age distribution</text>
+<text x="570" y="795" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#9ca3af" text-anchor="start">age unavailable</text>
+<text x="870" y="755" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="start">coder line counts</text>
+<text x="260" y="852" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#374151" text-anchor="start">overlap: No overlapping coder pairs</text>
+<line x1="40" y1="959" x2="1240" y2="959" stroke="#e5e7eb"/>
+<text x="40" y="985" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827" text-anchor="start">Transcript-Level Bloom IRR</text>
+<text x="40" y="1007" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#4b5563" text-anchor="start">Each dot is one transcript with overlapping LL/YS Bloom codes; y-axis is exact agreement; larger dots have more overlap rows.</text>
+<line x1="70" y1="1215" x2="1210" y2="1215" stroke="#e5e7eb" stroke-width="0.8"/>
+<text x="60" y="1219" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">0.00</text>
+<line x1="70" y1="1167.5" x2="1210" y2="1167.5" stroke="#e5e7eb" stroke-width="0.8"/>
+<text x="60" y="1171.5" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">0.25</text>
+<line x1="70" y1="1120.0" x2="1210" y2="1120.0" stroke="#e5e7eb" stroke-width="0.8"/>
+<text x="60" y="1124.0" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">0.50</text>
+<line x1="70" y1="1072.5" x2="1210" y2="1072.5" stroke="#e5e7eb" stroke-width="0.8"/>
+<text x="60" y="1076.5" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">0.75</text>
+<line x1="70" y1="1025.0" x2="1210" y2="1025.0" stroke="#e5e7eb" stroke-width="0.8"/>
+<text x="60" y="1029.0" font-family="Arial, sans-serif" font-size="10" font-weight="400" fill="#4b5563" text-anchor="end">1.00</text>
+<line x1="70" y1="1025" x2="70" y2="1215" stroke="#111827" stroke-width="0.8"/>
+<line x1="70" y1="1215" x2="1210" y2="1215" stroke="#111827" stroke-width="0.8"/>
+<text x="212.5" y="1239" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="middle">dev_train</text>
+<line x1="70.0" y1="1025" x2="70.0" y2="1215" stroke="#f3f4f6" stroke-width="0.8"/>
+<text x="497.5" y="1239" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="middle">dev_check_1</text>
+<line x1="355.0" y1="1025" x2="355.0" y2="1215" stroke="#f3f4f6" stroke-width="0.8"/>
+<text x="782.5" y="1239" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="middle">dev_check_2</text>
+<line x1="640.0" y1="1025" x2="640.0" y2="1215" stroke="#f3f4f6" stroke-width="0.8"/>
+<text x="1067.5" y="1239" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151" text-anchor="middle">test_lockbox</text>
+<line x1="925.0" y1="1025" x2="925.0" y2="1215" stroke="#f3f4f6" stroke-width="0.8"/>
+<circle cx="224.04" cy="1130.56" r="5.12" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Leor_020030.cha | agreement 0.444 | n=18</title></circle>
+<circle cx="214.34" cy="1096.25" r="4.15" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Hagar_011017.cha | agreement 0.625 | n=8</title></circle>
+<circle cx="255.86" cy="1025.00" r="3.17" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Hagar_010903.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="195.91" cy="1025.00" r="4.02" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Levy-Ruti_020318.cha | agreement 1.000 | n=7</title></circle>
+<circle cx="178.84" cy="1151.67" r="3.89" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Lior_011113.cha | agreement 0.333 | n=6</title></circle>
+<circle cx="145.28" cy="1053.50" r="5.28" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Hagar_011003b.cha | agreement 0.850 | n=20</title></circle>
+<circle cx="225.59" cy="1082.00" r="5.28" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Hagar_010921a.cha | agreement 0.700 | n=20</title></circle>
+<circle cx="193.59" cy="1025.00" r="2.89" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Hagar_010900.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="211.82" cy="1088.33" r="5.35" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Leor_020422.cha | agreement 0.667 | n=21</title></circle>
+<circle cx="141.60" cy="1078.52" r="8.00" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Ravid-Sivan and Asaf_020524.cha | agreement 0.718 | n=71</title></circle>
+<circle cx="195.53" cy="1025.00" r="2.89" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Leor_011015.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="122.78" cy="1037.26" r="6.03" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Leor_011112.cha | agreement 0.935 | n=31</title></circle>
+<circle cx="221.13" cy="1050.91" r="5.43" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Hagar_020109a.cha | agreement 0.864 | n=22</title></circle>
+<circle cx="169.92" cy="1025.00" r="3.74" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Hagar_011102.cha | agreement 1.000 | n=5</title></circle>
+<circle cx="256.83" cy="1055.65" r="6.03" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Leor_020128b.cha | agreement 0.839 | n=31</title></circle>
+<circle cx="223.46" cy="1063.97" r="6.50" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Smadar_020313.cha | agreement 0.795 | n=39</title></circle>
+<circle cx="198.44" cy="1025.00" r="4.95" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Lior_020008.cha | agreement 1.000 | n=16</title></circle>
+<circle cx="232.58" cy="1085.45" r="5.43" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Hagar_020523.cha | agreement 0.682 | n=22</title></circle>
+<circle cx="161.96" cy="1063.00" r="5.97" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Leor_020128a.cha | agreement 0.800 | n=30</title></circle>
+<circle cx="133.25" cy="1109.44" r="4.27" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Leor_011117.cha | agreement 0.556 | n=9</title></circle>
+<circle cx="172.05" cy="1025.00" r="3.17" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Levy-Ruti_020300a.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="227.73" cy="1114.41" r="5.04" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Ravid-Asaf_030418.cha | agreement 0.529 | n=17</title></circle>
+<circle cx="213.37" cy="1077.78" r="6.33" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Smadar_020108.cha | agreement 0.722 | n=36</title></circle>
+<circle cx="262.65" cy="1215.00" r="2.89" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Levy-Ruti_020213.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="285.54" cy="1088.33" r="3.39" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Levy-Ruti_020300b.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="123.36" cy="1120.00" r="3.89" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Lior_010716.cha | agreement 0.500 | n=6</title></circle>
+<circle cx="232.38" cy="1059.55" r="4.48" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Leor_020316.cha | agreement 0.818 | n=11</title></circle>
+<circle cx="223.27" cy="1096.25" r="4.95" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Hagar_011118.cha | agreement 0.625 | n=16</title></circle>
+<circle cx="243.83" cy="1025.00" r="3.89" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Hagar_011122a.cha | agreement 1.000 | n=6</title></circle>
+<circle cx="305.91" cy="1068.85" r="5.71" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Smadar_011113.cha | agreement 0.769 | n=26</title></circle>
+<circle cx="293.49" cy="1025.00" r="3.89" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Levy-Ruti_020104.cha | agreement 1.000 | n=6</title></circle>
+<circle cx="282.63" cy="1025.00" r="3.58" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Levy-Ruti_020110.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="215.89" cy="1051.39" r="6.33" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Leor_020005.cha | agreement 0.861 | n=36</title></circle>
+<circle cx="161.38" cy="1038.57" r="6.66" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BSF-Gadi_1-gadi111.cha | agreement 0.929 | n=42</title></circle>
+<circle cx="175.74" cy="1025.00" r="2.89" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Hagar_010702c.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="306.49" cy="1215.00" r="2.89" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Ravid-Sivan_000926.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="167.78" cy="1025.00" r="3.89" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Levy-Ruti_020310.cha | agreement 1.000 | n=6</title></circle>
+<circle cx="190.29" cy="1088.33" r="3.39" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Hagar_011018.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="232.97" cy="1056.67" r="3.89" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Hagar_020213.cha | agreement 0.833 | n=6</title></circle>
+<circle cx="254.11" cy="1109.44" r="4.27" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Hagar_011025.cha | agreement 0.556 | n=9</title></circle>
+<circle cx="140.24" cy="1215.00" r="3.89" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Levy-Ruti_020103.cha | agreement 0.000 | n=6</title></circle>
+<circle cx="195.53" cy="1096.25" r="4.15" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Levy-Bar_020402.cha | agreement 0.625 | n=8</title></circle>
+<circle cx="307.07" cy="1073.25" r="7.66" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Leor_020412.cha | agreement 0.746 | n=63</title></circle>
+<circle cx="243.64" cy="1025.00" r="4.48" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Hagar_020204.cha | agreement 1.000 | n=11</title></circle>
+<circle cx="212.98" cy="1025.00" r="2.89" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Ravid-Asaf_030326.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="203.48" cy="1079.29" r="4.02" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Hagar_010714.cha | agreement 0.714 | n=7</title></circle>
+<circle cx="296.21" cy="1080.88" r="5.04" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BSF-Nimrod_2-nimro23.cha | agreement 0.706 | n=17</title></circle>
+<circle cx="120.06" cy="1025.00" r="3.74" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | Levy-Ruti_020316.cha | agreement 1.000 | n=5</title></circle>
+<circle cx="187.77" cy="1047.54" r="7.49" fill="#1d4ed8" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_train | BermanLong-Hagar_020402.cha | agreement 0.881 | n=59</title></circle>
+<circle cx="544.35" cy="1215.00" r="2.89" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_010809b.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="472.38" cy="1060.62" r="4.95" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Leor_010911.cha | agreement 0.812 | n=16</title></circle>
+<circle cx="461.13" cy="1025.00" r="4.02" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_020220.cha | agreement 1.000 | n=7</title></circle>
+<circle cx="459.77" cy="1191.25" r="4.15" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BSF-Uri_2-urik25.cha | agreement 0.125 | n=8</title></circle>
+<circle cx="446.96" cy="1025.00" r="5.78" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Leor_010904.cha | agreement 1.000 | n=27</title></circle>
+<circle cx="585.09" cy="1050.33" r="4.87" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_020123a.cha | agreement 0.867 | n=15</title></circle>
+<circle cx="519.71" cy="1052.14" r="4.02" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_020222.cha | agreement 0.857 | n=7</title></circle>
+<circle cx="525.73" cy="1038.57" r="4.78" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Leor_020225.cha | agreement 0.929 | n=14</title></circle>
+<circle cx="444.25" cy="1076.82" r="4.48" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_020425.cha | agreement 0.727 | n=11</title></circle>
+<circle cx="479.94" cy="1072.50" r="4.15" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Smadar_010700.cha | agreement 0.750 | n=8</title></circle>
+<circle cx="422.91" cy="1048.75" r="4.15" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_011004.cha | agreement 0.875 | n=8</title></circle>
+<circle cx="521.85" cy="1167.50" r="3.58" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Ravid-Sivan_000916.cha | agreement 0.250 | n=4</title></circle>
+<circle cx="553.66" cy="1075.00" r="5.20" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_010722.cha | agreement 0.737 | n=19</title></circle>
+<circle cx="455.31" cy="1091.09" r="6.87" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Smadar_020007.cha | agreement 0.652 | n=46</title></circle>
+<circle cx="422.13" cy="1065.00" r="5.20" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_011014a.cha | agreement 0.789 | n=19</title></circle>
+<circle cx="513.50" cy="1088.33" r="3.89" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_020224.cha | agreement 0.667 | n=6</title></circle>
+<circle cx="504.00" cy="1025.00" r="3.17" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Lior_010800.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="594.01" cy="1151.67" r="3.89" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_020225.cha | agreement 0.333 | n=6</title></circle>
+<circle cx="491.78" cy="1215.00" r="2.89" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_011022b.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="440.37" cy="1052.14" r="5.35" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Lior_020218.cha | agreement 0.857 | n=21</title></circle>
+<circle cx="540.86" cy="1044.00" r="5.97" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_011103.cha | agreement 0.900 | n=30</title></circle>
+<circle cx="493.52" cy="1072.50" r="5.28" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Lior_020421.cha | agreement 0.750 | n=20</title></circle>
+<circle cx="539.89" cy="1025.00" r="3.89" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Levy-Ruti_020408.cha | agreement 1.000 | n=6</title></circle>
+<circle cx="542.60" cy="1120.00" r="3.58" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_011106.cha | agreement 0.500 | n=4</title></circle>
+<circle cx="412.82" cy="1059.55" r="4.48" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Lior_011001.cha | agreement 0.818 | n=11</title></circle>
+<circle cx="444.25" cy="1025.00" r="3.17" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_010906a.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="413.21" cy="1215.00" r="4.48" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Smadar_010614.cha | agreement 0.000 | n=11</title></circle>
+<circle cx="438.23" cy="1040.83" r="4.58" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_020119.cha | agreement 0.917 | n=12</title></circle>
+<circle cx="400.60" cy="1085.24" r="6.61" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_010804.cha | agreement 0.683 | n=41</title></circle>
+<circle cx="573.64" cy="1059.55" r="5.43" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Ravid-Asaf_030417.cha | agreement 0.818 | n=22</title></circle>
+<circle cx="588.77" cy="1088.33" r="3.39" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_010906b.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="548.04" cy="1025.00" r="4.58" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_020124.cha | agreement 1.000 | n=12</title></circle>
+<circle cx="538.34" cy="1047.80" r="7.07" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Ravid-Sivan_020507.cha | agreement 0.880 | n=50</title></circle>
+<circle cx="485.76" cy="1025.00" r="2.89" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Levy-Ruti_020211.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="479.36" cy="1063.00" r="4.38" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Levy-Ruti_020204.cha | agreement 0.800 | n=10</title></circle>
+<circle cx="422.52" cy="1063.86" r="6.77" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Leor_020515.cha | agreement 0.795 | n=44</title></circle>
+<circle cx="445.02" cy="1025.00" r="3.74" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Lior_020400.cha | agreement 1.000 | n=5</title></circle>
+<circle cx="514.09" cy="1096.25" r="4.15" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BSF-Kobyt_2-kobi21.cha | agreement 0.625 | n=8</title></circle>
+<circle cx="537.17" cy="1076.82" r="5.43" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Lior_020202.cha | agreement 0.727 | n=22</title></circle>
+<circle cx="417.87" cy="1120.00" r="3.17" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Lior_020000.cha | agreement 0.500 | n=2</title></circle>
+<circle cx="533.10" cy="1025.00" r="2.89" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Levy-Erez_020429.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="457.05" cy="1092.86" r="4.78" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Ravid-Sivan_020312.cha | agreement 0.643 | n=14</title></circle>
+<circle cx="514.47" cy="1025.00" r="4.58" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Levy-Bar_020403b.cha | agreement 1.000 | n=12</title></circle>
+<circle cx="493.33" cy="1061.94" r="6.33" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_020112.cha | agreement 0.806 | n=36</title></circle>
+<circle cx="465.01" cy="1025.00" r="3.58" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Levy-Ruti_020016.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="510.21" cy="1075.67" r="5.97" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Smadar_020126.cha | agreement 0.733 | n=30</title></circle>
+<circle cx="517.38" cy="1063.00" r="3.74" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Ravid-Sivan_020305.cha | agreement 0.800 | n=5</title></circle>
+<circle cx="562.78" cy="1088.33" r="4.27" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Levy-Bar_020403a.cha | agreement 0.667 | n=9</title></circle>
+<circle cx="519.13" cy="1096.25" r="4.15" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Leor_020401.cha | agreement 0.625 | n=8</title></circle>
+<circle cx="546.10" cy="1095.00" r="6.44" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Leor_010924.cha | agreement 0.632 | n=38</title></circle>
+<circle cx="492.94" cy="1042.27" r="4.48" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Leor_020010.cha | agreement 0.909 | n=11</title></circle>
+<circle cx="515.83" cy="1043.10" r="5.35" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Smadar_020426.cha | agreement 0.905 | n=21</title></circle>
+<circle cx="580.63" cy="1088.33" r="4.87" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_011001b.cha | agreement 0.667 | n=15</title></circle>
+<circle cx="562.97" cy="1108.41" r="6.61" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Leor_020205.cha | agreement 0.561 | n=41</title></circle>
+<circle cx="406.23" cy="1025.00" r="3.17" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Levy-Erez_020507.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="432.61" cy="1050.00" r="6.44" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BSF-Naama_1-alita18.cha | agreement 0.868 | n=38</title></circle>
+<circle cx="496.43" cy="1108.60" r="5.64" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_020414.cha | agreement 0.560 | n=25</title></circle>
+<circle cx="460.35" cy="1025.00" r="3.39" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Levy-Ruti_020116.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="555.80" cy="1025.00" r="3.58" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_020212.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="585.67" cy="1025.00" r="3.17" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | Ravid-Asaf_030709.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="417.87" cy="1070.24" r="5.35" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Lior_020314.cha | agreement 0.762 | n=21</title></circle>
+<circle cx="552.69" cy="1025.00" r="4.38" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_010717.cha | agreement 1.000 | n=10</title></circle>
+<circle cx="536.20" cy="1063.00" r="3.74" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_020401.cha | agreement 0.800 | n=5</title></circle>
+<circle cx="429.31" cy="1042.67" r="6.71" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Lior_020114.cha | agreement 0.907 | n=43</title></circle>
+<circle cx="441.53" cy="1215.00" r="3.58" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Leor_020217.cha | agreement 0.000 | n=4</title></circle>
+<circle cx="514.28" cy="1120.00" r="3.17" fill="#0891b2" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_1 | BermanLong-Hagar_010703a.cha | agreement 0.500 | n=2</title></circle>
+<circle cx="704.81" cy="1025.00" r="2.89" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_010809a.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="700.54" cy="1101.00" r="3.74" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_020424.cha | agreement 0.600 | n=5</title></circle>
+<circle cx="759.12" cy="1120.00" r="3.17" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Lior_010813.cha | agreement 0.500 | n=2</title></circle>
+<circle cx="829.16" cy="1025.00" r="3.17" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Leor_011006.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="877.85" cy="1036.52" r="6.15" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_020123b.cha | agreement 0.939 | n=33</title></circle>
+<circle cx="871.25" cy="1094.67" r="5.97" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_020419.cha | agreement 0.633 | n=30</title></circle>
+<circle cx="694.91" cy="1025.00" r="4.27" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_011014b.cha | agreement 1.000 | n=9</title></circle>
+<circle cx="731.77" cy="1046.11" r="4.27" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Leor_010917.cha | agreement 0.889 | n=9</title></circle>
+<circle cx="718.38" cy="1038.57" r="4.78" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_020226.cha | agreement 0.929 | n=14</title></circle>
+<circle cx="832.26" cy="1067.22" r="4.27" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Leor_020023.cha | agreement 0.778 | n=9</title></circle>
+<circle cx="730.22" cy="1068.85" r="4.68" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_011022a.cha | agreement 0.769 | n=13</title></circle>
+<circle cx="827.60" cy="1068.85" r="4.68" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Ravid-Sivan_020218.cha | agreement 0.769 | n=13</title></circle>
+<circle cx="759.71" cy="1101.00" r="6.82" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_020420.cha | agreement 0.600 | n=45</title></circle>
+<circle cx="788.03" cy="1072.50" r="4.58" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BSF-Noa_1-noa111.cha | agreement 0.750 | n=12</title></circle>
+<circle cx="864.46" cy="1055.40" r="7.07" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Smadar_020005.cha | agreement 0.840 | n=50</title></circle>
+<circle cx="830.32" cy="1088.33" r="3.39" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_010907.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="843.71" cy="1025.00" r="4.38" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_020219.cha | agreement 1.000 | n=10</title></circle>
+<circle cx="728.28" cy="1025.00" r="3.17" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_020109b.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="851.27" cy="1048.75" r="4.95" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_020120.cha | agreement 0.875 | n=16</title></circle>
+<circle cx="771.73" cy="1025.00" r="4.15" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_020108.cha | agreement 1.000 | n=8</title></circle>
+<circle cx="746.90" cy="1058.53" r="5.04" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Lior_011013.cha | agreement 0.824 | n=17</title></circle>
+<circle cx="726.92" cy="1139.00" r="3.74" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_010801.cha | agreement 0.400 | n=5</title></circle>
+<circle cx="747.10" cy="1038.10" r="5.91" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BSF-Yifat_1-yifat16.cha | agreement 0.931 | n=29</title></circle>
+<circle cx="729.83" cy="1025.00" r="4.38" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Ravid-Asaf_030611.cha | agreement 1.000 | n=10</title></circle>
+<circle cx="878.43" cy="1050.33" r="4.87" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BSF-Chay_2-hay21.cha | agreement 0.867 | n=15</title></circle>
+<circle cx="742.25" cy="1112.69" r="4.68" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Ravid-Asaf_030410.cha | agreement 0.538 | n=13</title></circle>
+<circle cx="784.92" cy="1025.00" r="5.35" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Leor_011115.cha | agreement 1.000 | n=21</title></circle>
+<circle cx="798.50" cy="1086.86" r="6.71" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Leor_020323.cha | agreement 0.674 | n=43</title></circle>
+<circle cx="744.96" cy="1070.86" r="5.91" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Ravid-Asaf_030414.cha | agreement 0.759 | n=29</title></circle>
+<circle cx="849.72" cy="1088.33" r="5.12" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Leor_020525.cha | agreement 0.667 | n=18</title></circle>
+<circle cx="783.57" cy="1025.00" r="4.87" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Lior_010901.cha | agreement 1.000 | n=15</title></circle>
+<circle cx="851.27" cy="1154.55" r="5.43" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Smadar_010602.cha | agreement 0.318 | n=22</title></circle>
+<circle cx="853.60" cy="1046.11" r="5.12" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Leor_011100.cha | agreement 0.889 | n=18</title></circle>
+<circle cx="778.72" cy="1025.00" r="3.58" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_020128a.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="830.13" cy="1025.00" r="3.89" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Leor_020123.cha | agreement 1.000 | n=6</title></circle>
+<circle cx="815.96" cy="1025.00" r="3.89" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Lior_010916.cha | agreement 1.000 | n=6</title></circle>
+<circle cx="725.76" cy="1071.06" r="6.15" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BSF-Chay_2-hay24.cha | agreement 0.758 | n=33</title></circle>
+<circle cx="870.09" cy="1052.14" r="4.78" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_011109.cha | agreement 0.857 | n=14</title></circle>
+<circle cx="824.31" cy="1025.00" r="4.02" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Lior_010700.cha | agreement 1.000 | n=7</title></circle>
+<circle cx="879.01" cy="1060.62" r="4.95" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_020505.cha | agreement 0.812 | n=16</title></circle>
+<circle cx="695.49" cy="1025.00" r="4.68" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Leor_020311.cha | agreement 1.000 | n=13</title></circle>
+<circle cx="805.10" cy="1025.00" r="3.58" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Levy-Ruti_020400.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="699.37" cy="1088.33" r="3.39" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_011127.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="874.36" cy="1065.71" r="4.78" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_011122b.cha | agreement 0.786 | n=14</title></circle>
+<circle cx="751.95" cy="1039.62" r="4.68" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_020113.cha | agreement 0.923 | n=13</title></circle>
+<circle cx="828.57" cy="1058.93" r="5.84" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Levy-Bar_020403c.cha | agreement 0.821 | n=28</title></circle>
+<circle cx="875.52" cy="1025.00" r="3.17" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Levy-Ruti_020217.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="771.93" cy="1065.71" r="5.84" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_020501.cha | agreement 0.786 | n=28</title></circle>
+<circle cx="691.23" cy="1053.91" r="6.87" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Leor_020506.cha | agreement 0.848 | n=46</title></circle>
+<circle cx="779.69" cy="1050.00" r="6.44" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_020105.cha | agreement 0.868 | n=38</title></circle>
+<circle cx="753.50" cy="1056.67" r="3.89" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BSF-Sharon_2-sharo20.cha | agreement 0.833 | n=6</title></circle>
+<circle cx="868.54" cy="1025.00" r="3.17" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_010923.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="735.65" cy="1083.46" r="4.68" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Smadar_020223.cha | agreement 0.692 | n=13</title></circle>
+<circle cx="688.90" cy="1025.00" r="3.58" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_010702a.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="868.15" cy="1059.55" r="6.15" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_020405.cha | agreement 0.818 | n=33</title></circle>
+<circle cx="689.48" cy="1088.33" r="3.39" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_010908.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="699.57" cy="1106.43" r="4.02" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Lior_010600.cha | agreement 0.571 | n=7</title></circle>
+<circle cx="780.85" cy="1088.33" r="3.39" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BSF-Ran_1-ran19.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="799.67" cy="1215.00" r="2.89" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_020404.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="781.05" cy="1215.00" r="3.58" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_020428.cha | agreement 0.000 | n=4</title></circle>
+<circle cx="712.57" cy="1025.00" r="3.58" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Leor_011023.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="748.45" cy="1025.00" r="3.17" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Leor_011022.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="878.43" cy="1025.00" r="4.38" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_020011.cha | agreement 1.000 | n=10</title></circle>
+<circle cx="826.44" cy="1151.67" r="4.27" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_010918.cha | agreement 0.333 | n=9</title></circle>
+<circle cx="865.63" cy="1063.00" r="4.38" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_020415.cha | agreement 0.800 | n=10</title></circle>
+<circle cx="769.21" cy="1065.00" r="5.20" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BSF-Nimrod_2-nimro22.cha | agreement 0.789 | n=19</title></circle>
+<circle cx="697.24" cy="1120.00" r="3.17" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | BermanLong-Hagar_010926.cha | agreement 0.500 | n=2</title></circle>
+<circle cx="724.98" cy="1158.00" r="4.38" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Levy-Ruti_020114.cha | agreement 0.300 | n=10</title></circle>
+<circle cx="823.92" cy="1025.00" r="3.17" fill="#7c3aed" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>dev_check_2 | Levy-Ruti_020100.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="1031.13" cy="1088.33" r="4.27" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_010921b.cha | agreement 0.667 | n=9</title></circle>
+<circle cx="1144.42" cy="1072.50" r="4.58" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_010724.cha | agreement 0.750 | n=12</title></circle>
+<circle cx="1145.58" cy="1106.43" r="4.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_011015a.cha | agreement 0.571 | n=7</title></circle>
+<circle cx="986.70" cy="1046.11" r="4.27" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Levy-Ruti_020324.cha | agreement 0.889 | n=9</title></circle>
+<circle cx="1072.06" cy="1079.29" r="4.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Ravid-Asaf_030102.cha | agreement 0.714 | n=7</title></circle>
+<circle cx="998.73" cy="1130.56" r="4.27" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Leor_020219.cha | agreement 0.444 | n=9</title></circle>
+<circle cx="1155.67" cy="1056.67" r="5.97" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_011015b.cha | agreement 0.833 | n=30</title></circle>
+<circle cx="1008.23" cy="1082.00" r="5.97" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Smadar_020210.cha | agreement 0.700 | n=30</title></circle>
+<circle cx="996.60" cy="1065.71" r="4.78" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Ravid-Sivan_020219.cha | agreement 0.786 | n=14</title></circle>
+<circle cx="1088.35" cy="1082.00" r="5.97" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Leor_020211a.cha | agreement 0.700 | n=30</title></circle>
+<circle cx="985.73" cy="1088.33" r="3.39" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_011010.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="1139.57" cy="1072.50" r="4.15" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Leor_011003.cha | agreement 0.750 | n=8</title></circle>
+<circle cx="1076.52" cy="1052.14" r="4.78" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_011014c.cha | agreement 0.857 | n=14</title></circle>
+<circle cx="1064.88" cy="1072.50" r="6.09" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Smadar_011019.cha | agreement 0.750 | n=32</title></circle>
+<circle cx="1155.28" cy="1025.00" r="4.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Levy-Ruti_020120.cha | agreement 1.000 | n=7</title></circle>
+<circle cx="996.01" cy="1025.00" r="3.17" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BSF-Roi_2-roi23.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="983.21" cy="1098.89" r="5.12" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Leor_020211b.cha | agreement 0.611 | n=18</title></circle>
+<circle cx="1133.75" cy="1088.33" r="6.33" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Smadar_010716.cha | agreement 0.667 | n=36</title></circle>
+<circle cx="1031.13" cy="1025.00" r="3.58" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Leor_010901.cha | agreement 1.000 | n=4</title></circle>
+<circle cx="1064.69" cy="1065.71" r="4.78" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Lior_011100.cha | agreement 0.786 | n=14</title></circle>
+<circle cx="1087.77" cy="1052.14" r="5.35" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Leor_011113.cha | agreement 0.857 | n=21</title></circle>
+<circle cx="1097.86" cy="1079.29" r="4.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Leor_020127.cha | agreement 0.714 | n=7</title></circle>
+<circle cx="1129.29" cy="1072.50" r="4.95" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BSF-Liron_1-liro111.cha | agreement 0.750 | n=16</title></circle>
+<circle cx="1109.31" cy="1056.67" r="3.89" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Leor_020522.cha | agreement 0.833 | n=6</title></circle>
+<circle cx="1050.72" cy="1025.00" r="2.89" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BSF-Yahel_2-yahel23.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="1118.81" cy="1106.43" r="5.84" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Leor_011104.cha | agreement 0.571 | n=28</title></circle>
+<circle cx="1110.08" cy="1215.00" r="2.89" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Ravid-Asaf_030405.cha | agreement 0.000 | n=1</title></circle>
+<circle cx="1117.07" cy="1072.50" r="3.58" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_020122.cha | agreement 0.750 | n=4</title></circle>
+<circle cx="1046.06" cy="1069.33" r="5.97" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BSF-Chay_2-hay22.cha | agreement 0.767 | n=30</title></circle>
+<circle cx="992.13" cy="1049.78" r="6.87" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_020324.cha | agreement 0.870 | n=46</title></circle>
+<circle cx="992.91" cy="1076.82" r="4.48" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Lior_010519.cha | agreement 0.727 | n=11</title></circle>
+<circle cx="1089.71" cy="1025.00" r="2.89" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_010807.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="1009.01" cy="1040.83" r="4.58" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_010812.cha | agreement 0.917 | n=12</title></circle>
+<circle cx="1012.11" cy="1056.67" r="3.89" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_010810.cha | agreement 0.833 | n=6</title></circle>
+<circle cx="1123.47" cy="1025.00" r="3.17" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Levy-Ruti_011003.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="1006.29" cy="1088.33" r="3.39" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Levy-Ruti_020209.cha | agreement 0.667 | n=3</title></circle>
+<circle cx="1090.10" cy="1101.00" r="6.82" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Leor_020309.cha | agreement 0.600 | n=45</title></circle>
+<circle cx="1076.13" cy="1050.33" r="5.97" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Ravid-Asaf_030023.cha | agreement 0.867 | n=30</title></circle>
+<circle cx="1048.39" cy="1038.57" r="4.78" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_020114.cha | agreement 0.929 | n=14</title></circle>
+<circle cx="1053.24" cy="1030.76" r="6.15" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_020316.cha | agreement 0.970 | n=33</title></circle>
+<circle cx="1110.08" cy="1076.82" r="4.48" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_011120.cha | agreement 0.727 | n=11</title></circle>
+<circle cx="973.90" cy="1085.00" r="7.40" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_020329.cha | agreement 0.684 | n=57</title></circle>
+<circle cx="1072.06" cy="1133.57" r="5.35" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Leor_011130.cha | agreement 0.429 | n=21</title></circle>
+<circle cx="983.40" cy="1052.14" r="4.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_020312.cha | agreement 0.857 | n=7</title></circle>
+<circle cx="1104.46" cy="1025.00" r="4.02" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Levy-Ruti_020200.cha | agreement 1.000 | n=7</title></circle>
+<circle cx="1071.86" cy="1045.21" r="6.92" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Ravid-Asaf_030621.cha | agreement 0.894 | n=47</title></circle>
+<circle cx="1042.18" cy="1053.91" r="6.87" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Smadar_010813.cha | agreement 0.848 | n=46</title></circle>
+<circle cx="1068.95" cy="1040.83" r="4.58" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Leor_011122.cha | agreement 0.917 | n=12</title></circle>
+<circle cx="1061.20" cy="1120.00" r="3.89" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_020406.cha | agreement 0.500 | n=6</title></circle>
+<circle cx="1070.12" cy="1092.29" r="6.97" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Leor_020429.cha | agreement 0.646 | n=48</title></circle>
+<circle cx="1065.85" cy="1025.00" r="4.27" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_020002.cha | agreement 1.000 | n=9</title></circle>
+<circle cx="1089.71" cy="1038.57" r="4.78" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Leor_020213.cha | agreement 0.929 | n=14</title></circle>
+<circle cx="1123.27" cy="1056.67" r="3.89" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BSF-Michal_1-mixal16.cha | agreement 0.833 | n=6</title></circle>
+<circle cx="1134.91" cy="1072.50" r="4.58" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_020200.cha | agreement 0.750 | n=12</title></circle>
+<circle cx="1082.15" cy="1025.00" r="4.58" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_011001a.cha | agreement 1.000 | n=12</title></circle>
+<circle cx="1054.21" cy="1066.56" r="6.09" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Lior_020500.cha | agreement 0.781 | n=32</title></circle>
+<circle cx="1021.81" cy="1106.43" r="4.78" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_020003.cha | agreement 0.571 | n=14</title></circle>
+<circle cx="1006.10" cy="1025.00" r="2.89" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_010922.cha | agreement 1.000 | n=1</title></circle>
+<circle cx="1043.74" cy="1052.14" r="4.78" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Lior_020104.cha | agreement 0.857 | n=14</title></circle>
+<circle cx="1073.03" cy="1025.00" r="3.17" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_011021.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="1139.76" cy="1025.00" r="3.17" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Levy-Ruti_020106.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="1033.65" cy="1047.09" r="6.71" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Leor_020403.cha | agreement 0.884 | n=43</title></circle>
+<circle cx="1033.07" cy="1025.00" r="3.17" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_020010.cha | agreement 1.000 | n=2</title></circle>
+<circle cx="1076.33" cy="1046.11" r="4.27" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Ravid-Asaf_030127.cha | agreement 0.889 | n=9</title></circle>
+<circle cx="1057.12" cy="1215.00" r="3.17" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Hagar_010703b.cha | agreement 0.000 | n=2</title></circle>
+<circle cx="1108.72" cy="1025.00" r="3.39" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Leor_020016.cha | agreement 1.000 | n=3</title></circle>
+<circle cx="1039.86" cy="1051.72" r="7.71" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | Ravid-Sivan_020403.cha | agreement 0.859 | n=64</title></circle>
+<circle cx="1073.03" cy="1076.35" r="6.39" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BermanLong-Lior_020300.cha | agreement 0.730 | n=37</title></circle>
+<circle cx="1069.54" cy="1063.00" r="3.74" fill="#c2410c" fill-opacity="0.48" stroke="#111827" stroke-opacity="0.25" stroke-width="0.5"><title>test_lockbox | BSF-Keren_1-keren15.cha | agreement 0.800 | n=5</title></circle>
+<circle cx="900" cy="982" r="5" fill="#1d4ed8" fill-opacity="0.65"/>
+<text x="910" y="986" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#374151" text-anchor="start">dev_train</text>
+<circle cx="1055" cy="982" r="5" fill="#0891b2" fill-opacity="0.65"/>
+<text x="1065" y="986" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#374151" text-anchor="start">dev_check_1</text>
+<circle cx="900" cy="1000" r="5" fill="#7c3aed" fill-opacity="0.65"/>
+<text x="910" y="1004" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#374151" text-anchor="start">dev_check_2</text>
+<circle cx="1055" cy="1000" r="5" fill="#c2410c" fill-opacity="0.65"/>
+<text x="1065" y="1004" font-family="Arial, sans-serif" font-size="11" font-weight="400" fill="#374151" text-anchor="start">test_lockbox</text>
+</svg>
