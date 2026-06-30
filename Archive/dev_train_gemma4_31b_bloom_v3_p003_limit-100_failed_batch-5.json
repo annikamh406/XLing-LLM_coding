@@ -1,0 +1,102 @@
+{
+  "batch_number": 5,
+  "record_ids": [
+    "eng_000072",
+    "eng_000073",
+    "eng_000074",
+    "eng_000075",
+    "eng_000076"
+  ],
+  "model": "gemma4:31b",
+  "schema_version": "bloom_v3",
+  "prompt_version": "p003",
+  "prompt_path": "/oscar/data/rfeiman/amcderm6/XLing-LLM_coding/v3/bloom_v3_english_prompt.md",
+  "validation_error": "Unexpected prediction keys: ['squeals']",
+  "parsed_payload": {
+    "schema_version": "bloom_v3",
+    "predictions": [
+      {
+        "record_id": "eng_000072",
+        "comments": "Child denies the mother's question about whether there was story time.",
+        "bloom_label": "Denial",
+        "flags": {
+          "foreign_language_negation": "No",
+          "singing": "No",
+          "mimicry": "No",
+          "tag_question": "No",
+          "repetition": "No",
+          "not_a_negation": "No"
+        }
+      },
+      {
+        "record_id": "eng_000073",
+        "comments": "Child repeats the denial of story time.",
+        "bloom_label": "Denial",
+        "flags": {
+          "foreign_language_negation": "No",
+          "singing": "No",
+          "mimicry": "No",
+          "tag_question": "No",
+          "repetition": "Yes",
+          "not_a_negation": "No"
+        }
+      },
+      {
+        "record_id": "eng_000074",
+        "squeals": "No",
+        "bloom_label": "Uncoded",
+        "flags": {
+          "foreign_language_negation": "No",
+          "singing": "No",
+          "mimicry": "No",
+          "tag_question": "No",
+          "repetition": "No",
+          "not_a_negation": "No"
+        }
+      },
+      {
+        "record_id": "eng_000075",
+        "comments": "Child asserts that there is no milk, indicating nonexistence of an expected item.",
+        "bloom_label": "Nonexistence",
+        "flags": {
+          "foreign_language_negation": "No",
+          "singing": "No",
+          "mimicry": "No",
+          "tag_question": "No",
+          "repetition": "No",
+          "not_a_negation": "No"
+        }
+      },
+      {
+        "record_id": "eng_000076",
+        "comments": "The negator is part of a tag question seeking confirmation.",
+        "bloom_label": "Denial",
+        "flags": {
+          "foreign_language_negation": "No",
+          "singing": "No",
+          "mimicry": "No",
+          "tag_question": "Yes",
+          "repetition": "No",
+          "not_a_negation": "No"
+        }
+      }
+    ]
+  },
+  "raw_response": {
+    "model": "gemma4:31b",
+    "created_at": "2026-06-11T19:48:32.236397269Z",
+    "message": {
+      "role": "assistant",
+      "content": "{\n  \"schema_version\": \"bloom_v3\",\n  \"predictions\": [\n    {\n      \"record_id\": \"eng_000072\",\n      \"comments\": \"Child denies the mother's question about whether there was story time.\",\n      \"bloom_label\": \"Denial\",\n      \"flags\": {\n        \"foreign_language_negation\": \"No\",\n        \"singing\": \"No\",\n        \"mimicry\": \"No\",\n        \"tag_question\": \"No\",\n        \"repetition\": \"No\",\n        \"not_a_negation\": \"No\"\n      }\n    },\n    {\n      \"record_id\": \"eng_000073\",\n      \"comments\": \"Child repeats the denial of story time.\",\n      \"bloom_label\": \"Denial\",\n      \"flags\": {\n        \"foreign_language_negation\": \"No\",\n        \"singing\": \"No\",\n        \"mimicry\": \"No\",\n        \"tag_question\": \"No\",\n        \"repetition\": \"Yes\",\n        \"not_a_negation\": \"No\"\n      }\n    },\n    {\n      \"record_id\": \"eng_000074\",\n      \"squeals\": \"No\",\n      \"bloom_label\": \"Uncoded\",\n      \"flags\": {\n        \"foreign_language_negation\": \"No\",\n        \"singing\": \"No\",\n        \"mimicry\": \"No\",\n        \"tag_question\": \"No\",\n        \"repetition\": \"No\",\n        \"not_a_negation\": \"No\"\n      }\n    },\n    {\n      \"record_id\": \"eng_000075\",\n      \"comments\": \"Child asserts that there is no milk, indicating nonexistence of an expected item.\",\n      \"bloom_label\": \"Nonexistence\",\n      \"flags\": {\n        \"foreign_language_negation\": \"No\",\n        \"singing\": \"No\",\n        \"mimicry\": \"No\",\n        \"tag_question\": \"No\",\n        \"repetition\": \"No\",\n        \"not_a_negation\": \"No\"\n      }\n    },\n    {\n      \"record_id\": \"eng_000076\",\n      \"comments\": \"The negator is part of a tag question seeking confirmation.\",\n      \"bloom_label\": \"Denial\",\n      \"flags\": {\n        \"foreign_language_negation\": \"No\",\n        \"singing\": \"No\",\n        \"mimicry\": \"No\",\n        \"tag_question\": \"Yes\",\n        \"repetition\": \"No\",\n        \"not_a_negation\": \"No\"\n      }\n    }\n  ]\n}",
+      "thinking": "The user wants me to code negation tokens in English child-caregiver transcripts.\nI need to assign a `bloom_label` and six flags for each `record_id`.\n\n- `Nonexistence`: Expected referent is absent/missing.\n- `Rejection`: Opposing an offer, request, proposal, or action (refusing/stopping).\n- `Denial`: Asserting a proposition is false or affirming a negative proposition.\n- `Nonpossession`: Someone does not have the referent.\n- `Uncoded`: Insufficient context or unintelligible.\n- `Excluded`: Not a negation act (singing, mimicry, not_a_negation).\n\n- `foreign_language_negation`: Non-English negator.\n- `singing`: In song lyrics.\n- `mimicry`: Exact repetition of another speaker.\n- `tag_question`: Inside a tag question (e.g., \"don't you?\").\n- `repetition`: Lexically and semantically identical to the previous negator.\n- `not_a_negation`: Not functioning as negation.\n\n- `eng_000072`:\n    - Target: `no`\n    - Utterance: `no .`\n    - Context before: Mother asks `no story+time ?`\n    - Context after: Child says `no circle time .`\n    - Analysis: Mother asks a question about whether there was story time. Child says \"no\". This is a denial of the proposition that there was story time.\n    - Label: `Denial`.\n\n- `eng_000073`:\n    - Target: `no`\n    - Utterance: `no circle time .`\n    - Context before: Mother asked `no story+time ?` and child said `no .`\n    - Analysis: The child is continuing to describe what happened (or didn't happen) in the group today. \"No circle time\" asserts that circle time did not occur.\n    - Label: `Denial`.\n\n- `eng_000074`:\n    - Target: `no`\n    - Utterance: `no [=! squeals] !`\n    - Context before: Mother is lecturing about playing rudely or destructively.\n    - Context after: Child says `ooh .` then `xxx goo_goo_ga_ga@b !`.\n    - Analysis: The child squeals \"no!\". Given the mother's stern tone about behavior, this looks like a reaction to the mother's lecture or a refusal to accept the reprimand/condition. However, looking at the flow, the mother is in the middle of a conditional sentence (\"if you can't find a way... then\"). The child interrupts with \"no!\". This is likely a rejection of the mother's implied threat or the premise of the lecture.\n    - Wait, let's look closer. Mother: \"if you can't find a way to play that isn't rude or destructive then\". Child: \"no!\". This is a rejection of the mother's statement/implied consequence.\n    - Label: `Rejection`.\n\n- `eng_000075`:\n    - Target: `no`\n    - Utterance: `no milk .`\n    - Context before: Child was talking about \"goo_goo_ga_ga@b\".\n    - Context after: Mother says `mhm .` then `okay .`\n    - Analysis: \"No milk\" in this context seems to be a statement of fact about the absence of milk.\n    - Label: `Nonexistence`.\n\n- `eng_000076`:\n    - Target: `ain't`\n    - Utterance: `it's 0a [*] big table , , <ain't [*] it> [>] ?`\n    - Analysis: This is a classic tag question (\"ain't it?\").\n    - Label: `Denial` (or `Excluded`? No, tag questions are not automatically excluded). The prompt says: \"Do not automatically exclude tag questions.\"\n    - Function: It's seeking confirmation of a proposition. The negation is part of the tag.\n    - Label: `Denial`.\n    - Flag: `tag_question` = `Yes`.\n\nLet's double check `eng_000074` again.\nMother: \"if you can't find a way to play that isn't rude or destructive then\"\nChild: \"no [=! squeals] !\"\nThis is a child reacting to a caregiver's disciplinary warning. It's a refusal to accept the premise or the impending consequence. `Rejection` fits best here.\n\nLet's double check `eng_000072` and `eng_000073`.\nMother: \"no story+time ?\"\nChild: \"no .\" (eng_000072)\nChild: \"no circle time .\" (eng_000073)\nThese are answers to a question about what happened at school/group. They are assertions that these events did not occur. `Denial` is the correct label for asserting a negative proposition.\n\nLet's double check `eng_000075`.\nChild: \"no milk .\"\nContext: The child is just babbling/talking. \"No milk\" is a statement that milk is missing/absent. `Nonexistence`.\n\nLet's double check `eng_000076`.\n\"it's a big table, ain't it?\"\nTarget: `ain't`.\nThis is a tag question.\nLabel: `Denial`.\nFlag: `tag_question`: `Yes`.\n\nSummary:\neng_000072: Denial\neng_000073: Denial\neng_000074: Rejection\neng_000075: Nonexistence\neng_000076: Denial (tag_question=Yes)\n\nWait, for `eng_000073`, is it a repetition of `eng_000072`?\neng_000072: \"no .\"\neng_000073: \"no circle time .\"\nThe negators are both \"no\", but the prejacents are different. One negates \"story+time\", the other negates \"circle time\". So `repetition` is `No`.\n\nWait, `eng_000074` \"no [=! squeals] !\". Is it mimicry? No. Singing? No.\nIs it `Rejection` or `Denial`?\nMother is stating a condition for playing. Child says \"no!\". This is a refusal of the condition/situation. `Rejection`.\n\nFinal check on labels:\neng_000072: Denial\neng_000073: Denial\neng_000074: Rejection\neng_000075: Nonexistence\neng_000076: Denial\n\nWait, `eng_000076` is a tag question. The prompt says \"Do not automatically exclude tag questions.\"\nIs it `Denial`? A tag question like \"ain't it?\" is essentially asking \"Is it not the case that...?\" or seeking confirmation. The negation targets the truth of the proposition. `Denial` is the standard for truth-claims.\n\nOne more look at `eng_000075` \"no milk\".\nCould it be `Nonpossession`? \"I have no milk\"?\nThe utterance is just \"no milk\". In child-caregiver contexts, \"no [noun]\" usually means \"there is no [noun]\" (Nonexistence) unless the context implies \"I don't have [noun]\" (Nonpossession). Here, there's no clear indication of possession. It's more likely a general statement of absence.\n\nOne more look at `eng_000074`.\nMother: \"if you can't find a way to play that isn't rude or destructive then\"\nChild: \"no [=! squeals] !\"\nThis is a very common child reaction to a \"then [consequence]\" threat. It's a rejection of the threat/rule.\n\nFinal labels:\neng_000072: Denial\neng_000073: Denial\neng_000074: Rejection\neng_000075: Nonexistence\neng_000076: Denial\n\nWait, let me re-read the `tag_question` rule.\n`tag_question`: Mark `Yes` only if the target negator is inside a tag question, such as the `don't` in `you like pasta, don't you?`.\n`eng_000076`: `it's 0a [*] big table , , <ain't [*] it> [>] ?`\nTarget: `ain't`.\nThis is exactly a tag question.\nLabel: `Denial`.\n\nWait, let me check `eng_000072` and `eng_000073` again.\nMother: \"no story+time ?\"\nChild: \"no .\"\nChild: \"no circle time .\"\nThese are answers to a question about the day's activities.\n\"Did you have story time?\" \"No.\" -> Denial.\n\"Did you have circle time?\" \"No circle time.\" -> Denial.\n\nWait, `eng_000075` \"no milk\".\nIs it possible it's `Uncoded`?\nContext before: Child says \"goo_goo_ga_ga@b\".\nContext after: Mother says \"mhm\", \"okay\".\nIt's a bit random. But \"no milk\" is a very standard \"Nonexistence\" pattern.\n\nLet's refine the comments.\neng_000072: Child denies that there was story time.\neng_000073: Child asserts that there was no circle time.\neng_000074: Child rejects the mother's disciplinary warning/condition.\neng_000075: Child states that milk is absent/missing.\neng_000076: Negator is part of a tag question seeking confirmation of a fact.\n\nDouble check `eng_000074` again.\nMother: \"if you can't find a way to play that isn't rude or destructive then\"\nChild: \"no [=! squeals] !\"\nCould this be `Denial`? \"No, I am not playing rudely\"?\nUsually, a squealed \"No!\" in response to a \"then...\" threat is a rejection of the impending consequence or the rule being imposed. I'll stick with `Rejection`.\n\nWait, `eng_000076` \"ain't it?\".\nIs it `Denial`?\nThe prompt says: \"Choose Denial when the main function is to assert that a proposition is false, or to affirm a negative proposition, and the other labels do not apply.\"\nA tag question is a request for confirmation. The negation is used to create the tag. It's not asserting a proposition is false, but rather asking for confirmation. However, among the labels, `Denial` is the one for truth-value/propositional negation.\n\nLet's check the examples.\nExample C: \"This is a tomato\" (holding banana). Child: \"No.\" -> Denial.\nExample P: \"it's raining outside.\" Child: \"no.\" -> Denial.\nTag questions are similar in that they deal with the truth of a proposition.\n\nFinal check on flags:\neng_000072: all No\neng_000073: all No\neng_000074: all No\neng_000075: all No\neng_000076: tag_question=Yes, others No\n\nWait, `eng_000074` \"no [=! squeals] !\".\nIs it `mimicry`? No.\nIs it `singing`? No.\nIs it `not_a_negation`? No.\n\nOne last look at `eng_000075` \"no milk\".\nIs it `Nonexistence` or `Nonpossession`?\n\"No milk\" usually means \"There is no milk\".\nIf the child were talking about their own lunch, it might be `Nonpossession`.\nContext: Child is just talking/babbling.\nI'll go with `Nonexistence`.\n\nFinal list:\neng_000072: Denial\neng_000073: Denial\neng_000074: Rejection\neng_000075: Nonexistence\neng_000076: Denial"
+    },
+    "done": true,
+    "done_reason": "stop",
+    "total_duration": 125724793811,
+    "load_duration": 201135628,
+    "prompt_eval_count": 18500,
+    "prompt_eval_duration": 45669630,
+    "eval_count": 645,
+    "eval_duration": 23936982795
+  }
+}

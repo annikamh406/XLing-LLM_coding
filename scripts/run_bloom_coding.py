@@ -276,6 +276,7 @@ def ollama_chat(
     output_schema: dict,
     temperature: float,
     timeout: int,
+    num_ctx: int | None = None,
     validation_feedback: str | None = None,
 ) -> tuple[dict, dict]:
     """Send one batch to Ollama's local /api/chat endpoint."""
@@ -304,6 +305,12 @@ def ollama_chat(
         "format": output_schema,
         "options": {"temperature": temperature},
     }
+    # Pin the context window when asked. The default (model/server-chosen, often
+    # 32k) sizes a multi-GB KV cache that can force a large model to spill layers
+    # onto CPU; batches here are small, so a few-thousand-token window is ample
+    # and keeps the model fully on GPU.
+    if num_ctx is not None:
+        request_payload["options"]["num_ctx"] = num_ctx
     # Use Python's standard-library HTTP client so the script runs on Oscar
     # without installing requests/openai/etc.
     data = json.dumps(request_payload).encode("utf-8")
@@ -349,7 +356,22 @@ def parse_args() -> argparse.Namespace:
         help="Retry a batch this many times after schema validation failures.",
     )
     parser.add_argument("--temperature", type=float, default=0.0)
-    parser.add_argument("--timeout", type=int, default=300, help="HTTP timeout seconds.")
+    parser.add_argument(
+        "--num-ctx",
+        type=int,
+        default=None,
+        help="Pin Ollama's context window (tokens). Lower (e.g. 8192) shrinks "
+        "the KV cache so a large model fits fully on the GPU. Default: "
+        "model/server default.",
+    )
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=1200,
+        help="HTTP timeout seconds per batch. Default 1200: a large model "
+        "thinking over a multi-record batch (plus a cold first-load) can exceed "
+        "the old 300s. Lower it for small/fast models if you want fail-fast.",
+    )
     parser.add_argument(
         "--schema-version",
         default=DEFAULT_SCHEMA_VERSION,
@@ -485,6 +507,7 @@ def main() -> int:
                 output_schema=output_schema,
                 temperature=args.temperature,
                 timeout=args.timeout,
+                num_ctx=args.num_ctx,
                 validation_feedback=validation_feedback,
             )
             last_payload = payload

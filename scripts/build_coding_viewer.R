@@ -89,10 +89,9 @@ build_run <- function(audit_path, version) {
   lang <- lang_from_id(chr1(rows$record_id[1]))
   results_dir <- dirname(audit_path)
 
-  # Pair the raw-responses file by record-id overlap, so multiple runs can
-  # coexist in one results folder without relying on filename conventions.
-  # Raw files normally sit next to the audit; dev/ is a legacy location and
-  # lockbox/ holds the final test_lockbox evaluation outputs.
+  # Pair the raw-responses file to this audit. Raw files normally sit next to
+  # the audit; dev/ is a legacy location and lockbox/ holds the final
+  # test_lockbox evaluation outputs.
   raw_dirs <- c(results_dir, file.path(results_dir, "dev"), file.path(results_dir, "lockbox"))
   raw_files <- unlist(lapply(
     raw_dirs[dir.exists(raw_dirs)],
@@ -100,14 +99,28 @@ build_run <- function(audit_path, version) {
   ))
   best_raw <- NULL
   best_overlap <- 0
-  for (rf in raw_files) {
-    batches <- tryCatch(read_jsonl(rf), error = function(e) NULL)
-    if (is.null(batches)) next
-    raw_ids <- unlist(lapply(batches, function(b) b$record_ids))
-    overlap <- length(intersect(raw_ids, audit_ids)) / max(1, length(audit_ids))
-    if (overlap > best_overlap) {
-      best_overlap <- overlap
-      best_raw <- batches
+  # Prefer the raw file whose name matches this audit's run prefix
+  # (llm-human-audit_<prefix>.csv -> <prefix>_raw_responses.jsonl). Record-id
+  # overlap alone is ambiguous when two runs share one record set (e.g. two
+  # prompts on the same split), so this keeps them correctly separated.
+  run_prefix <- sub("\\.csv$", "", sub("^.*llm-human-audit_", "", basename(audit_path)))
+  named_raw <- raw_files[basename(raw_files) == paste0(run_prefix, "_raw_responses.jsonl")]
+  if (length(named_raw)) {
+    best_raw <- tryCatch(read_jsonl(named_raw[[1]]), error = function(e) NULL)
+    if (!is.null(best_raw)) best_overlap <- 1
+  }
+  # Fall back to record-id overlap for legacy names that don't follow the
+  # <prefix>_raw_responses.jsonl convention (e.g. the dated v1 files).
+  if (is.null(best_raw)) {
+    for (rf in raw_files) {
+      batches <- tryCatch(read_jsonl(rf), error = function(e) NULL)
+      if (is.null(batches)) next
+      raw_ids <- unlist(lapply(batches, function(b) b$record_ids))
+      overlap <- length(intersect(raw_ids, audit_ids)) / max(1, length(audit_ids))
+      if (overlap > best_overlap) {
+        best_overlap <- overlap
+        best_raw <- batches
+      }
     }
   }
 
@@ -185,7 +198,12 @@ build_run <- function(audit_path, version) {
     meta = list(
       version = version,
       split = split_name,
-      language = chr1(rows$language[1]),
+      # Prefer the audit's language column; fall back to the record_id-derived
+      # folder name (Title-cased) so every run has a non-empty language label.
+      language = {
+        L <- chr1(rows$language[1])
+        if (nzchar(L)) L else paste0(toupper(substring(lang, 1, 1)), substring(lang, 2))
+      },
       model = model,
       schema_version = schema_version,
       prompt_version = prompt_version,
@@ -210,9 +228,11 @@ for (vdir in version_dirs[order(as.integer(sub("^v", "", basename(version_dirs))
 }
 if (!length(runs)) stop("No audit CSVs found under v*/results/.")
 
-# Order runs chronologically within each version: by version number, then run
-# date, then size (a limit-N smoke run precedes the full run from the same day).
+# Order runs by language first so the dropdown and the across-runs chart group
+# by language; then chronologically within a language: version number, run date,
+# then size (a limit-N smoke run precedes the full run from the same day).
 run_order <- order(
+  vapply(runs, function(r) tolower(r$meta$language), character(1)),
   vapply(runs, function(r) as.integer(sub("^v", "", r$meta$version)), integer(1)),
   vapply(runs, function(r) ifelse(nzchar(r$meta$run_date), r$meta$run_date, "9999-99-99"), character(1)),
   vapply(runs, function(r) r$meta$n_rows, numeric(1))
@@ -791,9 +811,25 @@ html <- paste0(
         .replaceAll(String.fromCharCode(39), "&#039;");
     }
 
+    // Whether the prompt examples match the run target language, derived from
+    // the prompt_version suffix convention so it generalizes across languages:
+    //   <base> + "-<lang>-loc"   -> examples localized to the target language
+    //   <base> + "-<lang>-engex" -> examples kept in English (cross-language)
+    //   <base> with no such suffix (e.g. p003) -> native English prompt
+    // "matched" = examples are in the target language (native English or -loc).
+    function exampleCondition(meta) {
+      const pv = meta.prompt_version || "";
+      if (/-engex$/.test(pv)) return { matched: false, short: "Eng ex.", label: "English examples" };
+      if (/-loc$/.test(pv))   return { matched: true,  short: "Localized", label: "Localized examples" };
+      return { matched: true, short: "Native", label: "Native (English) examples" };
+    }
+
     function runLabel(run) {
       const m = run.meta;
-      const bits = [m.version, m.split, m.model || "model unknown", "n=" + m.n_rows];
+      const cond = exampleCondition(m);
+      const bits = [m.language || "?", m.version, m.split, cond.label];
+      if (m.prompt_version) bits.push(m.prompt_version);
+      bits.push("n=" + m.n_rows);
       if (m.run_date) bits.push(m.run_date);
       return bits.join(" \\u00b7 ");
     }
@@ -1102,7 +1138,8 @@ html <- paste0(
         ["split", meta.split + " (n=" + meta.n_rows + ")"],
         ["prompt", (meta.prompt_version || "?") + " / " + (meta.schema_version || "?")],
         ["run", meta.run_date || "date unknown"],
-        ["language", meta.language]
+        ["language", meta.language],
+        ["examples", exampleCondition(meta).label]
       ].map(([k, v]) => `<span class="run-chip">${esc(k)} <b>${esc(v)}</b></span>`).join("");
     }
 
@@ -1193,8 +1230,14 @@ html <- paste0(
     }
 
     function bindControls() {
-      $("runSelect").innerHTML = payload.runs
-        .map((run, i) => `<option value="${i}">${esc(runLabel(run))}</option>`).join("");
+      const runGroups = {};
+      payload.runs.forEach((run, i) => {
+        const lang = run.meta.language || "Unknown";
+        (runGroups[lang] = runGroups[lang] || []).push(
+          `<option value="${i}">${esc(runLabel(run))}</option>`);
+      });
+      $("runSelect").innerHTML = Object.entries(runGroups)
+        .map(([lang, opts]) => `<optgroup label="${esc(lang)}">${opts.join("")}</optgroup>`).join("");
       $("runSelect").addEventListener("change", () => loadRun(Number($("runSelect").value)));
 
       $("tabBtnExplorer").addEventListener("click", () => setTab("explorer"));
@@ -1225,6 +1268,7 @@ html <- paste0(
       $("trendBasisDenialNeg").addEventListener("click", () => setTrendBasis("denialNeg"));
 
       window.addEventListener("resize", sizeWorkspace);
+      window.addEventListener("resize", () => { if (!$("tabTrends").classList.contains("hidden")) renderTrends(); });
     }
 
     function setTab(tab) {
@@ -1718,11 +1762,16 @@ html <- paste0(
       renderTrends();
     }
 
-    function shapeMarkup(shape, x, y, r, color) {
-      if (shape === "square") return `<rect x="${x - r}" y="${y - r}" width="${2 * r}" height="${2 * r}" fill="${color}" stroke="#fff" stroke-width="1.2"/>`;
-      if (shape === "diamond") return `<rect x="${x - r}" y="${y - r}" width="${2 * r}" height="${2 * r}" fill="${color}" stroke="#fff" stroke-width="1.2" transform="rotate(45 ${x} ${y})"/>`;
-      if (shape === "triangle") return `<polygon points="${x},${y - r * 1.2} ${x - r * 1.15},${y + r} ${x + r * 1.15},${y + r}" fill="${color}" stroke="#fff" stroke-width="1.2"/>`;
-      return `<circle cx="${x}" cy="${y}" r="${r}" fill="${color}" stroke="#fff" stroke-width="1.2"/>`;
+    // filled = examples match the target language; hollow (white fill, colored
+    // outline) = English examples on a non-English target.
+    function shapeMarkup(shape, x, y, r, color, filled = true) {
+      const fill = filled ? color : "#fff";
+      const stroke = filled ? "#fff" : color;
+      const sw = filled ? 1.2 : 2;
+      if (shape === "square") return `<rect x="${x - r}" y="${y - r}" width="${2 * r}" height="${2 * r}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+      if (shape === "diamond") return `<rect x="${x - r}" y="${y - r}" width="${2 * r}" height="${2 * r}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" transform="rotate(45 ${x} ${y})"/>`;
+      if (shape === "triangle") return `<polygon points="${x},${y - r * 1.2} ${x - r * 1.15},${y + r} ${x + r * 1.15},${y + r}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+      return `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
     }
 
     function renderTrends() {
@@ -1733,10 +1782,17 @@ html <- paste0(
       const splits = [...new Set(stats.map(s => s.meta.split))];
       const shapeFor = Object.fromEntries(splits.map((sp, i) => [sp, splitShapes[i % splitShapes.length]]));
 
-      const ml = 64, mr = 24, mt = 18, mb = 64;
-      const colW = Math.max(120, Math.min(220, 760 / stats.length));
+      const ml = 64, mr = 24, mt = 34, mb = 82;
+      // Width is dynamic: spread columns across the available container width,
+      // but clamp per-column width to [120, 240]px. The 120px floor keeps
+      // columns legible (narrow viewports / many languages scroll horizontally);
+      // the 240px cap stops a handful of columns from stretching absurdly wide.
+      // As more languages (Hebrew, German, Tagalog, ...) add columns, colW
+      // shrinks toward the floor and the chart packs / scrolls instead.
+      const containerW = $("trendChart").clientWidth || 1100;
+      const colW = Math.max(120, Math.min(240, (containerW - ml - mr) / stats.length));
       const width = ml + mr + colW * stats.length;
-      const height = 380;
+      const height = 400;
       const plotH = height - mt - mb;
 
       let yMin = 0, yMax = 1;
@@ -1763,20 +1819,47 @@ html <- paste0(
         if (i > 0) parts.push(`<line x1="${ml + colW * i}" y1="${mt}" x2="${ml + colW * i}" y2="${mt + plotH}" stroke="#f0f2ef" stroke-width="1"/>`);
         parts.push(`<text x="${x}" y="${mt + plotH + 22}" text-anchor="middle" font-size="13" font-weight="700" fill="#202124">${esc(s.meta.version)}</text>`);
         parts.push(`<text x="${x}" y="${mt + plotH + 38}" text-anchor="middle" font-size="11" fill="#687076">${esc(s.meta.split)} &middot; n=${s.nScope}${state.trendScope === "clean" ? " clean" : ""}</text>`);
-        parts.push(`<text x="${x}" y="${mt + plotH + 52}" text-anchor="middle" font-size="10.5" fill="#9aa3a9">${esc(s.meta.model || "")}${s.meta.run_date ? " &middot; " + esc(s.meta.run_date) : ""}</text>`);
+        parts.push(`<text x="${x}" y="${mt + plotH + 52}" text-anchor="middle" font-size="10.5" fill="#687076">${esc(s.meta.prompt_version || s.meta.model || "")}${s.meta.run_date ? " &middot; " + esc(s.meta.run_date) : ""}</text>`);
+        parts.push(`<text x="${x}" y="${mt + plotH + 66}" text-anchor="middle" font-size="10" font-weight="600" fill="${exampleCondition(s.meta).matched ? "#1f6f68" : "#a45c19"}">${esc(exampleCondition(s.meta).label)}</text>`);
         if (!s.nScope) parts.push(`<text x="${x}" y="${mt + plotH / 2}" text-anchor="middle" font-size="11" fill="#9aa3a9" transform="rotate(-90 ${x} ${mt + plotH / 2})">all rows inspected &mdash; no headline evidence</text>`);
       });
 
+      // Language bands: a bold label above each contiguous same-language group,
+      // and a strong divider between groups (runs are pre-sorted by language).
+      let g0 = 0;
+      for (let i = 1; i <= stats.length; i++) {
+        if (i === stats.length || stats[i].meta.language !== stats[g0].meta.language) {
+          const xMid = (xPos(g0) + xPos(i - 1)) / 2;
+          parts.push(`<text x="${xMid}" y="${mt - 12}" text-anchor="middle" font-size="12.5" font-weight="700" fill="#202124">${esc(stats[g0].meta.language || "?")}</text>`);
+          if (i < stats.length) {
+            const xb = ml + colW * i;
+            parts.push(`<line x1="${xb}" y1="${mt - 24}" x2="${xb}" y2="${mt + plotH}" stroke="#b5bdc2" stroke-width="1.5"/>`);
+          }
+          g0 = i;
+        }
+      }
+
       const labelCols = stats.map(() => []);
       for (const series of trendSeries) {
-        const pts = stats.map((s, i) => ({ col: i, x: xPos(i), y: yPos(value(s, series.key)), v: value(s, series.key), split: s.meta.split }))
+        const pts = stats.map((s, i) => ({ col: i, x: xPos(i), y: yPos(value(s, series.key)), v: value(s, series.key), split: s.meta.split, lang: s.meta.language, matched: exampleCondition(s.meta).matched }))
           .filter(p => Number.isFinite(p.v));
-        if (pts.length > 1) {
-          const d = pts.map((p, i) => `${i ? "L" : "M"}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
-          parts.push(`<path d="${d}" fill="none" stroke="${series.color}" stroke-width="2.2" ${series.dash ? `stroke-dasharray="${series.dash}"` : ""} opacity="0.85"/>`);
-        }
+        // Connect points only within one language; start a new path segment
+        // whenever the language changes, so lines never bridge across languages.
+        let seg = [];
+        const flushSeg = () => {
+          if (seg.length > 1) {
+            const d = seg.map((p, i) => `${i ? "L" : "M"}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
+            parts.push(`<path d="${d}" fill="none" stroke="${series.color}" stroke-width="2.2" ${series.dash ? `stroke-dasharray="${series.dash}"` : ""} opacity="0.85"/>`);
+          }
+          seg = [];
+        };
         for (const p of pts) {
-          parts.push(shapeMarkup(shapeFor[p.split], p.x, p.y, 5.5, series.color));
+          if (seg.length && p.lang !== seg[seg.length - 1].lang) flushSeg();
+          seg.push(p);
+        }
+        flushSeg();
+        for (const p of pts) {
+          parts.push(shapeMarkup(shapeFor[p.split], p.x, p.y, 5.5, series.color, p.matched));
           labelCols[p.col].push({
             y: p.y, x: p.x, color: series.color,
             text: metric === "agreement" ? (p.v * 100).toFixed(1) + "%" : p.v.toFixed(2)
@@ -1802,7 +1885,11 @@ html <- paste0(
       $("trendLegend").innerHTML =
         trendSeries.map(t => `<span><span class="swatch" style="border-top-color:${t.color}; ${t.dash ? "border-top-style:dashed;" : ""}"></span>${esc(t.name)}</span>`).join("") +
         `<span style="margin-left:8px; border-left:1px solid var(--border); padding-left:14px;">Split:</span>` +
-        splits.map(sp => `<span><span class="shape">${shapeGlyph[shapeFor[sp]]}</span>${esc(sp)}</span>`).join("");
+        splits.map(sp => `<span><span class="shape">${shapeGlyph[shapeFor[sp]]}</span>${esc(sp)}</span>`).join("") +
+        `<span style="margin-left:8px; border-left:1px solid var(--border); padding-left:14px;">Examples:</span>` +
+        `<span><span class="shape">\\u25cf</span>match target language</span>` +
+        `<span><span class="shape">\\u25cb</span>English examples</span>` +
+        `<span style="margin-left:8px; border-left:1px solid var(--border); padding-left:14px; color:var(--muted);">Columns grouped by language; lines connect runs within one language.</span>`;
 
       $("trendTableCaption").innerHTML =
         `Comparison: <b>${esc(trendBasisDefs[state.trendBasis].label)}</b>. ` +

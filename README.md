@@ -204,6 +204,40 @@ python3 scripts/run_bloom_coding.py --split dev_train --model gemma4:31b \
   --results-dir v1/results
 ```
 
+### 6. Run the Hebrew/German 100-row prompt variants
+
+The v3 multilingual prompt variants mirror the Spanish setup:
+
+- `p003-he-loc`: Hebrew prompt with Hebrew-localized examples.
+- `p003-he-engex`: Hebrew prompt with English examples.
+- `p003-de-loc`: German prompt with German-localized examples.
+- `p003-de-engex`: German prompt with English examples.
+
+For actual server-side concurrency, start `ollama serve` with parallelism
+enabled if the GPU memory can handle it:
+
+```bash
+OLLAMA_NUM_PARALLEL=4 ollama serve
+```
+
+Then start all four 100-row `dev_train` jobs in parallel from a second session:
+
+```bash
+cd data/amcderm6/XLing-LLM_coding
+bash scripts/run_v3_100_multilingual.sh
+```
+
+The launcher defaults to `MODEL=gemma4:31b`, `LIMIT=100`, `BATCH_SIZE=5`, and
+`SPLIT=dev_train`. Override those with environment variables or pass normal
+runner flags through to all four jobs:
+
+```bash
+MODEL=gemma4:31b LIMIT=100 BATCH_SIZE=5 bash scripts/run_v3_100_multilingual.sh --overwrite --num-ctx 8192
+```
+
+Each run writes distinct output filenames under `v3/results/` because the
+prompt-version tags differ. Per-job logs go to `v3/results/logs/`.
+
 Output filenames include split, model, schema version, prompt ID, and optional
 limit, e.g. `dev_train_gemma4_31b_bloom_v2_p002_limit-20_predictions.jsonl`.
 The schema version, prompt ID, and prompt path are also stored in the raw
