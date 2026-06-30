@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import socket
 import sys
 import time
 import urllib.error
@@ -86,6 +87,15 @@ PROMPT_RECORD_FIELDS = [
 
 class ValidationError(Exception):
     """Raised when model output violates the local Bloom output contract."""
+
+
+class RetryableBatchError(Exception):
+    """A transient batch failure that should trigger a reseeded retry rather
+    than aborting the whole run. Covers HTTP timeouts (GPU contention or a
+    runaway generation) and empty model output (gemma's thinking/output flip,
+    where the unconstrained thinking channel loops and content comes back
+    empty). Distinct from ValidationError, which gets a corrective hint fed back
+    to the model; a RetryableBatchError just resamples with a new seed."""
 
 
 def read_jsonl(path: Path) -> list[dict]:
@@ -277,6 +287,8 @@ def ollama_chat(
     temperature: float,
     timeout: int,
     num_ctx: int | None = None,
+    num_predict: int | None = None,
+    seed: int | None = None,
     validation_feedback: str | None = None,
 ) -> tuple[dict, dict]:
     """Send one batch to Ollama's local /api/chat endpoint."""
@@ -295,6 +307,24 @@ def ollama_chat(
     # Passing a JSON schema as `format` makes Ollama grammar-constrain decoding
     # to the schema (structured outputs). validate_response below stays as a
     # backstop for the properties a grammar cannot express.
+    options = {"temperature": temperature}
+    # Pin the context window when asked. The default (model/server-chosen, often
+    # 32k) sizes a multi-GB KV cache that can force a large model to spill layers
+    # onto CPU; batches here are small, so a few-thousand-token window is ample
+    # and keeps the model fully on GPU.
+    if num_ctx is not None:
+        options["num_ctx"] = num_ctx
+    # Cap total generation. The JSON `format` grammar constrains `content`, but
+    # the model's "thinking" channel is unconstrained and can run away into an
+    # infinite loop, producing empty content and eventually hitting the HTTP
+    # timeout. A cap makes that fail fast (empty content -> retryable) instead.
+    if num_predict is not None and num_predict > 0:
+        options["num_predict"] = num_predict
+    # A seed only bites at temperature > 0; the retry loop pairs a bumped
+    # temperature with a per-attempt seed so a deterministic degenerate response
+    # cannot repeat identically on every retry.
+    if seed is not None:
+        options["seed"] = seed
     request_payload = {
         "model": model,
         "messages": [
@@ -303,14 +333,8 @@ def ollama_chat(
         ],
         "stream": False,
         "format": output_schema,
-        "options": {"temperature": temperature},
+        "options": options,
     }
-    # Pin the context window when asked. The default (model/server-chosen, often
-    # 32k) sizes a multi-GB KV cache that can force a large model to spill layers
-    # onto CPU; batches here are small, so a few-thousand-token window is ample
-    # and keeps the model fully on GPU.
-    if num_ctx is not None:
-        request_payload["options"]["num_ctx"] = num_ctx
     # Use Python's standard-library HTTP client so the script runs on Oscar
     # without installing requests/openai/etc.
     data = json.dumps(request_payload).encode("utf-8")
@@ -323,15 +347,28 @@ def ollama_chat(
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:
             raw_response = json.loads(response.read().decode("utf-8"))
+    except (TimeoutError, socket.timeout) as exc:
+        # A read timeout is transient (GPU contention or a runaway generation),
+        # not a misconfiguration. Make it retryable so one slow batch does not
+        # abort the whole run.
+        raise RetryableBatchError(
+            f"Ollama request timed out after {timeout}s "
+            f"(GPU contention or a runaway generation)."
+        ) from exc
     except urllib.error.URLError as exc:
         raise RuntimeError(
             f"Could not reach Ollama at {url}. Is `ollama serve` running on this node?"
         ) from exc
 
-    # Ollama chat responses place the model's text in message.content.
+    # Ollama chat responses place the model's text in message.content. Empty
+    # content means the model spent its budget in the unconstrained "thinking"
+    # channel (the gemma thinking/output flip) without emitting the schema-
+    # constrained answer. Treat as retryable so a reseeded resample can recover.
     content = (raw_response.get("message") or {}).get("content")
     if not content:
-        raise RuntimeError(f"Ollama response did not include message.content: {raw_response}")
+        raise RetryableBatchError(
+            f"Ollama returned empty message.content (thinking-channel runaway?): {raw_response}"
+        )
     return extract_json_object(content), raw_response
 
 
@@ -353,7 +390,9 @@ def parse_args() -> argparse.Namespace:
         "--max-retries",
         type=int,
         default=2,
-        help="Retry a batch this many times after schema validation failures.",
+        help="Retry a batch this many times after a schema validation failure "
+        "OR a transient failure (timeout / empty thinking-channel response). "
+        "Retries resample with a bumped temperature and a per-attempt seed.",
     )
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument(
@@ -363,6 +402,15 @@ def parse_args() -> argparse.Namespace:
         help="Pin Ollama's context window (tokens). Lower (e.g. 8192) shrinks "
         "the KV cache so a large model fits fully on the GPU. Default: "
         "model/server default.",
+    )
+    parser.add_argument(
+        "--num-predict",
+        type=int,
+        default=8000,
+        help="Cap total tokens generated per batch. Bounds gemma's thinking "
+        "channel so a runaway loop fails fast (empty content -> retried) instead "
+        "of running until --timeout. Set 0 or negative for no cap (Ollama "
+        "default). Default 8000 leaves ample room for genuine reasoning + JSON.",
     )
     parser.add_argument(
         "--timeout",
@@ -495,32 +543,49 @@ def main() -> int:
         for attempt in range(args.max_retries + 1):
             if attempt:
                 print(
-                    f"Retrying batch {batch_number} after validation failure "
-                    f"({attempt}/{args.max_retries}).",
+                    f"Retrying batch {batch_number} after "
+                    f"{type(last_error).__name__} ({attempt}/{args.max_retries}).",
                     file=sys.stderr,
                 )
-            payload, raw_response = ollama_chat(
-                url=args.ollama_url,
-                model=args.model,
-                prompt=prompt,
-                records=batch_records,
-                output_schema=output_schema,
-                temperature=args.temperature,
-                timeout=args.timeout,
-                num_ctx=args.num_ctx,
-                validation_feedback=validation_feedback,
+            # At temperature 0 the model is deterministic, so a degenerate
+            # response (a timeout-inducing or empty thinking-channel runaway)
+            # would repeat identically on every retry. On retries, nudge the
+            # temperature up and vary the seed so the resample can escape.
+            attempt_temperature = (
+                args.temperature if attempt == 0 else max(args.temperature, 0.4)
             )
-            last_payload = payload
-            last_raw_response = raw_response
+            attempt_seed = None if attempt == 0 else attempt
             try:
+                payload, raw_response = ollama_chat(
+                    url=args.ollama_url,
+                    model=args.model,
+                    prompt=prompt,
+                    records=batch_records,
+                    output_schema=output_schema,
+                    temperature=attempt_temperature,
+                    timeout=args.timeout,
+                    num_ctx=args.num_ctx,
+                    num_predict=args.num_predict,
+                    seed=attempt_seed,
+                    validation_feedback=validation_feedback,
+                )
+                last_payload = payload
+                last_raw_response = raw_response
                 batch_predictions = validate_response(
                     payload, expected_ids, args.schema_version
                 )
                 last_error = None
                 break
             except ValidationError as exc:
+                # Schema-valid JSON, wrong shape: feed the error back so the
+                # next attempt can repair the specific key/enum problem.
                 last_error = exc
                 validation_feedback = str(exc)
+            except RetryableBatchError as exc:
+                # Timeout or empty/degenerate response: resample with a fresh
+                # seed rather than feeding a (non-existent) validation hint.
+                last_error = exc
+                validation_feedback = None
         else:
             batch_predictions = []
 

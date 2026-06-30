@@ -127,6 +127,22 @@ ollama serve
 Note the GPU node name that `interact` gives you (e.g. `gpu1404`) and leave
 `ollama serve` running in this session.
 
+Model storage (avoid filling your home quota): Ollama saves pulled models to
+`~/.ollama` by default, and each model is large (gemma4:31b is ~28 GB). One
+model usually fits, but a second one can exceed the home-directory quota. To
+keep the model store in your data space instead, export `OLLAMA_MODELS` in the
+same shell *before* `ollama serve` (and before any `ollama pull`):
+
+```bash
+export OLLAMA_MODELS=/oscar/data/rfeiman/amcderm6/ollama-models
+mkdir -p "$OLLAMA_MODELS"
+# one-time, to relocate a model already in home instead of re-downloading it:
+# mv ~/.ollama/models/* "$OLLAMA_MODELS"/
+```
+
+`ollama serve` and `ollama pull` must see the same `OLLAMA_MODELS` value, so
+set it in every session that talks to Ollama (step 2 and step 3).
+
 Walltime guidance: `-t 1:00:00` is enough for a limit-20 smoke test
 (~10 minutes at v1 pace, since the model thinks at length per token). A full
 `dev_train` pass (1,521 records) took roughly 26 s/record in v1, so request
@@ -139,7 +155,8 @@ ssh <user>@ssh.ccv.brown.edu   # new terminal
 ssh <gpu-node-name>            # hop to the node running ollama serve
 module load ollama
 cd data/amcderm6/XLing-LLM_coding
-# first time only, if the model is not yet in ~/.ollama:
+# if you set OLLAMA_MODELS in step 2, export the same value here too
+# first time only, if the model is not yet in the model store:
 ollama pull gemma4:31b
 
 python3 scripts/run_bloom_coding.py --split dev_train --model gemma4:31b --limit 20 --batch-size 5
