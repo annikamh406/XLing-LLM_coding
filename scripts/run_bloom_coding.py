@@ -9,6 +9,7 @@ validates model output before writing predictions.
 from __future__ import annotations
 
 import argparse
+import http.client
 import json
 import re
 import socket
@@ -354,6 +355,16 @@ def ollama_chat(
         raise RetryableBatchError(
             f"Ollama request timed out after {timeout}s "
             f"(GPU contention or a runaway generation)."
+        ) from exc
+    except (http.client.HTTPException, ConnectionError) as exc:
+        # Server closed/reset the connection mid-request (e.g. RemoteDisconnected,
+        # IncompleteRead, ConnectionResetError). On Oscar this is typically Ollama
+        # crashing or being OOM-killed under concurrent load. These escape urllib's
+        # URLError wrapping because they're raised during getresponse(), so catch
+        # them explicitly and treat as retryable.
+        raise RetryableBatchError(
+            f"Ollama dropped the connection mid-request ({type(exc).__name__}: {exc}). "
+            f"Server may have crashed under load."
         ) from exc
     except urllib.error.URLError as exc:
         raise RuntimeError(
