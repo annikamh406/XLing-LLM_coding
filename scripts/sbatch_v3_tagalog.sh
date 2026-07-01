@@ -26,6 +26,16 @@ cd "$SLURM_SUBMIT_DIR" || exit 1
 
 MODEL="${MODEL:-qwen3:32b}"
 
+# Job-unique port. Two jobs on one node must not share 127.0.0.1:11434: the
+# second `ollama serve` fails to bind, its readiness check then reaches the
+# FIRST job's server, and both jobs funnel into one GPU, thrashing between
+# models (this cross-wired the two 2026-07-01 tagalog jobs on gpu2708). With a
+# unique port, a bind failure makes the readiness check fail loudly instead of
+# silently using another job's server.
+OLLAMA_PORT=$((20000 + SLURM_JOB_ID % 10000))
+export OLLAMA_HOST=127.0.0.1:${OLLAMA_PORT}
+OLLAMA_URL="http://127.0.0.1:${OLLAMA_PORT}/api/chat"
+
 # --- Bring up Ollama on this node ---------------------------------------------
 module load ollama 2>/dev/null || true   # adjust if your Ollama isn't a module
 ollama serve >"v3/results/logs/ollama_serve_${SLURM_JOB_ID}.log" 2>&1 &
@@ -55,4 +65,4 @@ fi
 
 # --- Run both Tagalog jobs sequentially ----------------------------------------
 # Defaults match the settings that stabilized the gemma rerun.
-MODEL="$MODEL" ./scripts/run_v3_tagalog.sh --num-predict 8000 --timeout 1200 "$@"
+MODEL="$MODEL" ./scripts/run_v3_tagalog.sh --num-predict 8000 --timeout 1200 --ollama-url "$OLLAMA_URL" "$@"

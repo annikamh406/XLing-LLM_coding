@@ -18,6 +18,16 @@ set -uo pipefail
 
 cd "$SLURM_SUBMIT_DIR" || exit 1
 
+# Job-unique port. Two jobs on one node must not share 127.0.0.1:11434: the
+# second `ollama serve` fails to bind, its readiness check then reaches the
+# FIRST job's server, and both jobs funnel into one GPU, thrashing between
+# models (this cross-wired the two 2026-07-01 tagalog jobs on gpu2708). With a
+# unique port, a bind failure makes the readiness check fail loudly instead of
+# silently using another job's server.
+OLLAMA_PORT=$((20000 + SLURM_JOB_ID % 10000))
+export OLLAMA_HOST=127.0.0.1:${OLLAMA_PORT}
+OLLAMA_URL="http://127.0.0.1:${OLLAMA_PORT}/api/chat"
+
 # --- Bring up Ollama on this node ---------------------------------------------
 module load ollama 2>/dev/null || true   # adjust if your Ollama isn't a module
 ollama serve >"v3/results/logs/ollama_serve_${SLURM_JOB_ID}.log" 2>&1 &
@@ -49,4 +59,4 @@ fi
 # rerun_v3_100_failures.sh does he-loc, he-engex, de-loc one at a time and
 # relies on the hardened run_bloom_coding.py (retryable timeouts / empty content
 # / dropped connections). Extra args pass straight through.
-./scripts/rerun_v3_100_failures.sh "$@"
+./scripts/rerun_v3_100_failures.sh --ollama-url "$OLLAMA_URL" "$@"
