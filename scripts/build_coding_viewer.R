@@ -70,8 +70,12 @@ if (file.exists(inspected_path)) {
 }
 
 # record_id prefix -> language folder under splits/. Each run is shown against
-# its own language's split and human reference.
-lang_by_prefix <- c(eng = "english", ger = "german", heb = "hebrew", spa = "spanish")
+# its own language's split and human reference. Both Tagalog corpora (tgm =
+# MPI, tgn = new corpus) map to the combined splits/tagalog/ files.
+lang_by_prefix <- c(
+  eng = "english", ger = "german", heb = "hebrew", spa = "spanish",
+  tgm = "tagalog", tgn = "tagalog"
+)
 lang_from_id <- function(record_id) {
   prefix <- sub("^([a-z]+)_.*", "\\1", record_id)
   lang <- lang_by_prefix[[prefix]]
@@ -228,11 +232,14 @@ for (vdir in version_dirs[order(as.integer(sub("^v", "", basename(version_dirs))
 }
 if (!length(runs)) stop("No audit CSVs found under v*/results/.")
 
-# Order runs by language first so the dropdown and the across-runs chart group
-# by language; then chronologically within a language: version number, run date,
-# then size (a limit-N smoke run precedes the full run from the same day).
+# Order runs by language first, then by model, so the dropdown and the
+# across-runs chart group by language and keep each model's runs contiguous
+# (gemma's version history, then qwen's, etc.). Within a language+model:
+# chronologically by version number, run date, then size (a limit-N smoke run
+# precedes the full run from the same day).
 run_order <- order(
   vapply(runs, function(r) tolower(r$meta$language), character(1)),
+  vapply(runs, function(r) tolower(r$meta$model), character(1)),
   vapply(runs, function(r) as.integer(sub("^v", "", r$meta$version)), integer(1)),
   vapply(runs, function(r) ifelse(nzchar(r$meta$run_date), r$meta$run_date, "9999-99-99"), character(1)),
   vapply(runs, function(r) r$meta$n_rows, numeric(1))
@@ -757,7 +764,7 @@ html <- paste0(
         <div class="trend-head">
           <div>
             <h2>Agreement across versions</h2>
-            <p class="subhead">One column per scored run, ordered by version. Marker shape shows which dev split the run used; the human&ndash;human pair on the same rows is the baseline band. &ldquo;Clean only&rdquo; drops inspected rows (development data) &mdash; the headline view. The <b>Full label</b> / <b>Denial</b> toggle switches between the six-way Bloom comparison and the binary denial-vs-not-denial distinction.</p>
+            <p class="subhead">One column per scored run, grouped by language then model and ordered by version within each. Marker shape shows which dev split the run used; the model is named beneath each column. The human&ndash;human pair on the same rows is the baseline band. &ldquo;Clean only&rdquo; drops inspected rows (development data) &mdash; the headline view. The <b>Full label</b> / <b>Denial</b> toggle switches between the six-way Bloom comparison and the binary denial-vs-not-denial distinction.</p>
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <div class="trend-controls segmented" style="grid-template-columns: repeat(3, auto);">
@@ -827,7 +834,9 @@ html <- paste0(
     function runLabel(run) {
       const m = run.meta;
       const cond = exampleCondition(m);
-      const bits = [m.language || "?", m.version, m.split, cond.label];
+      const bits = [m.language || "?", m.version];
+      if (m.model) bits.push(m.model);
+      bits.push(m.split, cond.label);
       if (m.prompt_version) bits.push(m.prompt_version);
       bits.push("n=" + m.n_rows);
       if (m.run_date) bits.push(m.run_date);
@@ -1782,7 +1791,7 @@ html <- paste0(
       const splits = [...new Set(stats.map(s => s.meta.split))];
       const shapeFor = Object.fromEntries(splits.map((sp, i) => [sp, splitShapes[i % splitShapes.length]]));
 
-      const ml = 64, mr = 24, mt = 34, mb = 82;
+      const ml = 64, mr = 24, mt = 34, mb = 98;
       // Width is dynamic: spread columns across the available container width,
       // but clamp per-column width to [120, 240]px. The 120px floor keeps
       // columns legible (narrow viewports / many languages scroll horizontally);
@@ -1792,7 +1801,7 @@ html <- paste0(
       const containerW = $("trendChart").clientWidth || 1100;
       const colW = Math.max(120, Math.min(240, (containerW - ml - mr) / stats.length));
       const width = ml + mr + colW * stats.length;
-      const height = 400;
+      const height = 420;
       const plotH = height - mt - mb;
 
       let yMin = 0, yMax = 1;
@@ -1816,11 +1825,21 @@ html <- paste0(
 
       stats.forEach((s, i) => {
         const x = xPos(i);
-        if (i > 0) parts.push(`<line x1="${ml + colW * i}" y1="${mt}" x2="${ml + colW * i}" y2="${mt + plotH}" stroke="#f0f2ef" stroke-width="1"/>`);
+        if (i > 0) {
+          // Light gridline at every column boundary; upgrade to a dashed divider
+          // where the model changes within one language so model groups read as
+          // distinct blocks (the strong language divider is drawn separately).
+          const sameLang = stats[i].meta.language === stats[i - 1].meta.language;
+          const sameModel = (stats[i].meta.model || "") === (stats[i - 1].meta.model || "");
+          parts.push(sameLang && !sameModel
+            ? `<line x1="${ml + colW * i}" y1="${mt}" x2="${ml + colW * i}" y2="${mt + plotH}" stroke="#cdd4ce" stroke-width="1.2" stroke-dasharray="3 3"/>`
+            : `<line x1="${ml + colW * i}" y1="${mt}" x2="${ml + colW * i}" y2="${mt + plotH}" stroke="#f0f2ef" stroke-width="1"/>`);
+        }
         parts.push(`<text x="${x}" y="${mt + plotH + 22}" text-anchor="middle" font-size="13" font-weight="700" fill="#202124">${esc(s.meta.version)}</text>`);
-        parts.push(`<text x="${x}" y="${mt + plotH + 38}" text-anchor="middle" font-size="11" fill="#687076">${esc(s.meta.split)} &middot; n=${s.nScope}${state.trendScope === "clean" ? " clean" : ""}</text>`);
-        parts.push(`<text x="${x}" y="${mt + plotH + 52}" text-anchor="middle" font-size="10.5" fill="#687076">${esc(s.meta.prompt_version || s.meta.model || "")}${s.meta.run_date ? " &middot; " + esc(s.meta.run_date) : ""}</text>`);
-        parts.push(`<text x="${x}" y="${mt + plotH + 66}" text-anchor="middle" font-size="10" font-weight="600" fill="${exampleCondition(s.meta).matched ? "#1f6f68" : "#a45c19"}">${esc(exampleCondition(s.meta).label)}</text>`);
+        parts.push(`<text x="${x}" y="${mt + plotH + 37}" text-anchor="middle" font-size="10.5" font-weight="650" fill="#3a4f4b">${esc(s.meta.model || "model?")}</text>`);
+        parts.push(`<text x="${x}" y="${mt + plotH + 51}" text-anchor="middle" font-size="11" fill="#687076">${esc(s.meta.split)} &middot; n=${s.nScope}${state.trendScope === "clean" ? " clean" : ""}</text>`);
+        parts.push(`<text x="${x}" y="${mt + plotH + 65}" text-anchor="middle" font-size="10.5" fill="#687076">${esc(s.meta.prompt_version || "")}${s.meta.run_date ? (s.meta.prompt_version ? " &middot; " : "") + esc(s.meta.run_date) : ""}</text>`);
+        parts.push(`<text x="${x}" y="${mt + plotH + 79}" text-anchor="middle" font-size="10" font-weight="600" fill="${exampleCondition(s.meta).matched ? "#1f6f68" : "#a45c19"}">${esc(exampleCondition(s.meta).label)}</text>`);
         if (!s.nScope) parts.push(`<text x="${x}" y="${mt + plotH / 2}" text-anchor="middle" font-size="11" fill="#9aa3a9" transform="rotate(-90 ${x} ${mt + plotH / 2})">all rows inspected &mdash; no headline evidence</text>`);
       });
 
@@ -1841,10 +1860,11 @@ html <- paste0(
 
       const labelCols = stats.map(() => []);
       for (const series of trendSeries) {
-        const pts = stats.map((s, i) => ({ col: i, x: xPos(i), y: yPos(value(s, series.key)), v: value(s, series.key), split: s.meta.split, lang: s.meta.language, matched: exampleCondition(s.meta).matched }))
+        const pts = stats.map((s, i) => ({ col: i, x: xPos(i), y: yPos(value(s, series.key)), v: value(s, series.key), split: s.meta.split, lang: s.meta.language, model: s.meta.model || "", matched: exampleCondition(s.meta).matched }))
           .filter(p => Number.isFinite(p.v));
-        // Connect points only within one language; start a new path segment
-        // whenever the language changes, so lines never bridge across languages.
+        // Connect points only within one language AND model; start a new path
+        // segment whenever either changes, so lines never bridge across
+        // languages or imply a version trend spanning two different models.
         let seg = [];
         const flushSeg = () => {
           if (seg.length > 1) {
@@ -1854,7 +1874,8 @@ html <- paste0(
           seg = [];
         };
         for (const p of pts) {
-          if (seg.length && p.lang !== seg[seg.length - 1].lang) flushSeg();
+          const prev = seg[seg.length - 1];
+          if (seg.length && (p.lang !== prev.lang || p.model !== prev.model)) flushSeg();
           seg.push(p);
         }
         flushSeg();
@@ -1889,7 +1910,7 @@ html <- paste0(
         `<span style="margin-left:8px; border-left:1px solid var(--border); padding-left:14px;">Examples:</span>` +
         `<span><span class="shape">\\u25cf</span>match target language</span>` +
         `<span><span class="shape">\\u25cb</span>English examples</span>` +
-        `<span style="margin-left:8px; border-left:1px solid var(--border); padding-left:14px; color:var(--muted);">Columns grouped by language; lines connect runs within one language.</span>`;
+        `<span style="margin-left:8px; border-left:1px solid var(--border); padding-left:14px; color:var(--muted);">Columns grouped by language then model (named under each column); dashed rule separates models; lines connect runs within one language &amp; model.</span>`;
 
       $("trendTableCaption").innerHTML =
         `Comparison: <b>${esc(trendBasisDefs[state.trendBasis].label)}</b>. ` +

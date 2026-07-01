@@ -19,6 +19,26 @@ Structural differences from English captured below:
   normalized to the canonical six labels (see ``BLOOM_CANON``).
 - German has three coder workbooks (PZ, MP, AR); per project decision
   (2026-06-25) the canonical IRR pair is PZ + MP.
+
+Tagalog (added 2026-07-01) is built as two separate corpora that share the
+language name "Tagalog" and are combined for LLM runs by
+``combine_tagalog_splits.py``:
+- ``tagalog_mpi``: standard master + two fully-aligned coder workbooks. The
+  master's Transcript sheet has no header row, so ``context_workbook`` points
+  context/age reading at HJ's copy (identical content, with headers). Child
+  ages are blank in the ``@ID:`` lines and instead come from
+  ``Tagalog_participant_info.xlsx`` (``age_source`` type ``participant_info``).
+- ``tagalog_new``: no separate master exists. LM's current-full export doubles
+  as the master (its Code sheet is the full candidate list); HJ's export is
+  row-aligned to the *first* rows of LM's Code sheet only, so
+  ``allow_missing_coder_rows`` treats absent coder rows as uncoded rather than
+  as alignment mismatches. Ages are encoded in the transcript filename
+  (``DS_020105.cha`` = 2;01.05; ``age_source`` type ``filename``).
+- Both carry ``irr_bloom_collapse`` mapping Nonpossession -> Nonexistence:
+  the coders differ in whether Nonpossession is used at all (new corpus:
+  HJ 27x vs LM 1x), so the two labels are treated as one category in IRR
+  comparisons (project decision 2026-07-01). Labels stored in outputs stay
+  uncollapsed.
 """
 
 from __future__ import annotations
@@ -107,7 +127,57 @@ LANGUAGES = {
         "transcript_sheets": [(None, "Transcript")],
         "exclusion": None,
     },
+    "tagalog_mpi": {
+        "name": "Tagalog",
+        "corpus": "MPI",
+        "prefix": "tgm",
+        "master": TRANSCRIPTS / "Tagalog-MPI" / "2023-09-27_NEW_negation_coding_bloom_choi.xlsx",
+        "coders": [
+            ("HJ", TRANSCRIPTS / "Tagalog-MPI" / "2023-09-27_negation_coding_bloom_choi_HJ.xlsx"),
+            ("LM", TRANSCRIPTS / "Tagalog-MPI" / "2024-02-15_NEW_negation_coding_bloom_choi_LM.xlsx"),
+        ],
+        "transcript_sheets": [(None, "Transcript")],
+        # Master's Transcript sheet is headerless; HJ's copy has headers and
+        # identical content, so context windows and ages read from it.
+        "context_workbook": TRANSCRIPTS / "Tagalog-MPI" / "2023-09-27_negation_coding_bloom_choi_HJ.xlsx",
+        "exclusion": None,
+        "age_source": {
+            "type": "participant_info",
+            "path": TRANSCRIPTS / "Tagalog-MPI" / "Tagalog_participant_info.xlsx",
+            # Code/Transcript sheets use ids like '/transcript01.cha'; the
+            # participant sheet keys rows by bare transcript number.
+            "id_pattern": r"transcript0*(\d+)",
+            "id_column": "transcript_no",
+            "age_column": "age_child",
+        },
+        "irr_bloom_collapse": {"Nonpossession": "Nonexistence"},
+    },
+    "tagalog_new": {
+        "name": "Tagalog",
+        "corpus": "new_corpus",
+        "prefix": "tgn",
+        # LM's current-full export doubles as the master: its Code sheet is the
+        # candidate list and its Transcript sheet covers all imported files.
+        "master": TRANSCRIPTS / "Tagalog-new_corpus" / "2026-02-25_bloom-choi_LM_current-full.xlsx",
+        "coders": [
+            ("HJ", TRANSCRIPTS / "Tagalog-new_corpus" / "2026-02-25_bloom-choi_HJ_current-full.xlsx"),
+            ("LM", TRANSCRIPTS / "Tagalog-new_corpus" / "2026-02-25_bloom-choi_LM_current-full.xlsx"),
+        ],
+        "transcript_sheets": [(None, "Transcript")],
+        "exclusion": None,
+        # HJ's Code sheet covers only the first rows of the master's; missing
+        # rows mean HJ has not coded that far, not misalignment.
+        "allow_missing_coder_rows": True,
+        "age_source": {"type": "filename"},
+        "irr_bloom_collapse": {"Nonpossession": "Nonexistence"},
+    },
 }
+
+# The two Tagalog corpora are split separately (each gets its own transcript-
+# level split) but are concatenated per split for LLM runs; see
+# combine_tagalog_splits.py, which writes splits/tagalog/.
+TAGALOG_LANGUAGES = ["tagalog_mpi", "tagalog_new"]
+COMBINED_TAGALOG_SLUG = "tagalog"
 
 # Languages the generalized scripts build by default. English keeps its own
 # dedicated, already-validated scripts as the source of truth, so it is excluded

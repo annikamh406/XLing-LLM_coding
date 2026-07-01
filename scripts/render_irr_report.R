@@ -38,8 +38,14 @@ outdir_override <- if (length(outdir_flag) && outdir_flag < length(args)) args[[
 lang_flag <- which(args == "--lang")
 lang_override <- if (length(lang_flag) && lang_flag < length(args)) args[[lang_flag + 1]] else NA_character_
 
-# record_id prefix -> language folder under splits/.
-lang_by_prefix <- c(eng = "english", ger = "german", heb = "hebrew", spa = "spanish")
+# record_id prefix -> language folder under splits/. The two Tagalog corpora
+# (tgm = MPI, tgn = new corpus) are split separately but run combined, so both
+# prefixes resolve to the combined splits/tagalog/ files; the report itself
+# breaks results out per corpus.
+lang_by_prefix <- c(
+  eng = "english", ger = "german", heb = "hebrew", spa = "spanish",
+  tgm = "tagalog", tgn = "tagalog"
+)
 
 detect_lang <- function(prediction_path) {
   if (!is.na(lang_override)) return(lang_override)

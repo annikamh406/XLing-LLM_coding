@@ -1,0 +1,100 @@
+{
+  "combined_from": [
+    "tagalog_mpi",
+    "tagalog_new"
+  ],
+  "shuffle_seed": 20260701,
+  "note": "Records shuffled deterministically within each split so that --limit N run prefixes mix both corpora. Evaluate per corpus via the 'corpus' field or the tgm_/tgn_ record-id prefixes.",
+  "splits": {
+    "dev_train": {
+      "n_rows": 323,
+      "by_corpus": {
+        "MPI": 161,
+        "new_corpus": 162
+      },
+      "n_overlap_bloom": 233,
+      "bloom_exact_agreement": 0.8455,
+      "per_corpus_irr": {
+        "MPI": {
+          "n_overlap_bloom": 161,
+          "bloom_exact_agreement": 0.8944
+        },
+        "new_corpus": {
+          "n_overlap_bloom": 72,
+          "bloom_exact_agreement": 0.7361
+        }
+      }
+    },
+    "dev_check_1": {
+      "n_rows": 314,
+      "by_corpus": {
+        "new_corpus": 151,
+        "MPI": 163
+      },
+      "n_overlap_bloom": 221,
+      "bloom_exact_agreement": 0.8597,
+      "per_corpus_irr": {
+        "MPI": {
+          "n_overlap_bloom": 163,
+          "bloom_exact_agreement": 0.9509
+        },
+        "new_corpus": {
+          "n_overlap_bloom": 58,
+          "bloom_exact_agreement": 0.6034
+        }
+      }
+    },
+    "dev_check_2": {
+      "n_rows": 331,
+      "by_corpus": {
+        "MPI": 187,
+        "new_corpus": 144
+      },
+      "n_overlap_bloom": 229,
+      "bloom_exact_agreement": 0.8559,
+      "per_corpus_irr": {
+        "MPI": {
+          "n_overlap_bloom": 187,
+          "bloom_exact_agreement": 0.8984
+        },
+        "new_corpus": {
+          "n_overlap_bloom": 42,
+          "bloom_exact_agreement": 0.6667
+        }
+      }
+    },
+    "test_lockbox": {
+      "n_rows": 391,
+      "by_corpus": {
+        "MPI": 215,
+        "new_corpus": 176
+      },
+      "n_overlap_bloom": 279,
+      "bloom_exact_agreement": 0.853,
+      "per_corpus_irr": {
+        "MPI": {
+          "n_overlap_bloom": 215,
+          "bloom_exact_agreement": 0.907
+        },
+        "new_corpus": {
+          "n_overlap_bloom": 64,
+          "bloom_exact_agreement": 0.6719
+        }
+      }
+    },
+    "uncoded_by_neither": {
+      "n_rows": 1,
+      "by_corpus": {
+        "new_corpus": 1
+      },
+      "n_overlap_bloom": 0,
+      "bloom_exact_agreement": null,
+      "per_corpus_irr": {
+        "new_corpus": {
+          "n_overlap_bloom": 0,
+          "bloom_exact_agreement": null
+        }
+      }
+    }
+  }
+}

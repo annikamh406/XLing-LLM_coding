@@ -202,6 +202,9 @@ split_info <- split_raw %>%
     record_id,
     split,
     language,
+    # Combined-corpus splits (Tagalog: MPI + new_corpus) tag each record with
+    # its source corpus; single-corpus languages have no such column.
+    corpus = if ("corpus" %in% names(split_raw)) as.character(corpus) else NA_character_,
     transcript_id,
     half,
     line,
@@ -378,6 +381,68 @@ if (!length(inspected_ids)) {
 }
 ```
 
+## By Corpus
+
+```{r bloom-agreement-by-corpus, results='asis'}
+# For combined-corpus runs (Tagalog: tgm_ = MPI, tgn_ = new corpus) the
+# headline tables above pool both corpora; this section repeats the core
+# Bloom comparison per corpus. The human-human baselines differ sharply
+# between the Tagalog corpora (MPI is fully double-coded with high agreement;
+# the new corpus is mostly single-coder), so per-corpus numbers are the more
+# interpretable view there. Single-corpus runs render nothing here.
+corpus_by_record <- eval_rows %>% select(record_id, corpus)
+corpora <- sort(unique(na.omit(corpus_by_record$corpus)))
+
+if (length(corpora) > 1) {
+  cat(sprintf(
+    "This run combines %d corpora (%s). Bloom-label agreement per corpus:\n\n",
+    length(corpora), paste(corpora, collapse = ", ")
+  ))
+
+  corpus_pair_summary <- pair_data %>%
+    left_join(corpus_by_record, by = "record_id") %>%
+    filter(!is.na(a), !is.na(b), !is.na(corpus)) %>%
+    group_by(corpus, pair) %>%
+    summarise(
+      n_denominator = n(),
+      pct_agreement = mean(a == b),
+      kappa = kappa_fixed(a, b, label_levels),
+      .groups = "drop"
+    )
+
+  print(
+    corpus_pair_summary %>%
+      mutate(
+        pct_agreement = percent(pct_agreement, accuracy = 0.1),
+        kappa = round(kappa, 3)
+      ) %>%
+      arrange(corpus, pair) %>%
+      kable(caption = "Bloom-label agreement by corpus. Denominator is rows where both compared coders have non-missing Bloom labels.")
+  )
+
+  corpus_agreed <- eval_rows %>%
+    filter(human_agreed, has_llm, !is.na(corpus)) %>%
+    group_by(corpus) %>%
+    summarise(
+      n_denominator = n(),
+      pct_agreement = mean(llm_label == human_1_label),
+      kappa = kappa_fixed(llm_label, human_1_label, label_levels),
+      .groups = "drop"
+    )
+
+  if (nrow(corpus_agreed)) {
+    print(
+      corpus_agreed %>%
+        mutate(
+          pct_agreement = percent(pct_agreement, accuracy = 0.1),
+          kappa = round(kappa, 3)
+        ) %>%
+        kable(caption = "LLM agreement with the agreed-human label by corpus (rows where both humans agree).")
+    )
+  }
+}
+```
+
 ## Contentful Bloom Agreement Only
 
 ```{r content-agreement}
@@ -514,6 +579,7 @@ audit_table <- eval_rows %>%
     inspected,
     split,
     language,
+    corpus,
     transcript_id,
     half,
     line,

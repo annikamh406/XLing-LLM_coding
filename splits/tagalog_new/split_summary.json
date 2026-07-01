@@ -1,0 +1,136 @@
+{
+  "language": "Tagalog",
+  "corpus": "new_corpus",
+  "irr_bloom_collapse": {
+    "Nonpossession": "Nonexistence"
+  },
+  "seed": 20260527,
+  "n_iterations": 20000,
+  "split_score": 1.2026179151688232,
+  "split_targets": {
+    "dev_train": 0.2,
+    "dev_check_1": 0.25,
+    "dev_check_2": 0.25,
+    "test_lockbox": 0.3
+  },
+  "coder_pair": [
+    "HJ",
+    "LM"
+  ],
+  "age_bins_months": [
+    8.0,
+    12.5,
+    17.0,
+    21.5,
+    26.0,
+    30.5,
+    35.0
+  ],
+  "n_input_rows": 634,
+  "n_coded_by_at_least_one": 633,
+  "n_uncoded_by_neither": 1,
+  "n_transcripts_with_age": 91,
+  "n_transcripts_total": 91,
+  "splits": {
+    "dev_train": {
+      "n_rows": 162,
+      "n_transcripts": 15,
+      "mean_age_months": 27.173,
+      "min_age_months": 13.263,
+      "max_age_months": 32.953,
+      "both_coders": 72,
+      "one_coder": 90,
+      "neither": 0,
+      "n_overlap_bloom": 72,
+      "bloom_exact_agreement": 0.7361,
+      "bloom_cohen_kappa": 0.1991,
+      "coder_counts": {
+        "HJ": 72,
+        "LM": 162
+      },
+      "overlap_counts": {
+        "HJ + LM": 72
+      }
+    },
+    "dev_check_1": {
+      "n_rows": 151,
+      "n_transcripts": 22,
+      "mean_age_months": 26.755,
+      "min_age_months": 12.821,
+      "max_age_months": 34.361,
+      "both_coders": 58,
+      "one_coder": 93,
+      "neither": 0,
+      "n_overlap_bloom": 58,
+      "bloom_exact_agreement": 0.6034,
+      "bloom_cohen_kappa": 0.2949,
+      "coder_counts": {
+        "HJ": 58,
+        "LM": 151
+      },
+      "overlap_counts": {
+        "HJ + LM": 58
+      }
+    },
+    "dev_check_2": {
+      "n_rows": 144,
+      "n_transcripts": 23,
+      "mean_age_months": 26.587,
+      "min_age_months": 14.099,
+      "max_age_months": 33.854,
+      "both_coders": 42,
+      "one_coder": 102,
+      "neither": 0,
+      "n_overlap_bloom": 42,
+      "bloom_exact_agreement": 0.6667,
+      "bloom_cohen_kappa": 0.2232,
+      "coder_counts": {
+        "HJ": 42,
+        "LM": 144
+      },
+      "overlap_counts": {
+        "HJ + LM": 42
+      }
+    },
+    "test_lockbox": {
+      "n_rows": 176,
+      "n_transcripts": 31,
+      "mean_age_months": 26.429,
+      "min_age_months": 8.953,
+      "max_age_months": 33.394,
+      "both_coders": 64,
+      "one_coder": 112,
+      "neither": 0,
+      "n_overlap_bloom": 64,
+      "bloom_exact_agreement": 0.6719,
+      "bloom_cohen_kappa": 0.2855,
+      "coder_counts": {
+        "HJ": 64,
+        "LM": 176
+      },
+      "overlap_counts": {
+        "HJ + LM": 64
+      }
+    },
+    "uncoded_by_neither": {
+      "n_rows": 1,
+      "n_transcripts": 1,
+      "mean_age_months": 28.329,
+      "min_age_months": 28.329,
+      "max_age_months": 28.329,
+      "both_coders": 0,
+      "one_coder": 0,
+      "neither": 1,
+      "n_overlap_bloom": 0,
+      "bloom_exact_agreement": null,
+      "bloom_cohen_kappa": null,
+      "coder_counts": {},
+      "overlap_counts": {}
+    }
+  },
+  "outputs": {
+    "split_dir": "Data/XLing-LLM_coding/splits/tagalog_new",
+    "diagnostic_svg": "Data/XLing-LLM_coding/splits/tagalog_new/diagnostics/tagalog_new_split_diagnostics.svg",
+    "transcript_manifest": "Data/XLing-LLM_coding/splits/tagalog_new/transcript_split_manifest.csv"
+  }
+}

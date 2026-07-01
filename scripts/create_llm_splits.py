@@ -98,6 +98,14 @@ def parse_childes_age(age_text):
     return years * 12 + months + days / 30.4375
 
 
+def sheet_rows(sheet):
+    """Iterate sheet rows, working around broken dimension metadata (see
+    build_llm_dataset.sheet_rows)."""
+    if sheet.max_row == 1 and sheet.max_column == 1:
+        sheet.reset_dimensions()
+    return sheet.iter_rows(values_only=True)
+
+
 def read_child_ages(master_path, transcript_sheets):
     workbook = load_workbook(master_path, read_only=True, data_only=True)
     ages = {}
@@ -105,7 +113,7 @@ def read_child_ages(master_path, transcript_sheets):
 
     for _half, sheet_name in transcript_sheets:
         sheet = workbook[sheet_name]
-        rows = sheet.iter_rows(values_only=True)
+        rows = sheet_rows(sheet)
         headers = header_map(next(rows))
 
         for row in rows:
@@ -131,6 +139,79 @@ def read_child_ages(master_path, transcript_sheets):
     return ages, raw_ages
 
 
+def parse_filename_age(transcript_id):
+    """Parse ages encoded in Tagalog new-corpus filenames.
+
+    ``DS_020105.cha`` means child DS at 2;01.05 (years;months.days); elan
+    exports look like ``LQ_021011.elan.cha``. Returns (months, raw_string).
+    """
+    match = re.search(r"_(\d{2})(\d{2})(\d{2})\.", str(transcript_id))
+    if not match:
+        return None, None
+    years, months, days = (int(g) for g in match.groups())
+    in_months = years * 12 + months + days / 30.4375
+    return in_months, f"{years};{months:02d}.{days:02d}"
+
+
+def read_participant_info_ages(spec):
+    """Read child ages keyed by transcript number from a participant-info
+    workbook (Tagalog-MPI)."""
+    workbook = load_workbook(spec["path"], read_only=True, data_only=True)
+    sheet = workbook[workbook.sheetnames[0]]
+    rows = sheet_rows(sheet)
+    headers = header_map(next(rows))
+    id_idx = headers[canon(spec["id_column"])]
+    age_idx = headers[canon(spec["age_column"])]
+    by_number = {}
+    for row in rows:
+        number = clean(row[id_idx]) if id_idx < len(row) else None
+        age_raw = clean(row[age_idx]) if age_idx < len(row) else None
+        if number is None:
+            continue
+        months = parse_childes_age(age_raw)
+        if months is not None:
+            by_number[int(number)] = (months, str(age_raw))
+    return by_number
+
+
+def age_lookup(config, transcript_ids):
+    """Resolve child ages per transcript for the configured age source.
+
+    Default (``childes_id``) parses CHILDES ``@ID:`` header lines like the
+    original pipeline; ``filename`` and ``participant_info`` cover the two
+    Tagalog corpora, whose ``@ID:`` ages are blank.
+    """
+    source = config.get("age_source") or {"type": "childes_id"}
+    kind = source["type"]
+
+    if kind == "childes_id":
+        return read_child_ages(
+            config.get("context_workbook", config["master"]),
+            config["transcript_sheets"],
+        )
+
+    ages, raw_ages = {}, {}
+    if kind == "filename":
+        for transcript_id in transcript_ids:
+            months, raw = parse_filename_age(transcript_id)
+            if months is not None:
+                ages[transcript_id] = months
+                raw_ages[transcript_id] = raw
+    elif kind == "participant_info":
+        by_number = read_participant_info_ages(source)
+        pattern = re.compile(source["id_pattern"])
+        for transcript_id in transcript_ids:
+            match = pattern.search(str(transcript_id))
+            if not match:
+                continue
+            entry = by_number.get(int(match.group(1)))
+            if entry is not None:
+                ages[transcript_id], raw_ages[transcript_id] = entry
+    else:
+        raise ValueError(f"Unknown age_source type: {kind}")
+    return ages, raw_ages
+
+
 def is_coded(record):
     return any(record[name] != "NA" for name in CODER_NAMES)
 
@@ -150,16 +231,26 @@ def overlap_pair(record):
     return f"{record['coded_by_1']} + {record['coded_by_2']}"
 
 
-def add_reference_labels(records, references):
+def add_reference_labels(records, references, irr_collapse=None):
+    """Attach coder Bloom labels plus IRR-comparison variants.
+
+    ``bloom_1``/``bloom_2`` stay verbatim; ``bloom_1_irr``/``bloom_2_irr``
+    apply the per-language ``irr_bloom_collapse`` map (e.g. Tagalog folds
+    Nonpossession into Nonexistence) and are what every agreement/kappa
+    computation below uses. Without a collapse map they are identical.
+    """
+    irr_collapse = irr_collapse or {}
     reference_by_id = {record["record_id"]: record for record in references}
     for record in records:
         ref = reference_by_id[record["record_id"]]
-        record["bloom_1"] = (ref.get("coder_1") or {}).get("bloom_label")
-        record["bloom_2"] = (ref.get("coder_2") or {}).get("bloom_label")
+        for which in ("1", "2"):
+            label = (ref.get(f"coder_{which}") or {}).get("bloom_label")
+            record[f"bloom_{which}"] = label
+            record[f"bloom_{which}_irr"] = irr_collapse.get(label, label)
 
 
 def both_coded_for_irr(record):
-    return record.get("bloom_1") is not None and record.get("bloom_2") is not None
+    return record.get("bloom_1_irr") is not None and record.get("bloom_2_irr") is not None
 
 
 def cohen_kappa(label_pairs):
@@ -178,7 +269,7 @@ def cohen_kappa(label_pairs):
 
 
 def irr_stats(records):
-    pairs = [(record["bloom_1"], record["bloom_2"]) for record in records if both_coded_for_irr(record)]
+    pairs = [(record["bloom_1_irr"], record["bloom_2_irr"]) for record in records if both_coded_for_irr(record)]
     if not pairs:
         return {"n_overlap_bloom": 0, "bloom_exact_agreement": None, "bloom_cohen_kappa": None}
     agreement = sum(1 for left, right in pairs if left == right) / len(pairs)
@@ -216,12 +307,12 @@ def transcript_table(coded_records):
                 "one_coder": status_counts["one_coder"],
                 "n_overlap_bloom": irr["n_overlap_bloom"],
                 "n_bloom_agree": sum(
-                    1 for r in items if both_coded_for_irr(r) and r["bloom_1"] == r["bloom_2"]
+                    1 for r in items if both_coded_for_irr(r) and r["bloom_1_irr"] == r["bloom_2_irr"]
                 ),
-                "bloom_1_counts": Counter(r["bloom_1"] for r in items if both_coded_for_irr(r)),
-                "bloom_2_counts": Counter(r["bloom_2"] for r in items if both_coded_for_irr(r)),
+                "bloom_1_counts": Counter(r["bloom_1_irr"] for r in items if both_coded_for_irr(r)),
+                "bloom_2_counts": Counter(r["bloom_2_irr"] for r in items if both_coded_for_irr(r)),
                 "bloom_pair_counts": Counter(
-                    (r["bloom_1"], r["bloom_2"]) for r in items if both_coded_for_irr(r)
+                    (r["bloom_1_irr"], r["bloom_2_irr"]) for r in items if both_coded_for_irr(r)
                 ),
             }
         )
@@ -556,7 +647,7 @@ def transcript_irr_points(split_records, split_names):
             overlap = [record for record in records if both_coded_for_irr(record)]
             if not overlap:
                 continue
-            agree = sum(record["bloom_1"] == record["bloom_2"] for record in overlap)
+            agree = sum(record["bloom_1_irr"] == record["bloom_2_irr"] for record in overlap)
             points.append(
                 {
                     "split": split_name,
@@ -645,11 +736,11 @@ def build_language_splits(slug):
     records = read_jsonl(input_jsonl)
     references = read_jsonl(reference_jsonl)
     reference_by_id = {record["record_id"]: record for record in references}
-    add_reference_labels(records, references)
+    irr_collapse = config.get("irr_bloom_collapse")
+    add_reference_labels(records, references, irr_collapse)
 
-    age_by_transcript, raw_age_by_transcript = read_child_ages(
-        config["master"], config["transcript_sheets"]
-    )
+    transcript_ids = {record["transcript_id"] for record in records}
+    age_by_transcript, raw_age_by_transcript = age_lookup(config, transcript_ids)
     attach_age(records, age_by_transcript, raw_age_by_transcript)
 
     coded_records = [record for record in records if is_coded(record)]
@@ -683,6 +774,8 @@ def build_language_splits(slug):
     coder_label = "/".join(initials for initials, _ in config["coders"])
     summary = {
         "language": config["name"],
+        **({"corpus": config["corpus"]} if config.get("corpus") else {}),
+        **({"irr_bloom_collapse": irr_collapse} if irr_collapse else {}),
         "seed": SEED,
         "n_iterations": N_ITERATIONS,
         "split_score": score,

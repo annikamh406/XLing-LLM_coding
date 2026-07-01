@@ -119,10 +119,23 @@ def normalize_bloom(value, unmapped):
     return mapped, raw
 
 
+def sheet_rows(sheet):
+    """Iterate sheet rows, working around broken dimension metadata.
+
+    The Tagalog current-full exports declare a 1x1 dimension record, which
+    makes read-only iter_rows return a single empty row; resetting dimensions
+    forces openpyxl to scan the actual cells. Well-formed workbooks keep their
+    declared dimensions so existing languages are unaffected.
+    """
+    if sheet.max_row == 1 and sheet.max_column == 1:
+        sheet.reset_dimensions()
+    return sheet.iter_rows(values_only=True)
+
+
 def read_code_sheet(path):
     workbook = load_workbook(path, read_only=True, data_only=True)
     sheet = workbook[CODE_SHEET]
-    rows = sheet.iter_rows(values_only=True)
+    rows = sheet_rows(sheet)
     headers = header_map(next(rows))
     records = []
     for source_row, row in enumerate(rows, start=2):
@@ -186,7 +199,7 @@ def read_speaker_context(master_path, transcript_sheets):
 
     for half, sheet_name in transcript_sheets:
         sheet = workbook[sheet_name]
-        rows = sheet.iter_rows(values_only=True)
+        rows = sheet_rows(sheet)
         headers = header_map(next(rows))
 
         for row in rows:
@@ -230,6 +243,9 @@ def build_language(slug):
     has_half = any(half is not None for half, _ in transcript_sheets)
     exclusion = config["exclusion"]
     prefix = config["prefix"]
+    corpus = config.get("corpus")
+    context_path = config.get("context_workbook", master_path)
+    allow_missing_coder_rows = config.get("allow_missing_coder_rows", False)
 
     DATASET_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -239,7 +255,7 @@ def build_language(slug):
         for initials, path in coder_specs
     ]
     context_by_transcript, context_by_line = read_speaker_context(
-        master_path, transcript_sheets
+        context_path, transcript_sheets
     )
 
     # Drop pre-output exclusions (English only) before token indexing.
@@ -274,7 +290,15 @@ def build_language(slug):
         base_key = row_key(row, headers, has_half)
         coders = [rows.get(source_row) for rows in coder_rows]
         for coder in coders:
-            if coder is None or coder["key"] != base_key:
+            if coder is None:
+                # With allow_missing_coder_rows a coder sheet that simply ends
+                # before this master row means "not coded yet", not a
+                # misalignment (Tagalog new corpus: HJ covers a prefix of LM's
+                # candidate list).
+                if not allow_missing_coder_rows:
+                    alignment_mismatches.append(source_row)
+                    break
+            elif coder["key"] != base_key:
                 alignment_mismatches.append(source_row)
                 break
 
@@ -295,6 +319,7 @@ def build_language(slug):
         llm_record = {
             "record_id": record_id,
             "language": config["name"],
+            **({"corpus": corpus} if corpus else {}),
             "source": {
                 "workbook": str(master_path.relative_to(ROOT)),
                 "sheet": CODE_SHEET,
@@ -369,7 +394,13 @@ def build_language(slug):
 
     summary = {
         "language": config["name"],
+        **({"corpus": corpus} if corpus else {}),
         "input_workbook": str(master_path.relative_to(ROOT)),
+        **(
+            {"context_workbook": str(context_path.relative_to(ROOT))}
+            if context_path != master_path
+            else {}
+        ),
         "coder_1_workbook": str(coder_specs[0][1].relative_to(ROOT)),
         "coder_2_workbook": str(coder_specs[1][1].relative_to(ROOT)),
         "coder_pair": [coder_specs[0][0], coder_specs[1][0]],
@@ -382,6 +413,7 @@ def build_language(slug):
             else {"dropped_rows": 0, "note": "no exclusion column in this language"}
         ),
         "output_rows": len(llm_records),
+        "allow_missing_coder_rows": allow_missing_coder_rows,
         "n_alignment_mismatch_rows": len(alignment_mismatches),
         "alignment_mismatch_source_rows": alignment_mismatches[:50],
         "n_context_missing_rows": len(context_missing),

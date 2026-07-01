@@ -1,0 +1,144 @@
+{
+  "language": "Tagalog",
+  "corpus": "MPI",
+  "irr_bloom_collapse": {
+    "Nonpossession": "Nonexistence"
+  },
+  "seed": 20260527,
+  "n_iterations": 20000,
+  "split_score": 2.9987027819045964,
+  "split_targets": {
+    "dev_train": 0.2,
+    "dev_check_1": 0.25,
+    "dev_check_2": 0.25,
+    "test_lockbox": 0.3
+  },
+  "coder_pair": [
+    "HJ",
+    "LM"
+  ],
+  "age_bins_months": [
+    25.0,
+    28.5,
+    32.0,
+    35.5,
+    39.0,
+    42.5,
+    46.0
+  ],
+  "n_input_rows": 726,
+  "n_coded_by_at_least_one": 726,
+  "n_uncoded_by_neither": 0,
+  "n_transcripts_with_age": 20,
+  "n_transcripts_total": 20,
+  "splits": {
+    "dev_train": {
+      "n_rows": 161,
+      "n_transcripts": 5,
+      "mean_age_months": 37.565,
+      "min_age_months": 27.0,
+      "max_age_months": 46.0,
+      "both_coders": 161,
+      "one_coder": 0,
+      "neither": 0,
+      "n_overlap_bloom": 161,
+      "bloom_exact_agreement": 0.8944,
+      "bloom_cohen_kappa": 0.8416,
+      "coder_counts": {
+        "Francesca": 133,
+        "HJ": 161,
+        "Laurize": 28
+      },
+      "overlap_counts": {
+        "HJ + Francesca": 133,
+        "HJ + Laurize": 28
+      }
+    },
+    "dev_check_1": {
+      "n_rows": 163,
+      "n_transcripts": 6,
+      "mean_age_months": 36.626,
+      "min_age_months": 25.0,
+      "max_age_months": 46.0,
+      "both_coders": 163,
+      "one_coder": 0,
+      "neither": 0,
+      "n_overlap_bloom": 163,
+      "bloom_exact_agreement": 0.9509,
+      "bloom_cohen_kappa": 0.9223,
+      "coder_counts": {
+        "Francesca": 154,
+        "HJ": 163,
+        "Laurize": 9
+      },
+      "overlap_counts": {
+        "HJ + Francesca": 154,
+        "HJ + Laurize": 9
+      }
+    },
+    "dev_check_2": {
+      "n_rows": 187,
+      "n_transcripts": 5,
+      "mean_age_months": 36.262,
+      "min_age_months": 25.0,
+      "max_age_months": 43.0,
+      "both_coders": 187,
+      "one_coder": 0,
+      "neither": 0,
+      "n_overlap_bloom": 187,
+      "bloom_exact_agreement": 0.8984,
+      "bloom_cohen_kappa": 0.8548,
+      "coder_counts": {
+        "Francesca": 173,
+        "HJ": 187,
+        "Laurize": 14
+      },
+      "overlap_counts": {
+        "HJ + Francesca": 173,
+        "HJ + Laurize": 14
+      }
+    },
+    "test_lockbox": {
+      "n_rows": 215,
+      "n_transcripts": 4,
+      "mean_age_months": 33.874,
+      "min_age_months": 26.0,
+      "max_age_months": 43.0,
+      "both_coders": 215,
+      "one_coder": 0,
+      "neither": 0,
+      "n_overlap_bloom": 215,
+      "bloom_exact_agreement": 0.907,
+      "bloom_cohen_kappa": 0.853,
+      "coder_counts": {
+        "Francesca": 199,
+        "HJ": 215,
+        "Laurize": 16
+      },
+      "overlap_counts": {
+        "HJ + Francesca": 199,
+        "HJ + Laurize": 16
+      }
+    },
+    "uncoded_by_neither": {
+      "n_rows": 0,
+      "n_transcripts": 0,
+      "mean_age_months": null,
+      "min_age_months": null,
+      "max_age_months": null,
+      "both_coders": 0,
+      "one_coder": 0,
+      "neither": 0,
+      "n_overlap_bloom": 0,
+      "bloom_exact_agreement": null,
+      "bloom_cohen_kappa": null,
+      "coder_counts": {},
+      "overlap_counts": {}
+    }
+  },
+  "outputs": {
+    "split_dir": "Data/XLing-LLM_coding/splits/tagalog_mpi",
+    "diagnostic_svg": "Data/XLing-LLM_coding/splits/tagalog_mpi/diagnostics/tagalog_mpi_split_diagnostics.svg",
+    "transcript_manifest": "Data/XLing-LLM_coding/splits/tagalog_mpi/transcript_split_manifest.csv"
+  }
+}
