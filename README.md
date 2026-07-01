@@ -18,9 +18,11 @@ to one policy/prompt iteration lives in its version folder (`v1/`, `v2/`, ...).
   configuration: rebuild with `Rscript scripts/build_coding_viewer.R` after
   rendering a new IRR report. The viewer has a run selector (version / split /
   model), the per-run explorer (conversation context, three-coder comparison,
-  model reasoning, IRR tables), and an "Agreement across versions" tab that
-  plots agreement or kappa over versions with the dev split of each run
-  indicated by marker shape and axis label.
+  model reasoning, IRR tables), and a "Compare runs" tab. The comparison opens
+  on the current run's language, supports multi-select language checkboxes plus
+  model / prompt-example filters, and plots each selected language separately
+  in a responsive grid. Agreement or kappa and optional diagnostic coder lines
+  share the same controls; exact filtered results remain in the table below.
 - `splits/english/*.jsonl`: transcript-level evaluation splits (shared across
   versions; `splits/english/diagnostics/` holds split diagnostics).
 - `datasets/`: token-level source datasets (ignored by Git).

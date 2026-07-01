@@ -644,8 +644,105 @@ html <- paste0(
     .footnote { margin-top: 14px; color: var(--muted); font-size: 12px; max-width: 100ch; }
 
     .trend-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
-    .trend-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+    .trend-head { margin-bottom: 14px; }
+    .trend-toolbar {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(150px, 1fr)) minmax(190px, 1.2fr);
+      gap: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: #fafbf9;
+    }
+    .trend-toolbar select { min-height: 34px; }
+    .trend-language-filter { grid-column: span 2; }
+    .trend-language-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .trend-language-options { display: flex; gap: 6px; flex-wrap: wrap; }
+    .language-action {
+      border: 0;
+      background: transparent;
+      color: var(--accent);
+      font: inherit;
+      font-size: 11.5px;
+      font-weight: 650;
+      padding: 2px 0;
+      cursor: pointer;
+    }
+    .language-action + .language-action { padding-left: 8px; border-left: 1px solid var(--border); }
+    .trend-toolbar-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 8px;
+      grid-column: 1 / -1;
+      padding-top: 2px;
+    }
+    .trend-count { color: var(--muted); font-size: 12px; }
+    .trend-reset {
+      border: 0;
+      background: transparent;
+      color: var(--accent);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 650;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+    .trend-display {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .trend-display-group { display: grid; gap: 3px; }
     .trend-controls { display: flex; gap: 6px; }
+    .series-toggles { display: flex; gap: 6px; flex-wrap: wrap; }
+    .series-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 33px;
+      padding: 5px 9px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: white;
+      color: var(--muted);
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .series-toggle:has(input:checked) {
+      border-color: var(--accent);
+      background: var(--accent-weak);
+      color: var(--ink);
+      font-weight: 650;
+    }
+    .series-toggle input { width: auto; min-height: 0; margin: 0; accent-color: var(--accent); }
+    .series-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+    .trend-empty { padding: 54px 16px; text-align: center; color: var(--muted); }
+    .trend-chart-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 560px), 1fr));
+      gap: 12px;
+      align-items: start;
+    }
+    .trend-facet {
+      min-width: 0;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: #fff;
+      padding: 10px 10px 4px;
+    }
+    .trend-facet-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      padding: 0 4px 4px;
+    }
+    .trend-facet-head h3 { color: var(--ink); font-size: 13px; text-transform: none; letter-spacing: 0; }
+    .trend-facet-head span { color: var(--muted); font-size: 11.5px; }
     .trend-svg-wrap { overflow-x: auto; }
     .trend-legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 8px; font-size: 12px; color: var(--muted); align-items: center; }
     .trend-legend .swatch { display: inline-block; width: 18px; height: 0; border-top: 3px solid; vertical-align: middle; margin-right: 5px; border-radius: 2px; }
@@ -656,11 +753,14 @@ html <- paste0(
       .list-panel, .detail-panel { display: block; overflow: visible; }
       .record-list { max-height: 420px; }
       .summary-strip { grid-template-columns: 1fr 1fr; }
+      .trend-toolbar { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 720px) {
       .page { padding: 12px; }
       .coding-grid, .control-row { grid-template-columns: 1fr; }
       .run-picker select { min-width: 0; }
+      .trend-toolbar { grid-template-columns: 1fr; }
+      .trend-language-filter { grid-column: span 1; }
     }
   </style>
 </head>
@@ -679,7 +779,7 @@ html <- paste0(
 
     <nav class="tabs">
       <button class="tab-btn active" id="tabBtnExplorer" type="button">Run explorer</button>
-      <button class="tab-btn" id="tabBtnTrends" type="button">Agreement across versions</button>
+      <button class="tab-btn" id="tabBtnTrends" type="button">Compare runs</button>
     </nav>
 
     <div id="tabExplorer">
@@ -762,27 +862,70 @@ html <- paste0(
     <div id="tabTrends" class="hidden">
       <section class="trend-panel">
         <div class="trend-head">
-          <div>
-            <h2>Agreement across versions</h2>
-            <p class="subhead">One column per scored run, grouped by language then model and ordered by version within each. Marker shape shows which dev split the run used; the model is named beneath each column. The human&ndash;human pair on the same rows is the baseline band. &ldquo;Clean only&rdquo; drops inspected rows (development data) &mdash; the headline view. The <b>Full label</b> / <b>Denial</b> toggle switches between the six-way Bloom comparison and the binary denial-vs-not-denial distinction.</p>
+          <h2>Compare runs</h2>
+          <p class="subhead">Start with one language, then widen the comparison only when needed. Filters apply to both the chart and the exact run-by-run table.</p>
+        </div>
+        <div class="trend-toolbar">
+          <div class="trend-language-filter">
+            <label>Languages</label>
+            <div class="trend-language-row">
+              <div class="trend-language-options" id="trendLanguages"></div>
+              <button class="language-action" id="trendLanguagesAll" type="button">Select all</button>
+              <button class="language-action" id="trendLanguagesCurrent" type="button">Current only</button>
+            </div>
           </div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <div class="trend-controls segmented" style="grid-template-columns: repeat(3, auto);">
-              <button id="trendBasisFull" class="seg-btn active" type="button">Full label</button>
-              <button id="trendBasisDenialAll" class="seg-btn" type="button">Denial (all)</button>
-              <button id="trendBasisDenialNeg" class="seg-btn" type="button">Denial (neg only)</button>
-            </div>
-            <div class="trend-controls segmented" style="grid-template-columns: 1fr 1fr;">
-              <button id="trendScopeAll" class="seg-btn active" type="button">All rows</button>
-              <button id="trendScopeClean" class="seg-btn" type="button">Clean only</button>
-            </div>
+          <div>
+            <label for="trendModel">Model</label>
+            <select id="trendModel"></select>
+          </div>
+          <div>
+            <label for="trendExamples">Prompt examples</label>
+            <select id="trendExamples">
+              <option value="all">All example conditions</option>
+              <option value="matched">Match target language</option>
+              <option value="english">English examples</option>
+            </select>
+          </div>
+          <div>
+            <label for="trendBasis">Comparison</label>
+            <select id="trendBasis">
+              <option value="full">Full Bloom labels</option>
+              <option value="denialAll">Denial vs. not-denial (all)</option>
+              <option value="denialNeg">Denial vs. not-denial (negation only)</option>
+            </select>
+          </div>
+          <div class="trend-toolbar-actions">
+            <span class="trend-count" id="trendCount"></span>
+            <button class="trend-reset" id="trendReset" type="button">Reset comparison</button>
+          </div>
+        </div>
+        <div class="trend-display">
+          <div class="trend-display-group">
+            <label>Measure</label>
             <div class="trend-controls segmented" style="grid-template-columns: 1fr 1fr;">
               <button id="trendAgreement" class="seg-btn active" type="button">Agreement %</button>
               <button id="trendKappa" class="seg-btn" type="button">Cohen&rsquo;s &kappa;</button>
             </div>
           </div>
+          <div class="trend-display-group">
+            <label>Rows</label>
+            <div class="trend-controls segmented" style="grid-template-columns: 1fr 1fr;">
+              <button id="trendScopeAll" class="seg-btn active" type="button">All rows</button>
+              <button id="trendScopeClean" class="seg-btn" type="button">Clean only</button>
+            </div>
+          </div>
+          <div class="trend-display-group">
+            <label>Lines</label>
+            <div class="series-toggles">
+              <label class="series-toggle"><input id="seriesCons" type="checkbox" checked><span class="series-dot" style="background:#1f6f68"></span>LLM vs consensus</label>
+              <label class="series-toggle"><input id="seriesHh" type="checkbox" checked><span class="series-dot" style="background:#5b6770"></span>Human baseline</label>
+              <label class="series-toggle"><input id="seriesL1" type="checkbox"><span class="series-dot" style="background:#2d5f8b"></span>LLM vs coder 1</label>
+              <label class="series-toggle"><input id="seriesL2" type="checkbox"><span class="series-dot" style="background:#a45c19"></span>LLM vs coder 2</label>
+              <label class="series-toggle"><input id="trendShowValues" type="checkbox">Show values</label>
+            </div>
+          </div>
         </div>
-        <div class="trend-svg-wrap" id="trendChart"></div>
+        <div class="trend-chart-grid" id="trendChart"></div>
         <div class="trend-legend" id="trendLegend"></div>
       </section>
 
@@ -861,7 +1004,13 @@ html <- paste0(
     let coderName = {};
     let coderShort = {};
     let pairDefs = [];
-    const state = { runIdx: 0, selectedId: null, sort: "line", scope: "all", trendMetric: "agreement", trendScope: "all", trendBasis: "full" };
+    const state = {
+      runIdx: 0, selectedId: null, sort: "line", scope: "all",
+      trendMetric: "agreement", trendScope: "all", trendBasis: "full",
+      trendLanguages: null, trendModel: "all", trendExamples: "all",
+      trendSeries: { hh: true, cons: true, l1: false, l2: false },
+      trendShowValues: false
+    };
 
     // Inspected rows are development data (read, mined for prompt examples,
     // or adjudicated) and are excluded from headline metrics; see
@@ -1272,9 +1421,36 @@ html <- paste0(
       $("trendKappa").addEventListener("click", () => setTrendMetric("kappa"));
       $("trendScopeAll").addEventListener("click", () => setTrendScope("all"));
       $("trendScopeClean").addEventListener("click", () => setTrendScope("clean"));
-      $("trendBasisFull").addEventListener("click", () => setTrendBasis("full"));
-      $("trendBasisDenialAll").addEventListener("click", () => setTrendBasis("denialAll"));
-      $("trendBasisDenialNeg").addEventListener("click", () => setTrendBasis("denialNeg"));
+      $("trendLanguagesAll").addEventListener("click", () => {
+        state.trendLanguages = [...new Set(payload.runs.map(r => r.meta.language || "Unknown"))];
+        populateTrendControls();
+        renderTrends();
+      });
+      $("trendLanguagesCurrent").addEventListener("click", () => {
+        state.trendLanguages = [meta.language || "Unknown"];
+        populateTrendControls();
+        renderTrends();
+      });
+      $("trendModel").addEventListener("change", () => {
+        state.trendModel = $("trendModel").value;
+        renderTrends();
+      });
+      $("trendExamples").addEventListener("change", () => {
+        state.trendExamples = $("trendExamples").value;
+        renderTrends();
+      });
+      $("trendBasis").addEventListener("change", () => setTrendBasis($("trendBasis").value));
+      [["seriesHh", "hh"], ["seriesCons", "cons"], ["seriesL1", "l1"], ["seriesL2", "l2"]].forEach(([id, key]) => {
+        $(id).addEventListener("change", () => {
+          state.trendSeries[key] = $(id).checked;
+          renderTrends();
+        });
+      });
+      $("trendShowValues").addEventListener("change", () => {
+        state.trendShowValues = $("trendShowValues").checked;
+        renderTrends();
+      });
+      $("trendReset").addEventListener("click", resetTrendControls);
 
       window.addEventListener("resize", sizeWorkspace);
       window.addEventListener("resize", () => { if (!$("tabTrends").classList.contains("hidden")) renderTrends(); });
@@ -1285,7 +1461,11 @@ html <- paste0(
       $("tabTrends").classList.toggle("hidden", tab !== "trends");
       $("tabBtnExplorer").classList.toggle("active", tab === "explorer");
       $("tabBtnTrends").classList.toggle("active", tab === "trends");
-      if (tab === "trends") renderTrends();
+      if (tab === "trends") {
+        if (state.trendLanguages === null) state.trendLanguages = [meta.language || "Unknown"];
+        populateTrendControls();
+        renderTrends();
+      }
       else sizeWorkspace();
     }
 
@@ -1732,10 +1912,69 @@ html <- paste0(
       denialNeg: { label: "denial vs. not-denial (negation codes only)", short: "Denial (neg only)" }
     };
 
+    function populateTrendControls() {
+      const languages = [...new Set(payload.runs.map(r => r.meta.language || "Unknown"))].sort();
+      const models = [...new Set(payload.runs.map(r => r.meta.model || "Unknown"))].sort();
+      const validLanguages = new Set(languages);
+      state.trendLanguages = (state.trendLanguages || []).filter(lang => validLanguages.has(lang));
+      $("trendLanguages").innerHTML = languages.map(lang =>
+        `<label class="series-toggle"><input type="checkbox" data-trend-language="${esc(lang)}"
+          ${state.trendLanguages.includes(lang) ? "checked" : ""}>${esc(lang)}</label>`
+      ).join("");
+      document.querySelectorAll("[data-trend-language]").forEach(input => {
+        input.addEventListener("change", () => {
+          const lang = input.dataset.trendLanguage;
+          state.trendLanguages = input.checked
+            ? [...new Set([...state.trendLanguages, lang])]
+            : state.trendLanguages.filter(value => value !== lang);
+          renderTrends();
+        });
+      });
+      $("trendModel").innerHTML = `<option value="all">All models (${models.length})</option>` +
+        models.map(model => `<option value="${esc(model)}">${esc(model)}</option>`).join("");
+      if (![...$("trendModel").options].some(o => o.value === state.trendModel)) state.trendModel = "all";
+      $("trendModel").value = state.trendModel;
+      $("trendExamples").value = state.trendExamples;
+      $("trendBasis").value = state.trendBasis;
+      $("seriesHh").checked = state.trendSeries.hh;
+      $("seriesCons").checked = state.trendSeries.cons;
+      $("seriesL1").checked = state.trendSeries.l1;
+      $("seriesL2").checked = state.trendSeries.l2;
+      $("trendShowValues").checked = state.trendShowValues;
+    }
+
+    function resetTrendControls() {
+      state.trendLanguages = [meta.language || "Unknown"];
+      state.trendModel = "all";
+      state.trendExamples = "all";
+      state.trendBasis = "full";
+      state.trendMetric = "agreement";
+      state.trendScope = "all";
+      state.trendSeries = { hh: true, cons: true, l1: false, l2: false };
+      state.trendShowValues = false;
+      populateTrendControls();
+      $("trendAgreement").classList.add("active");
+      $("trendKappa").classList.remove("active");
+      $("trendScopeAll").classList.add("active");
+      $("trendScopeClean").classList.remove("active");
+      renderTrends();
+    }
+
+    function trendRuns() {
+      return payload.runs.filter(run => {
+        const condition = exampleCondition(run.meta);
+        return state.trendLanguages.includes(run.meta.language || "Unknown") &&
+          (state.trendModel === "all" || (run.meta.model || "Unknown") === state.trendModel) &&
+          (state.trendExamples === "all" ||
+            (state.trendExamples === "matched" && condition.matched) ||
+            (state.trendExamples === "english" && !condition.matched));
+      });
+    }
+
     function trendStats() {
       const basis = state.trendBasis;
       const H1 = "human_1_label_collapsed", H2 = "human_2_label_collapsed", L = "llm_label_collapsed";
-      return payload.runs.map(run => {
+      return trendRuns().map(run => {
         const base = state.trendScope === "clean"
           ? run.rows.filter(r => !isInspected(r))
           : run.rows;
@@ -1765,9 +2004,7 @@ html <- paste0(
 
     function setTrendBasis(basis) {
       state.trendBasis = basis;
-      $("trendBasisFull").classList.toggle("active", basis === "full");
-      $("trendBasisDenialAll").classList.toggle("active", basis === "denialAll");
-      $("trendBasisDenialNeg").classList.toggle("active", basis === "denialNeg");
+      $("trendBasis").value = basis;
       renderTrends();
     }
 
@@ -1783,30 +2020,23 @@ html <- paste0(
       return `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
     }
 
-    function renderTrends() {
-      const stats = trendStats();
-      const metric = state.trendMetric;
+    function renderTrendSvg(stats, visibleSeries, metric, containerW, shapeFor) {
       const value = (s, key) => metric === "agreement" ? s[key].agreement : s[key].kappa;
-
-      const splits = [...new Set(stats.map(s => s.meta.split))];
-      const shapeFor = Object.fromEntries(splits.map((sp, i) => [sp, splitShapes[i % splitShapes.length]]));
-
-      const ml = 64, mr = 24, mt = 34, mb = 98;
+      const ml = 64, mr = 24, mt = 40, mb = 72;
       // Width is dynamic: spread columns across the available container width,
-      // but clamp per-column width to [120, 240]px. The 120px floor keeps
+      // but clamp per-column width to [115, 240]px. The 115px floor keeps
       // columns legible (narrow viewports / many languages scroll horizontally);
       // the 240px cap stops a handful of columns from stretching absurdly wide.
       // As more languages (Hebrew, German, Tagalog, ...) add columns, colW
       // shrinks toward the floor and the chart packs / scrolls instead.
-      const containerW = $("trendChart").clientWidth || 1100;
-      const colW = Math.max(120, Math.min(240, (containerW - ml - mr) / stats.length));
+      const colW = Math.max(115, Math.min(240, (containerW - ml - mr) / stats.length));
       const width = ml + mr + colW * stats.length;
-      const height = 420;
+      const height = 410;
       const plotH = height - mt - mb;
 
       let yMin = 0, yMax = 1;
       if (metric === "kappa") {
-        const vals = stats.flatMap(s => trendSeries.map(t => value(s, t.key))).filter(Number.isFinite);
+        const vals = stats.flatMap(s => visibleSeries.map(t => value(s, t.key))).filter(Number.isFinite);
         yMin = Math.min(0, Math.floor(Math.min(...vals, 0) * 10) / 10);
         yMax = 1;
       }
@@ -1814,7 +2044,7 @@ html <- paste0(
       const xPos = (i) => ml + colW * i + colW / 2;
 
       const parts = [];
-      parts.push(`<svg viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" font-family="inherit" role="img" aria-label="Agreement across versions">`);
+      parts.push(`<svg viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" font-family="inherit" role="img" aria-label="${esc(stats[0].meta.language || "Unknown")} run comparison chart">`);
 
       const ticks = metric === "agreement" ? [0, 0.25, 0.5, 0.75, 1] : [yMin, 0, 0.25, 0.5, 0.75, 1].filter((v, i, a) => a.indexOf(v) === i);
       for (const t of ticks) {
@@ -1826,40 +2056,34 @@ html <- paste0(
       stats.forEach((s, i) => {
         const x = xPos(i);
         if (i > 0) {
-          // Light gridline at every column boundary; upgrade to a dashed divider
-          // where the model changes within one language so model groups read as
-          // distinct blocks (the strong language divider is drawn separately).
-          const sameLang = stats[i].meta.language === stats[i - 1].meta.language;
-          const sameModel = (stats[i].meta.model || "") === (stats[i - 1].meta.model || "");
-          parts.push(sameLang && !sameModel
-            ? `<line x1="${ml + colW * i}" y1="${mt}" x2="${ml + colW * i}" y2="${mt + plotH}" stroke="#cdd4ce" stroke-width="1.2" stroke-dasharray="3 3"/>`
-            : `<line x1="${ml + colW * i}" y1="${mt}" x2="${ml + colW * i}" y2="${mt + plotH}" stroke="#f0f2ef" stroke-width="1"/>`);
+          parts.push(`<line x1="${ml + colW * i}" y1="${mt}" x2="${ml + colW * i}" y2="${mt + plotH}" stroke="#f0f2ef" stroke-width="1"/>`);
         }
-        parts.push(`<text x="${x}" y="${mt + plotH + 22}" text-anchor="middle" font-size="13" font-weight="700" fill="#202124">${esc(s.meta.version)}</text>`);
-        parts.push(`<text x="${x}" y="${mt + plotH + 37}" text-anchor="middle" font-size="10.5" font-weight="650" fill="#3a4f4b">${esc(s.meta.model || "model?")}</text>`);
-        parts.push(`<text x="${x}" y="${mt + plotH + 51}" text-anchor="middle" font-size="11" fill="#687076">${esc(s.meta.split)} &middot; n=${s.nScope}${state.trendScope === "clean" ? " clean" : ""}</text>`);
-        parts.push(`<text x="${x}" y="${mt + plotH + 65}" text-anchor="middle" font-size="10.5" fill="#687076">${esc(s.meta.prompt_version || "")}${s.meta.run_date ? (s.meta.prompt_version ? " &middot; " : "") + esc(s.meta.run_date) : ""}</text>`);
-        parts.push(`<text x="${x}" y="${mt + plotH + 79}" text-anchor="middle" font-size="10" font-weight="600" fill="${exampleCondition(s.meta).matched ? "#1f6f68" : "#a45c19"}">${esc(exampleCondition(s.meta).label)}</text>`);
+        parts.push(`<rect x="${ml + colW * i}" y="0" width="${colW}" height="${height}" fill="transparent"><title>${esc(runLabel({ meta: s.meta }))}</title></rect>`);
+        parts.push(`<text x="${x}" y="${mt + plotH + 21}" text-anchor="middle" font-size="13" font-weight="700" fill="#202124">${esc(s.meta.version)}</text>`);
+        parts.push(`<text x="${x}" y="${mt + plotH + 38}" text-anchor="middle" font-size="10.5" fill="#687076">${esc(s.meta.split)} &middot; n=${s.nScope}${state.trendScope === "clean" ? " clean" : ""}</text>`);
+        parts.push(`<text x="${x}" y="${mt + plotH + 55}" text-anchor="middle" font-size="10" font-weight="600" fill="${exampleCondition(s.meta).matched ? "#1f6f68" : "#a45c19"}">${esc(exampleCondition(s.meta).short)}</text>`);
         if (!s.nScope) parts.push(`<text x="${x}" y="${mt + plotH / 2}" text-anchor="middle" font-size="11" fill="#9aa3a9" transform="rotate(-90 ${x} ${mt + plotH / 2})">all rows inspected &mdash; no headline evidence</text>`);
       });
 
-      // Language bands: a bold label above each contiguous same-language group,
-      // and a strong divider between groups (runs are pre-sorted by language).
-      let g0 = 0;
+      // Model bands replace a repeated model label beneath every run.
+      let m0 = 0;
       for (let i = 1; i <= stats.length; i++) {
-        if (i === stats.length || stats[i].meta.language !== stats[g0].meta.language) {
-          const xMid = (xPos(g0) + xPos(i - 1)) / 2;
-          parts.push(`<text x="${xMid}" y="${mt - 12}" text-anchor="middle" font-size="12.5" font-weight="700" fill="#202124">${esc(stats[g0].meta.language || "?")}</text>`);
-          if (i < stats.length) {
+        const groupChanged = i === stats.length ||
+          stats[i].meta.language !== stats[m0].meta.language ||
+          (stats[i].meta.model || "") !== (stats[m0].meta.model || "");
+        if (groupChanged) {
+          const xMid = (xPos(m0) + xPos(i - 1)) / 2;
+          parts.push(`<text x="${xMid}" y="20" text-anchor="middle" font-size="10.5" font-weight="650" fill="#3a4f4b">${esc(stats[m0].meta.model || "model?")}</text>`);
+          if (i < stats.length && stats[i].meta.language === stats[m0].meta.language) {
             const xb = ml + colW * i;
-            parts.push(`<line x1="${xb}" y1="${mt - 24}" x2="${xb}" y2="${mt + plotH}" stroke="#b5bdc2" stroke-width="1.5"/>`);
+            parts.push(`<line x1="${xb}" y1="8" x2="${xb}" y2="${mt + plotH}" stroke="#cdd4ce" stroke-width="1.2" stroke-dasharray="3 3"/>`);
           }
-          g0 = i;
+          m0 = i;
         }
       }
 
       const labelCols = stats.map(() => []);
-      for (const series of trendSeries) {
+      for (const series of visibleSeries) {
         const pts = stats.map((s, i) => ({ col: i, x: xPos(i), y: yPos(value(s, series.key)), v: value(s, series.key), split: s.meta.split, lang: s.meta.language, model: s.meta.model || "", matched: exampleCondition(s.meta).matched }))
           .filter(p => Number.isFinite(p.v));
         // Connect points only within one language AND model; start a new path
@@ -1881,10 +2105,12 @@ html <- paste0(
         flushSeg();
         for (const p of pts) {
           parts.push(shapeMarkup(shapeFor[p.split], p.x, p.y, 5.5, series.color, p.matched));
-          labelCols[p.col].push({
-            y: p.y, x: p.x, color: series.color,
-            text: metric === "agreement" ? (p.v * 100).toFixed(1) + "%" : p.v.toFixed(2)
-          });
+          if (state.trendShowValues) {
+            labelCols[p.col].push({
+              y: p.y, x: p.x, color: series.color,
+              text: metric === "agreement" ? (p.v * 100).toFixed(1) + "%" : p.v.toFixed(2)
+            });
+          }
         }
       }
       // De-collide point labels within each column: sort by marker height and
@@ -1900,17 +2126,53 @@ html <- paste0(
       }
 
       parts.push("</svg>");
-      $("trendChart").innerHTML = parts.join("");
+      return parts.join("");
+    }
+
+    function renderTrends() {
+      const stats = trendStats();
+      const metric = state.trendMetric;
+      const visibleSeries = trendSeries.filter(series => state.trendSeries[series.key]);
+      $("trendCount").textContent =
+        `Showing ${stats.length} of ${payload.runs.length} run${stats.length === 1 ? "" : "s"} across ${state.trendLanguages.length} selected language${state.trendLanguages.length === 1 ? "" : "s"}.`;
+
+      if (!stats.length) {
+        $("trendChart").innerHTML = `<div class="trend-empty"><b>No runs match these filters.</b><br>Select a language, widen another filter, or reset the comparison.</div>`;
+        $("trendLegend").innerHTML = "";
+        $("trendTableCaption").textContent = "No runs match the current comparison filters.";
+        $("trendTable").innerHTML = "";
+        return;
+      }
+
+      const splits = [...new Set(stats.map(s => s.meta.split))];
+      const shapeFor = Object.fromEntries(splits.map((sp, i) => [sp, splitShapes[i % splitShapes.length]]));
+      const byLanguage = new Map();
+      stats.forEach(stat => {
+        const lang = stat.meta.language || "Unknown";
+        if (!byLanguage.has(lang)) byLanguage.set(lang, []);
+        byLanguage.get(lang).push(stat);
+      });
+      const gridW = $("trendChart").clientWidth || 1100;
+      const columns = Math.max(1, Math.floor((gridW + 12) / 572));
+      const visibleColumns = Math.min(columns, byLanguage.size);
+      const facetW = Math.max(520, (gridW - 12 * (visibleColumns - 1)) / visibleColumns - 22);
+      $("trendChart").innerHTML = visibleSeries.length
+        ? [...byLanguage.entries()].map(([lang, langStats]) => `
+            <section class="trend-facet">
+              <div class="trend-facet-head"><h3>${esc(lang)}</h3><span>${langStats.length} run${langStats.length === 1 ? "" : "s"}</span></div>
+              <div class="trend-svg-wrap">${renderTrendSvg(langStats, visibleSeries, metric, facetW, shapeFor)}</div>
+            </section>`).join("")
+        : `<div class="trend-empty"><b>No lines selected.</b><br>Choose at least one line to draw the charts.</div>`;
 
       const shapeGlyph = { circle: "\\u25cf", square: "\\u25a0", diamond: "\\u25c6", triangle: "\\u25b2" };
       $("trendLegend").innerHTML =
-        trendSeries.map(t => `<span><span class="swatch" style="border-top-color:${t.color}; ${t.dash ? "border-top-style:dashed;" : ""}"></span>${esc(t.name)}</span>`).join("") +
+        visibleSeries.map(t => `<span><span class="swatch" style="border-top-color:${t.color}; ${t.dash ? "border-top-style:dashed;" : ""}"></span>${esc(t.name)}</span>`).join("") +
         `<span style="margin-left:8px; border-left:1px solid var(--border); padding-left:14px;">Split:</span>` +
         splits.map(sp => `<span><span class="shape">${shapeGlyph[shapeFor[sp]]}</span>${esc(sp)}</span>`).join("") +
         `<span style="margin-left:8px; border-left:1px solid var(--border); padding-left:14px;">Examples:</span>` +
         `<span><span class="shape">\\u25cf</span>match target language</span>` +
         `<span><span class="shape">\\u25cb</span>English examples</span>` +
-        `<span style="margin-left:8px; border-left:1px solid var(--border); padding-left:14px; color:var(--muted);">Columns grouped by language then model (named under each column); dashed rule separates models; lines connect runs within one language &amp; model.</span>`;
+        `<span style="margin-left:8px; border-left:1px solid var(--border); padding-left:14px; color:var(--muted);">Each language has its own plot; lines connect runs within one model. Hover a column for full run details.</span>`;
 
       $("trendTableCaption").innerHTML =
         `Comparison: <b>${esc(trendBasisDefs[state.trendBasis].label)}</b>. ` +
@@ -1919,12 +2181,14 @@ html <- paste0(
           : `All rows, including inspected development rows; switch to &ldquo;Clean only&rdquo; for headline numbers. `) +
         `Same conventions as the run explorer: collapsed labels, denominator = rows where both compared coders have a non-missing Bloom label.`;
       $("trendTable").innerHTML = `<table><thead><tr>
-          <th>Run</th><th>Split</th><th class="numeric">n</th>
+          <th>Language</th><th>Model</th><th>Run</th><th>Split</th><th class="numeric">n</th>
           <th class="numeric">Human&ndash;human</th><th class="numeric">LLM vs consensus</th>
           <th class="numeric">LLM vs coder 1</th><th class="numeric">LLM vs coder 2</th>
         </tr></thead><tbody>${
         stats.map(s => `<tr>
-          <td><b>${esc(s.meta.version)}</b> ${esc(s.meta.model || "")} ${esc(s.meta.prompt_version || "")}${s.meta.run_date ? " &middot; " + esc(s.meta.run_date) : ""}</td>
+          <td><b>${esc(s.meta.language || "?")}</b></td>
+          <td>${esc(s.meta.model || "")}</td>
+          <td><b>${esc(s.meta.version)}</b> ${esc(s.meta.prompt_version || "")}${s.meta.run_date ? " &middot; " + esc(s.meta.run_date) : ""}</td>
           <td>${esc(s.meta.split)}</td><td class="numeric">${s.nScope}${s.nScope === s.meta.n_rows ? "" : ` <span class="muted">of ${s.meta.n_rows}</span>`}</td>
           <td class="numeric">${pct(s.hh.agreement)} <span class="muted">(&kappa; ${num(s.hh.kappa)}, n=${s.hh.n})</span></td>
           <td class="numeric">${pct(s.cons.agreement)} <span class="muted">(n=${s.cons.n})</span></td>
