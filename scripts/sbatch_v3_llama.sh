@@ -81,9 +81,18 @@ fi
 # (retryable timeouts / empty content / dropped connections). Extra args pass
 # straight through; defaults below match the settings that stabilized the gemma
 # rerun. NOT -e up top: if the main sweep fails partway, still attempt Tagalog.
+#
+# --num-ctx 16384 is CRITICAL for llama3.3:70b. Left unpinned (job 3611671,
+# 2026-07-01) Ollama used llama3.3's full ~128k default context, so the KV cache
+# alone was ~40 GiB. Weights (~39 GiB) + that KV blew past the two L40S's 90 GiB
+# combined, spilling 29/81 layers to CPU; every /api/chat then ran past the
+# 1200s timeout (HTTP 500) and all nine runs failed. Pinning ctx to 16384
+# (prompt ~3k tokens + --num-predict 8000, with headroom) shrinks the KV cache
+# to ~5 GiB so the whole model stays on GPU. gemma/qwen didn't need this: smaller
+# models with smaller default contexts fit on a single GPU.
 status=0
-MODEL="$MODEL" ./scripts/run_v3_100_all_langs.sh --num-predict 8000 --timeout 1200 --ollama-url "$OLLAMA_URL" "$@" || status=1
-MODEL="$MODEL" ./scripts/run_v3_tagalog.sh       --num-predict 8000 --timeout 1200 --ollama-url "$OLLAMA_URL" "$@" || status=1
+MODEL="$MODEL" ./scripts/run_v3_100_all_langs.sh --num-ctx 16384 --num-predict 8000 --timeout 1200 --ollama-url "$OLLAMA_URL" "$@" || status=1
+MODEL="$MODEL" ./scripts/run_v3_tagalog.sh       --num-ctx 16384 --num-predict 8000 --timeout 1200 --ollama-url "$OLLAMA_URL" "$@" || status=1
 
 if [[ "$status" -eq 0 ]]; then
   echo "All nine ${MODEL} v3 limit-100 runs finished successfully."
