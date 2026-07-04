@@ -266,4 +266,20 @@ If a batch repeatedly fails schema validation, the runner writes a
 `*_failed_batch-N.json` debug file under the results directory with the parsed
 model payload, raw response, and validation error.
 
+### 7. Rerun the failed Llama Tagalog jobs
+
+The dedicated Oscar job reruns only `p003-tl-loc` and `p003-tl-engex` with
+`llama3.3:70b`. It uses two L40S GPUs, pins the context window at 16,384
+tokens, and sets `BATCH_SIZE=1` so each generated schema permits exactly one
+record ID and one prediction:
+
+```bash
+sbatch scripts/sbatch_v3_llama_tagalog.sh
+```
+
+The singleton batching is a targeted workaround for Llama repeatedly
+duplicating IDs in size-5 Tagalog batches. It differs from the size-5 protocol
+used for the other v3 runs and should be noted in comparisons. Successful
+non-Tagalog Llama outputs are not touched.
+
 The runner refuses to run on `test_lockbox` unless `--allow-lockbox` is passed.

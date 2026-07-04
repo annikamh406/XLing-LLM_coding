@@ -1,0 +1,36 @@
+{
+  "language": "hebrew",
+  "mask": "[MASKED]",
+  "splits": {
+    "dev_check_1": {
+      "input_records": 1199,
+      "kept": 915,
+      "dropped_human_flagged": 284,
+      "dropped_unmaskable": []
+    },
+    "dev_check_2": {
+      "input_records": 1195,
+      "kept": 906,
+      "dropped_human_flagged": 289,
+      "dropped_unmaskable": []
+    },
+    "dev_train": {
+      "input_records": 963,
+      "kept": 776,
+      "dropped_human_flagged": 187,
+      "dropped_unmaskable": []
+    },
+    "test_lockbox": {
+      "input_records": 1429,
+      "kept": 1162,
+      "dropped_human_flagged": 267,
+      "dropped_unmaskable": []
+    },
+    "uncoded_by_neither": {
+      "input_records": 0,
+      "kept": 0,
+      "dropped_human_flagged": 0,
+      "dropped_unmaskable": []
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "language": "tagalog",
+  "mask": "[MASKED]",
+  "splits": {
+    "dev_check_1": {
+      "input_records": 314,
+      "kept": 295,
+      "dropped_human_flagged": 19,
+      "dropped_unmaskable": []
+    },
+    "dev_check_2": {
+      "input_records": 331,
+      "kept": 303,
+      "dropped_human_flagged": 28,
+      "dropped_unmaskable": []
+    },
+    "dev_train": {
+      "input_records": 323,
+      "kept": 273,
+      "dropped_human_flagged": 50,
+      "dropped_unmaskable": []
+    },
+    "test_lockbox": {
+      "input_records": 391,
+      "kept": 323,
+      "dropped_human_flagged": 68,
+      "dropped_unmaskable": []
+    },
+    "uncoded_by_neither": {
+      "input_records": 1,
+      "kept": 0,
+      "dropped_human_flagged": 1,
+      "dropped_unmaskable": []
+    }
+  }
+}

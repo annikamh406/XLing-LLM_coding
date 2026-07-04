@@ -1,0 +1,36 @@
+{
+  "language": "english",
+  "mask": "[MASKED]",
+  "splits": {
+    "dev_check_1": {
+      "input_records": 1918,
+      "kept": 1634,
+      "dropped_human_flagged": 284,
+      "dropped_unmaskable": []
+    },
+    "dev_check_2": {
+      "input_records": 1894,
+      "kept": 1632,
+      "dropped_human_flagged": 262,
+      "dropped_unmaskable": []
+    },
+    "dev_train": {
+      "input_records": 1521,
+      "kept": 1321,
+      "dropped_human_flagged": 200,
+      "dropped_unmaskable": []
+    },
+    "test_lockbox": {
+      "input_records": 2273,
+      "kept": 1939,
+      "dropped_human_flagged": 334,
+      "dropped_unmaskable": []
+    },
+    "uncoded_by_neither": {
+      "input_records": 2022,
+      "kept": 2022,
+      "dropped_human_flagged": 0,
+      "dropped_unmaskable": []
+    }
+  }
+}

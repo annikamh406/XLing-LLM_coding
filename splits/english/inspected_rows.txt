@@ -28,3 +28,37 @@ eng_000068
 eng_000069
 eng_000070
 eng_000071
+#
+# 2026-07-04: v3 limit-100 error analysis (all three models, loc+engex prompts):
+# every consensus-disagreement row whose content was read for the error-category
+# summary and v4 prompt suggestions.
+eng_000003
+eng_000004
+eng_000012
+eng_000014
+eng_000068
+eng_000072
+eng_000073
+eng_000077
+eng_000277
+eng_000326
+eng_000451
+eng_000481
+eng_000484
+eng_000487
+eng_000489
+eng_000492
+eng_000620
+eng_000621
+eng_000623
+eng_000624
+eng_000625
+eng_000626
+eng_000633
+eng_000634
+eng_000635
+eng_000644
+eng_000645
+eng_000648
+eng_000649
+eng_000650

@@ -24,14 +24,14 @@ from pathlib import Path
 # the script portable after the folder is pushed to its own Git repository and
 # cloned onto Oscar.
 LLM_DIR = Path(__file__).resolve().parents[1]
-DEFAULT_PROMPT = LLM_DIR / "v3" / "bloom_v3_english_prompt.md"
+DEFAULT_PROMPT = LLM_DIR / "v4" / "bloom_v4_english_prompt.md"
 DEFAULT_SPLIT_DIR = LLM_DIR / "splits" / "english"
 # Development runs write directly into the version's results folder; the
 # split name in every output filename keeps runs distinguishable. The one
 # exception is the final lockbox evaluation, which is routed to a lockbox/
 # subfolder automatically so its outputs stay physically separated from dev
 # outputs, per LLM_validation_plan.md.
-DEFAULT_RESULTS_DIR = LLM_DIR / "v3" / "results"
+DEFAULT_RESULTS_DIR = LLM_DIR / "v4" / "results"
 DEFAULT_OLLAMA_URL = "http://localhost:11434/api/chat"
 
 # These version strings are saved in raw-response metadata and the terminal
@@ -39,8 +39,8 @@ DEFAULT_OLLAMA_URL = "http://localhost:11434/api/chat"
 # compact run locators; the full prompt path stays in metadata. Defaults track
 # the current policy/prompt version; pass --schema-version/--prompt-version
 # (with matching --prompt and --results-dir) to reproduce an older run.
-DEFAULT_SCHEMA_VERSION = "bloom_v3"
-DEFAULT_PROMPT_VERSION = "p003"
+DEFAULT_SCHEMA_VERSION = "bloom_v4"
+DEFAULT_PROMPT_VERSION = "p004"
 
 # Local copies of the schema constraints. Keeping these in code makes validation
 # cheap and avoids depending on external JSON-schema packages on Oscar.
@@ -64,6 +64,14 @@ FLAG_ORDER = [
 ]
 REQUIRED_FLAGS = set(FLAG_ORDER)
 ALLOWED_FLAG_VALUES = {"Yes", "No"}
+
+
+def schema_has_certain(schema_version: str) -> bool:
+    """bloom_v4 added the per-prediction `certain` key (Yes/No confidence,
+    mirroring the human coders' certain_bloom column). Reproductions of
+    v1-v3 runs must keep validating against the original contract, so the
+    key is gated on the schema version rather than always required."""
+    return schema_version not in {"bloom_v1", "bloom_v2", "bloom_v3"}
 
 # Only these fields are sent to the LLM. The split JSONL records also include
 # human coder labels and split metadata; those must never be included in the
@@ -178,11 +186,14 @@ def validate_response(
 
     # Validate every prediction object independently before checking for any
     # batch-level missing IDs.
+    required_keys = {"record_id", "bloom_label", "flags", "comments"}
+    if schema_has_certain(schema_version):
+        required_keys = required_keys | {"certain"}
     for prediction in predictions:
         if not isinstance(prediction, dict):
             raise ValidationError("Each prediction must be an object.")
-        extra = set(prediction) - {"record_id", "bloom_label", "flags", "comments"}
-        missing = {"record_id", "bloom_label", "flags", "comments"} - set(prediction)
+        extra = set(prediction) - required_keys
+        missing = required_keys - set(prediction)
         if extra:
             raise ValidationError(f"Unexpected prediction keys: {sorted(extra)}")
         if missing:
@@ -198,6 +209,11 @@ def validate_response(
         label = prediction["bloom_label"]
         if label not in ALLOWED_LABELS:
             raise ValidationError(f"{record_id}: invalid bloom_label {label!r}")
+
+        if schema_has_certain(schema_version):
+            certain = prediction["certain"]
+            if certain not in ALLOWED_FLAG_VALUES:
+                raise ValidationError(f"{record_id}: invalid certain {certain!r}")
 
         flags = prediction["flags"]
         if not isinstance(flags, dict):
@@ -241,9 +257,29 @@ def build_output_schema(expected_ids: list[str], schema_version: str) -> dict:
     Property order matters: constrained decoding emits properties in the order
     listed below, so it must match bloom_vN_output.schema.json — in particular
     comments before bloom_label, so the stated reason precedes the label at
-    decoding time.
+    decoding time (and, since bloom_v4, certain after bloom_label, so the
+    label precedes the confidence judgment).
     """
     flag_value = {"type": "string", "enum": sorted(ALLOWED_FLAG_VALUES)}
+    item_properties: dict = {
+        "record_id": {"type": "string", "enum": expected_ids},
+        "comments": {"type": "string"},
+        "bloom_label": {
+            "type": "string",
+            "enum": sorted(ALLOWED_LABELS),
+        },
+    }
+    if schema_has_certain(schema_version):
+        item_properties["certain"] = {
+            "type": "string",
+            "enum": sorted(ALLOWED_FLAG_VALUES),
+        }
+    item_properties["flags"] = {
+        "type": "object",
+        "properties": {flag: flag_value for flag in FLAG_ORDER},
+        "required": FLAG_ORDER,
+        "additionalProperties": False,
+    }
     return {
         "type": "object",
         "properties": {
@@ -254,21 +290,8 @@ def build_output_schema(expected_ids: list[str], schema_version: str) -> dict:
                 "maxItems": len(expected_ids),
                 "items": {
                     "type": "object",
-                    "properties": {
-                        "record_id": {"type": "string", "enum": expected_ids},
-                        "comments": {"type": "string"},
-                        "bloom_label": {
-                            "type": "string",
-                            "enum": sorted(ALLOWED_LABELS),
-                        },
-                        "flags": {
-                            "type": "object",
-                            "properties": {flag: flag_value for flag in FLAG_ORDER},
-                            "required": FLAG_ORDER,
-                            "additionalProperties": False,
-                        },
-                    },
-                    "required": ["record_id", "comments", "bloom_label", "flags"],
+                    "properties": item_properties,
+                    "required": list(item_properties),
                     "additionalProperties": False,
                 },
             },

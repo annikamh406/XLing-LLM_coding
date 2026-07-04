@@ -1,0 +1,54 @@
+# Record ids that are development data: their content has been read, mined
+# for prompt examples, or adjudicated, so they are excluded from headline
+# agreement metrics (reported separately as a rule-compliance check).
+# See v3/CHANGES_FROM_V2.md, section "Contamination control".
+#
+# Any row whose content informs a future prompt or policy edit must be
+# appended here. One id per line; lines starting with # are comments.
+#
+# 2026-07-04: v3 limit-100 error analysis (all three models, loc+engex prompts):
+# every consensus-disagreement row whose content was read for the error-category
+# summary and v4 prompt suggestions.
+spa_000041
+spa_000042
+spa_000043
+spa_000044
+spa_000045
+spa_000050
+spa_000053
+spa_000059
+spa_000070
+spa_000071
+spa_000072
+spa_000074
+spa_000075
+spa_000076
+spa_000188
+spa_000191
+spa_000444
+spa_000445
+spa_000446
+spa_000447
+spa_000448
+spa_000449
+spa_000451
+spa_000452
+spa_000453
+spa_000457
+spa_000459
+spa_000460
+spa_000461
+spa_000465
+spa_000468
+spa_000469
+spa_000470
+spa_000471
+spa_000475
+spa_000476
+spa_000477
+spa_000480
+spa_000484
+spa_000486
+spa_000487
+spa_000488
+spa_000489

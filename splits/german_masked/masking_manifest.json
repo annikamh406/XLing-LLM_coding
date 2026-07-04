@@ -1,0 +1,38 @@
+{
+  "language": "german",
+  "mask": "[MASKED]",
+  "splits": {
+    "dev_check_1": {
+      "input_records": 1976,
+      "kept": 1696,
+      "dropped_human_flagged": 280,
+      "dropped_unmaskable": []
+    },
+    "dev_check_2": {
+      "input_records": 1908,
+      "kept": 1701,
+      "dropped_human_flagged": 206,
+      "dropped_unmaskable": [
+        "ger_011655"
+      ]
+    },
+    "dev_train": {
+      "input_records": 1502,
+      "kept": 1396,
+      "dropped_human_flagged": 106,
+      "dropped_unmaskable": []
+    },
+    "test_lockbox": {
+      "input_records": 2267,
+      "kept": 2035,
+      "dropped_human_flagged": 232,
+      "dropped_unmaskable": []
+    },
+    "uncoded_by_neither": {
+      "input_records": 6815,
+      "kept": 6815,
+      "dropped_human_flagged": 0,
+      "dropped_unmaskable": []
+    }
+  }
+}
