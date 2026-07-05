@@ -43,6 +43,16 @@ MODELS="${MODELS:-gemma4:31b qwen3:32b llama3.3:70b}"
 CELLS="${CELLS:-english:en german:loc german:engex hebrew:loc hebrew:engex spanish:loc spanish:engex tagalog:loc tagalog:engex}"
 DRY_RUN="${DRY_RUN:-}"
 
+# Pass per-run settings to the jobs via the environment + `--export=ALL`, NOT
+# inline in `--export=...`. Slurm's --export list is itself comma-delimited, so
+# a value containing a comma (RUN_SETS="unmasked,masked") gets split — the
+# stray "masked" became a bare var name and RUN_SETS arrived as just
+# "unmasked", silently dropping the masked arm (observed on job 3645334). With
+# --export=ALL, sbatch forwards the whole submitting environment as-is.
+export LIMIT="${LIMIT:-}"
+export SPLIT="${SPLIT:-dev_train}"
+export RUN_SETS="${RUN_SETS:-unmasked,masked}"
+
 # Slurm needs the -o directory to exist at submit time.
 mkdir -p v4/results/logs
 
@@ -70,7 +80,7 @@ for model in $MODELS; do
     submit sbatch \
       --job-name="v4-${model_tag}-${language}-${variant}" \
       "${resources[@]}" \
-      --export=ALL,LIMIT="${LIMIT:-}",SPLIT="${SPLIT:-dev_train}",RUN_SETS="${RUN_SETS:-unmasked,masked}" \
+      --export=ALL \
       scripts/sbatch_v4.sh "$model" "$language" "$variant" \
       ${extra_args[@]+"${extra_args[@]}"}
   done
