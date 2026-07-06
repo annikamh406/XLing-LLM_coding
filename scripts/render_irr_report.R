@@ -37,6 +37,11 @@ outdir_flag <- which(args == "--outdir")
 outdir_override <- if (length(outdir_flag) && outdir_flag < length(args)) args[[outdir_flag + 1]] else NA_character_
 lang_flag <- which(args == "--lang")
 lang_override <- if (length(lang_flag) && lang_flag < length(args)) args[[lang_flag + 1]] else NA_character_
+# --exclude REGEX skips prediction files whose basename matches the regex.
+# Used to keep smoke tests (e.g. the limit-10 v4 warm-ups) out of the viewer:
+#   Rscript scripts/render_irr_report.R v4 --exclude 'limit-'
+exclude_flag <- which(args == "--exclude")
+exclude_pattern <- if (length(exclude_flag) && exclude_flag < length(args)) args[[exclude_flag + 1]] else NA_character_
 
 # record_id prefix -> language folder under splits/. The two Tagalog corpora
 # (tgm = MPI, tgn = new corpus) are split separately but run combined, so both
@@ -78,6 +83,12 @@ prediction_files <- unlist(lapply(
   function(d) list.files(d, pattern = "_predictions\\.jsonl$", full.names = TRUE)
 ))
 if (!length(prediction_files)) stop("No *_predictions.jsonl found under ", results_dir)
+if (!is.na(exclude_pattern)) {
+  keep <- !grepl(exclude_pattern, basename(prediction_files))
+  if (any(!keep)) message("Excluding ", sum(!keep), " prediction file(s) matching /", exclude_pattern, "/")
+  prediction_files <- prediction_files[keep]
+  if (!length(prediction_files)) stop("All *_predictions.jsonl excluded by --exclude ", exclude_pattern)
+}
 
 known_splits <- c("dev_train", "dev_check_1", "dev_check_2", "test_lockbox", "uncoded_by_neither")
 
@@ -105,15 +116,22 @@ for (prediction_path in sort(prediction_files)) {
   raw_path <- file.path(dirname(prediction_path), paste0(prefix, "_raw_responses.jsonl"))
   if (!file.exists(raw_path)) raw_path <- ""
 
+  # Masked runs (prompt version p<NNN>m, e.g. p004m-de-loc) consume the masked
+  # variant of the split, whose utterances have the negator token masked and
+  # whose row set is pre-filtered; they must be scored against the matching
+  # splits/<lang>_masked/ reference, not the unmasked one, or the join is wrong.
+  masked <- grepl("_p[0-9]+m([-_]|$)", prefix)
+  split_lang <- if (masked) paste0(lang, "_masked") else lang
+
   # The frozen <version>/inputs/splits/english/ copy only exists for English
   # (v1's frozen inputs); other languages use the shared splits/<lang>/.
   split_path <- first_existing(c(
-    file.path(llm_dir, version, "inputs", "splits", lang, paste0(split_name, ".jsonl")),
-    file.path(llm_dir, "splits", lang, paste0(split_name, ".jsonl"))
+    file.path(llm_dir, version, "inputs", "splits", split_lang, paste0(split_name, ".jsonl")),
+    file.path(llm_dir, "splits", split_lang, paste0(split_name, ".jsonl"))
   ))
   ref_path <- first_existing(c(
-    file.path(llm_dir, version, "inputs", "splits", lang, paste0(split_name, "_human_reference.jsonl")),
-    file.path(llm_dir, "splits", lang, paste0(split_name, "_human_reference.jsonl"))
+    file.path(llm_dir, version, "inputs", "splits", split_lang, paste0(split_name, "_human_reference.jsonl")),
+    file.path(llm_dir, "splits", split_lang, paste0(split_name, "_human_reference.jsonl"))
   ))
   if (is.na(split_path) || is.na(ref_path)) {
     warning("Missing split or reference file for ", lang, " ", split_name, "; skipping ", prefix)
