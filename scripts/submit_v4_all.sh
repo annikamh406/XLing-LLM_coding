@@ -52,6 +52,11 @@ DRY_RUN="${DRY_RUN:-}"
 export LIMIT="${LIMIT:-}"
 export SPLIT="${SPLIT:-dev_train}"
 export RUN_SETS="${RUN_SETS:-unmasked,masked}"
+# Records per LLM call. Empty => run_v4_language.sh's default of 5. Set a
+# smaller value (e.g. 2) to rerun a batch that keeps failing on a duplicate or
+# omitted record_id: fewer records per call means fewer siblings to collide
+# with and a shorter runway for a thinking-channel runaway.
+export BATCH_SIZE="${BATCH_SIZE:-}"
 
 # Slurm needs the -o directory to exist at submit time.
 mkdir -p v4/results/logs

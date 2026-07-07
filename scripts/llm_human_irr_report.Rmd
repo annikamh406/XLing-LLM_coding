@@ -160,6 +160,13 @@ predictions <- predictions_raw %>%
     record_id,
     llm_bloom_raw = bloom_label,
     llm_label = label_bloom(bloom_label),
+    # v4+ schemas require a binary certain (Yes/No); earlier schemas lack it
+    # and the certainty section below renders a note instead.
+    llm_certain = if ("certain" %in% names(predictions_raw)) {
+      str_to_title(str_trim(as.character(certain)))
+    } else {
+      NA_character_
+    },
     llm_comments = comments,
     llm_not_a_negation = yes_flag(flags$not_a_negation),
     llm_foreign_language_negation = yes_flag(flags$foreign_language_negation),
@@ -181,6 +188,8 @@ human <- human_raw %>%
     human_2_bloom_raw = coder_2$bloom_label,
     human_1_label = label_bloom(coder_1$bloom_label),
     human_2_label = label_bloom(coder_2$bloom_label),
+    human_1_certain_raw = as.character(coder_1$certain_bloom),
+    human_2_certain_raw = as.character(coder_2$certain_bloom),
     human_1_comments = coder_1$comments,
     human_2_comments = coder_2$comments,
     human_1_not_a_negation = yes_flag(coder_1$flags$not_a_negation),
@@ -228,7 +237,21 @@ eval_rows <- predictions %>%
     has_human_2 = !is.na(human_2_label),
     has_llm = !is.na(llm_label),
     human_agreed = has_human_1 & has_human_2 & human_1_label == human_2_label,
-    human_disagreed = has_human_1 & has_human_2 & human_1_label != human_2_label
+    human_disagreed = has_human_1 & has_human_2 & human_1_label != human_2_label,
+    # Binary human certainty for labeled rows. Coders fill certain_bloom
+    # inconsistently (some answer Yes explicitly, others leave it blank and
+    # only mark No when uncertain), so only an explicit No counts as
+    # uncertain; Yes and blank both count as certain.
+    human_1_certain = if_else(
+      has_human_1,
+      if_else(coalesce(str_to_lower(str_trim(human_1_certain_raw)) == "no", FALSE), "No", "Yes"),
+      NA_character_
+    ),
+    human_2_certain = if_else(
+      has_human_2,
+      if_else(coalesce(str_to_lower(str_trim(human_2_certain_raw)) == "no", FALSE), "No", "Yes"),
+      NA_character_
+    )
   )
 
 long_labels <- bind_rows(
@@ -529,6 +552,72 @@ if (nrow(disagreement_siding) == 0) {
 }
 ```
 
+# Certainty and Agreement
+
+Since v4, the LLM answers a binary `certain` (Yes/No) mirroring the human
+coders' `certain_bloom` column. Human certainty is collapsed to a binary the
+same way throughout this section: only an explicit `No` counts as uncertain
+(coders who leave the column blank do mark `No` when unsure, so blanks count
+as certain).
+
+```{r certainty-agreement, results='asis', fig.height=4.5}
+if (all(is.na(eval_rows$llm_certain))) {
+  cat("This run's predictions have no `certain` field (pre-v4 schema); section skipped.\n")
+} else {
+  cert_pairs <- bind_rows(
+    eval_rows %>%
+      filter(has_llm, has_human_1, !is.na(llm_certain)) %>%
+      transmute(llm_certain, human_certain = human_1_certain,
+                agree = llm_label == human_1_label),
+    eval_rows %>%
+      filter(has_llm, has_human_2, !is.na(llm_certain)) %>%
+      transmute(llm_certain, human_certain = human_2_certain,
+                agree = llm_label == human_2_label)
+  ) %>%
+    mutate(
+      combo = factor(
+        paste(llm_certain, human_certain, sep = " / "),
+        c("Yes / Yes", "Yes / No", "No / Yes", "No / No")
+      )
+    )
+
+  cert_summary <- cert_pairs %>%
+    group_by(combo) %>%
+    summarise(n = n(), pct_agreement = mean(agree), .groups = "drop")
+
+  print(
+    cert_summary %>%
+      mutate(pct_agreement = percent(pct_agreement, accuracy = 0.1)) %>%
+      kable(caption = "Bloom-label agreement by certainty cell (LLM certain / human coder certain). Each LLM-human coder pairing with both labels present is one observation, so double-coded rows contribute twice.")
+  )
+
+  calib <- cert_pairs %>%
+    group_by(llm_certain) %>%
+    summarise(n = n(), pct_agreement = mean(agree), .groups = "drop") %>%
+    arrange(desc(llm_certain))
+  print(
+    calib %>%
+      mutate(pct_agreement = percent(pct_agreement, accuracy = 0.1)) %>%
+      kable(caption = "LLM calibration: agreement with human coders when the LLM says certain = Yes vs No. Yes should beat No, else the field is decorative (v4 falsification check 4).")
+  )
+
+  print(
+    ggplot(cert_summary, aes(combo, pct_agreement)) +
+      geom_col(fill = "#2c7fb8", width = 0.7) +
+      geom_text(aes(label = paste0("n=", n)), vjust = -0.4, size = 3.2) +
+      scale_y_continuous(labels = percent, limits = c(0, 1)) +
+      labs(
+        x = "LLM certain / human coder certain",
+        y = "Bloom label agreement",
+        title = "Agreement by certainty cell"
+      ) +
+      theme_minimal()
+  )
+
+  cat("\n\nCross-run versions of these graphs (all models and languages) are built by `Rscript scripts/build_certainty_agreement.R` into `v4/results/certainty_agreement/`.\n")
+}
+```
+
 # Flag Agreement
 
 ```{r flag-agreement}
@@ -590,6 +679,7 @@ audit_table <- eval_rows %>%
     context_after,
     llm_bloom = llm_bloom_raw,
     llm_label_collapsed = llm_label,
+    llm_certain,
     llm_comments,
     llm_foreign_language_negation,
     llm_singing,
@@ -601,6 +691,7 @@ audit_table <- eval_rows %>%
     human_1_coder = coder_1_name,
     human_1_bloom = human_1_bloom_raw,
     human_1_label_collapsed = human_1_label,
+    human_1_certain_bloom = human_1_certain_raw,
     human_1_comments,
     human_1_foreign_language_negation,
     human_1_singing,
@@ -612,6 +703,7 @@ audit_table <- eval_rows %>%
     human_2_coder = coder_2_name,
     human_2_bloom = human_2_bloom_raw,
     human_2_label_collapsed = human_2_label,
+    human_2_certain_bloom = human_2_certain_raw,
     human_2_comments,
     human_2_foreign_language_negation,
     human_2_singing,

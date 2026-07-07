@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import http.client
 import json
+import random
 import re
 import socket
 import sys
@@ -585,10 +586,19 @@ def main() -> int:
             # response (a timeout-inducing or empty thinking-channel runaway)
             # would repeat identically on every retry. On retries, nudge the
             # temperature up and vary the seed so the resample can escape.
+            #
+            # The seed must be drawn randomly, not fixed to the attempt index:
+            # a fixed seed makes retries deterministic ACROSS submissions too,
+            # so a batch that exhausts its retries once fails identically on
+            # every resubmit (the v4 rerun that went nowhere on 2026-07-06/07).
+            # A random per-attempt seed lets a fresh submit actually draw new
+            # samples, and escalating temperature widens the escape.
             attempt_temperature = (
-                args.temperature if attempt == 0 else max(args.temperature, 0.4)
+                args.temperature
+                if attempt == 0
+                else max(args.temperature, 0.4 + 0.3 * (attempt - 1))
             )
-            attempt_seed = None if attempt == 0 else attempt
+            attempt_seed = None if attempt == 0 else random.randrange(2**31)
             try:
                 payload, raw_response = ollama_chat(
                     url=args.ollama_url,

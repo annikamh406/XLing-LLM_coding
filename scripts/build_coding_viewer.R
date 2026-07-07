@@ -82,6 +82,17 @@ lang_from_id <- function(record_id) {
   if (is.null(lang)) "english" else lang
 }
 
+# Stable display order for prompt-example conditions. This mirrors the viewer
+# labels: native/no suffix first, then English examples, then localized
+# examples. Keeping this explicit avoids accidental reordering by run date or
+# filename when new masked/unmasked runs are added.
+example_order <- function(prompt_version) {
+  pv <- chr1(prompt_version)
+  if (grepl("-engex$", pv)) return(1L)
+  if (grepl("-loc$", pv)) return(2L)
+  0L
+}
+
 build_run <- function(audit_path, version) {
   rows <- readr::read_csv(audit_path, col_types = readr::cols(.default = readr::col_character()))
   rows[is.na(rows)] <- ""
@@ -151,15 +162,23 @@ build_run <- function(audit_path, version) {
     }
   }
 
+  # Prompt versions p<NNN>m* are the masked-negator arm. Keep this as explicit
+  # run metadata rather than making the browser/UI infer meaning from the
+  # otherwise easy-to-miss "m" in p004m. The filename fallback also covers a
+  # usable audit whose raw-response companion is absent.
+  masked <- grepl("^p[0-9]+m([-_]|$)", prompt_version) ||
+    grepl("_p[0-9]+m([-_]|$)", run_prefix)
+  split_lang <- if (masked) paste0(lang, "_masked") else lang
+
   # Prefer the frozen per-version inputs so each run is shown against the
   # exact split files it consumed; fall back to the shared splits.
   split_path <- first_existing(c(
-    file.path(llm_dir, version, "inputs", "splits", lang, paste0(split_name, ".jsonl")),
-    file.path(llm_dir, "splits", lang, paste0(split_name, ".jsonl"))
+    file.path(llm_dir, version, "inputs", "splits", split_lang, paste0(split_name, ".jsonl")),
+    file.path(llm_dir, "splits", split_lang, paste0(split_name, ".jsonl"))
   ))
   ref_path <- first_existing(c(
-    file.path(llm_dir, version, "inputs", "splits", lang, paste0(split_name, "_human_reference.jsonl")),
-    file.path(llm_dir, "splits", lang, paste0(split_name, "_human_reference.jsonl"))
+    file.path(llm_dir, version, "inputs", "splits", split_lang, paste0(split_name, "_human_reference.jsonl")),
+    file.path(llm_dir, "splits", split_lang, paste0(split_name, "_human_reference.jsonl"))
   ))
 
   split_records <- list()
@@ -213,6 +232,7 @@ build_run <- function(audit_path, version) {
       prompt_version = prompt_version,
       run_date = run_date,
       context_window = context_window,
+      masking = if (masked) "masked" else "unmasked",
       n_rows = nrow(rows),
       audit_csv = basename(audit_path)
     ),
@@ -235,12 +255,16 @@ if (!length(runs)) stop("No audit CSVs found under v*/results/.")
 # Order runs by language first, then by model, so the dropdown and the
 # across-runs chart group by language and keep each model's runs contiguous
 # (gemma's version history, then qwen's, etc.). Within a language+model:
-# chronologically by version number, run date, then size (a limit-N smoke run
-# precedes the full run from the same day).
+# chronologically by version number, then negator condition (visible/unmasked
+# first, masked second), then prompt-example condition, run date, and size.
+# That keeps the comparison chart's x-axis visually paired while placing
+# masked runs to the right within each language+model+version cluster.
 run_order <- order(
   vapply(runs, function(r) tolower(r$meta$language), character(1)),
   vapply(runs, function(r) tolower(r$meta$model), character(1)),
   vapply(runs, function(r) as.integer(sub("^v", "", r$meta$version)), integer(1)),
+  vapply(runs, function(r) identical(r$meta$masking, "masked"), logical(1)),
+  vapply(runs, function(r) example_order(r$meta$prompt_version), integer(1)),
   vapply(runs, function(r) ifelse(nzchar(r$meta$run_date), r$meta$run_date, "9999-99-99"), character(1)),
   vapply(runs, function(r) r$meta$n_rows, numeric(1))
 )
@@ -312,6 +336,32 @@ html <- paste0(
     .run-picker { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
     .run-picker label { font-size: 12px; font-weight: 650; color: var(--muted); margin: 0; }
     .run-picker select { min-height: 34px; min-width: 320px; }
+    .masking-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      padding: 6px 12px;
+      border: 2px solid;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 850;
+      letter-spacing: 0.055em;
+      line-height: 1.1;
+      text-transform: uppercase;
+      white-space: nowrap;
+      box-shadow: 0 1px 3px rgba(32, 33, 36, 0.14);
+    }
+    .masking-badge.masked { color: #fff; background: #6d3f8f; border-color: #4f276d; }
+    .masking-badge.unmasked { color: #fff; background: #14736b; border-color: #0b5751; }
+    .masking-badge.compact {
+      min-height: 0;
+      padding: 2px 7px;
+      border-width: 1px;
+      border-radius: 999px;
+      font-size: 9.5px;
+      box-shadow: none;
+    }
 
     .tabs { display: flex; gap: 6px; margin: 6px 0 14px; border-bottom: 1px solid var(--border); }
     .tab-btn {
@@ -772,6 +822,7 @@ html <- paste0(
         <p class="subhead" id="pageSub"></p>
       </div>
       <div class="run-picker">
+        <span class="masking-badge" id="maskingBadge"></span>
         <label for="runSelect">Run</label>
         <select id="runSelect"></select>
       </div>
@@ -974,10 +1025,22 @@ html <- paste0(
       return { matched: true, short: "Native", label: "Native (English) examples" };
     }
 
+    function maskingCondition(meta) {
+      const masked = meta.masking === "masked" || /^p[0-9]+m(?:-|$)/.test(meta.prompt_version || "");
+      return masked
+        ? { key: "masked", short: "MASKED", label: "Masked negator", color: "#6d3f8f", weak: "#f1e9f6" }
+        : { key: "unmasked", short: "VISIBLE", label: "Negator visible (unmasked)", color: "#14736b", weak: "#e3f0ed" };
+    }
+
+    function maskingBadge(meta, compact = false) {
+      const condition = maskingCondition(meta);
+      return `<span class="masking-badge ${condition.key}${compact ? " compact" : ""}">${esc(compact ? condition.short : condition.label)}</span>`;
+    }
+
     function runLabel(run) {
       const m = run.meta;
       const cond = exampleCondition(m);
-      const bits = [m.language || "?", m.version];
+      const bits = ["[" + maskingCondition(m).short + "]", m.language || "?", m.version];
       if (m.model) bits.push(m.model);
       bits.push(m.split, cond.label);
       if (m.prompt_version) bits.push(m.prompt_version);
@@ -1290,7 +1353,11 @@ html <- paste0(
       $("pageSub").textContent =
         `Bloom coding pilot: each run codes child negation tokens with the LLM as a third independent coder. ` +
         `${payload.runs.length} scored run${payload.runs.length === 1 ? "" : "s"} embedded; generated ${payload.generated_on}.`;
+      const masking = maskingCondition(meta);
+      $("maskingBadge").className = `masking-badge ${masking.key}`;
+      $("maskingBadge").textContent = masking.label;
       $("runChips").innerHTML = [
+        ["negator", masking.label],
         ["version", meta.version],
         ["model", meta.model || "unknown"],
         ["split", meta.split + " (n=" + meta.n_rows + ")"],
@@ -2022,7 +2089,7 @@ html <- paste0(
 
     function renderTrendSvg(stats, visibleSeries, metric, containerW, shapeFor) {
       const value = (s, key) => metric === "agreement" ? s[key].agreement : s[key].kappa;
-      const ml = 64, mr = 24, mt = 40, mb = 72;
+      const ml = 64, mr = 24, mt = 40, mb = 92;
       // Width is dynamic: spread columns across the available container width,
       // but clamp per-column width to [115, 240]px. The 115px floor keeps
       // columns legible (narrow viewports / many languages scroll horizontally);
@@ -2031,7 +2098,7 @@ html <- paste0(
       // shrinks toward the floor and the chart packs / scrolls instead.
       const colW = Math.max(115, Math.min(240, (containerW - ml - mr) / stats.length));
       const width = ml + mr + colW * stats.length;
-      const height = 410;
+      const height = 430;
       const plotH = height - mt - mb;
 
       let yMin = 0, yMax = 1;
@@ -2055,13 +2122,16 @@ html <- paste0(
 
       stats.forEach((s, i) => {
         const x = xPos(i);
+        const masking = maskingCondition(s.meta);
         if (i > 0) {
           parts.push(`<line x1="${ml + colW * i}" y1="${mt}" x2="${ml + colW * i}" y2="${mt + plotH}" stroke="#f0f2ef" stroke-width="1"/>`);
         }
         parts.push(`<rect x="${ml + colW * i}" y="0" width="${colW}" height="${height}" fill="transparent"><title>${esc(runLabel({ meta: s.meta }))}</title></rect>`);
-        parts.push(`<text x="${x}" y="${mt + plotH + 21}" text-anchor="middle" font-size="13" font-weight="700" fill="#202124">${esc(s.meta.version)}</text>`);
-        parts.push(`<text x="${x}" y="${mt + plotH + 38}" text-anchor="middle" font-size="10.5" fill="#687076">${esc(s.meta.split)} &middot; n=${s.nScope}${state.trendScope === "clean" ? " clean" : ""}</text>`);
-        parts.push(`<text x="${x}" y="${mt + plotH + 55}" text-anchor="middle" font-size="10" font-weight="600" fill="${exampleCondition(s.meta).matched ? "#1f6f68" : "#a45c19"}">${esc(exampleCondition(s.meta).short)}</text>`);
+        parts.push(`<text x="${x}" y="${mt + plotH + 18}" text-anchor="middle" font-size="13" font-weight="700" fill="#202124">${esc(s.meta.version)}</text>`);
+        parts.push(`<rect x="${x - 34}" y="${mt + plotH + 25}" width="68" height="17" rx="8.5" fill="${masking.weak}" stroke="${masking.color}"/>`);
+        parts.push(`<text x="${x}" y="${mt + plotH + 37}" text-anchor="middle" font-size="9.5" font-weight="800" letter-spacing=".5" fill="${masking.color}">${esc(masking.short)}</text>`);
+        parts.push(`<text x="${x}" y="${mt + plotH + 57}" text-anchor="middle" font-size="10.5" fill="#687076">${esc(s.meta.split)} &middot; n=${s.nScope}${state.trendScope === "clean" ? " clean" : ""}</text>`);
+        parts.push(`<text x="${x}" y="${mt + plotH + 74}" text-anchor="middle" font-size="10" font-weight="600" fill="${exampleCondition(s.meta).matched ? "#1f6f68" : "#a45c19"}">${esc(exampleCondition(s.meta).short)}</text>`);
         if (!s.nScope) parts.push(`<text x="${x}" y="${mt + plotH / 2}" text-anchor="middle" font-size="11" fill="#9aa3a9" transform="rotate(-90 ${x} ${mt + plotH / 2})">all rows inspected &mdash; no headline evidence</text>`);
       });
 
@@ -2181,13 +2251,14 @@ html <- paste0(
           : `All rows, including inspected development rows; switch to &ldquo;Clean only&rdquo; for headline numbers. `) +
         `Same conventions as the run explorer: collapsed labels, denominator = rows where both compared coders have a non-missing Bloom label.`;
       $("trendTable").innerHTML = `<table><thead><tr>
-          <th>Language</th><th>Model</th><th>Run</th><th>Split</th><th class="numeric">n</th>
+          <th>Language</th><th>Model</th><th>Negator</th><th>Run</th><th>Split</th><th class="numeric">n</th>
           <th class="numeric">Human&ndash;human</th><th class="numeric">LLM vs consensus</th>
           <th class="numeric">LLM vs coder 1</th><th class="numeric">LLM vs coder 2</th>
         </tr></thead><tbody>${
         stats.map(s => `<tr>
           <td><b>${esc(s.meta.language || "?")}</b></td>
           <td>${esc(s.meta.model || "")}</td>
+          <td>${maskingBadge(s.meta, true)}</td>
           <td><b>${esc(s.meta.version)}</b> ${esc(s.meta.prompt_version || "")}${s.meta.run_date ? " &middot; " + esc(s.meta.run_date) : ""}</td>
           <td>${esc(s.meta.split)}</td><td class="numeric">${s.nScope}${s.nScope === s.meta.n_rows ? "" : ` <span class="muted">of ${s.meta.n_rows}</span>`}</td>
           <td class="numeric">${pct(s.hh.agreement)} <span class="muted">(&kappa; ${num(s.hh.kappa)}, n=${s.hh.n})</span></td>
