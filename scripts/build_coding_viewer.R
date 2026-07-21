@@ -192,12 +192,36 @@ build_run <- function(audit_path, version) {
     names(human_records) <- vapply(human_records, function(r) chr1(r$record_id), character(1))
   }
 
+  # The LLM's binary `certain` (Yes/No, v4+) lives in the predictions file, not
+  # every audit CSV (older audits predate the column). Read it straight from
+  # the predictions companion so the certainty panel works regardless of when
+  # an audit was last rendered; pre-v4 runs simply have no `certain` key and
+  # contribute nothing to the panel.
+  pred_files <- unlist(lapply(
+    raw_dirs[dir.exists(raw_dirs)],
+    function(d) list.files(d, pattern = "_predictions\\.jsonl$", full.names = TRUE)
+  ))
+  named_pred <- pred_files[basename(pred_files) == paste0(run_prefix, "_predictions.jsonl")]
+  llm_certain_map <- list()
+  if (length(named_pred)) {
+    preds <- tryCatch(read_jsonl(named_pred[[1]]), error = function(e) NULL)
+    for (p in preds) {
+      rid <- chr1(p$record_id)
+      if (nzchar(rid)) llm_certain_map[[rid]] <- chr1(p$certain)
+    }
+  }
+
   rows_list <- lapply(seq_len(nrow(rows)), function(i) {
     row <- as.list(rows[i, ])
     rid <- row$record_id
+    # Drop any audit-derived llm_certain so the predictions-sourced value is the
+    # single source of truth (re-rendered v4 audits carry the column; older
+    # ones do not) and no duplicate JSON key is emitted.
+    row$llm_certain <- NULL
     s <- split_records[[rid]]
     h <- human_records[[rid]]
     extras <- list(
+      llm_certain = chr1(llm_certain_map[[rid]]),
       child_age_raw = chr1(s$child_age_raw),
       child_age_months = chr1(s$child_age_months),
       context_before_lines = context_list(s$context_before),
@@ -831,6 +855,7 @@ html <- paste0(
     <nav class="tabs">
       <button class="tab-btn active" id="tabBtnExplorer" type="button">Run explorer</button>
       <button class="tab-btn" id="tabBtnTrends" type="button">Compare runs</button>
+      <button class="tab-btn" id="tabBtnCertainty" type="button">Certainty</button>
     </nav>
 
     <div id="tabExplorer">
@@ -987,6 +1012,63 @@ html <- paste0(
       </section>
     </div>
 
+    <div id="tabCertainty" class="hidden">
+      <section class="trend-panel">
+        <div class="trend-head">
+          <h2>Certainty vs. agreement</h2>
+          <p class="subhead">Since v4 the model answers a yes/no <b>certain</b>, mirroring the human coders&rsquo; <code>certain_bloom</code> column. Each LLM prediction is paired with each human coder that labeled the row, and the pair&rsquo;s Bloom-label agreement is bucketed by whether each side called itself certain.</p>
+        </div>
+        <div class="trend-toolbar">
+          <div>
+            <label for="certModel">Model</label>
+            <select id="certModel"></select>
+          </div>
+          <div>
+            <label for="certExamples">Prompt examples</label>
+            <select id="certExamples">
+              <option value="all">All example conditions</option>
+              <option value="matched">Match target language</option>
+              <option value="english">English examples</option>
+            </select>
+          </div>
+          <div class="trend-toolbar-actions">
+            <span class="trend-count" id="certCount"></span>
+          </div>
+        </div>
+        <div class="trend-display">
+          <div class="trend-display-group">
+            <label>Negator</label>
+            <div class="trend-controls segmented" style="grid-template-columns: 1fr 1fr;">
+              <button id="certMaskVisible" class="seg-btn active" type="button">Visible</button>
+              <button id="certMaskMasked" class="seg-btn" type="button">Masked</button>
+            </div>
+          </div>
+          <div class="trend-display-group">
+            <label>View</label>
+            <div class="trend-controls segmented" style="grid-template-columns: 1fr 1fr;">
+              <button id="certView2x2" class="seg-btn active" type="button">LLM &times; human 2&times;2</button>
+              <button id="certViewCalib" class="seg-btn" type="button">LLM calibration</button>
+            </div>
+          </div>
+          <div class="trend-display-group">
+            <label>Rows</label>
+            <div class="trend-controls segmented" style="grid-template-columns: 1fr 1fr;">
+              <button id="certScopeAll" class="seg-btn active" type="button">All rows</button>
+              <button id="certScopeClean" class="seg-btn" type="button">Clean only</button>
+            </div>
+          </div>
+        </div>
+        <div class="trend-chart-grid" id="certChart"></div>
+        <div class="trend-legend" id="certLegend"></div>
+      </section>
+
+      <section class="table-panel">
+        <h2>Certainty cell numbers</h2>
+        <p class="caption" id="certTableCaption"></p>
+        <div id="certTable"></div>
+      </section>
+    </div>
+
     <p class="footnote" id="footNote"></p>
   </div>
 
@@ -1072,7 +1154,8 @@ html <- paste0(
       trendMetric: "agreement", trendScope: "all", trendBasis: "full",
       trendLanguages: null, trendModel: "all", trendExamples: "all",
       trendSeries: { hh: true, cons: true, l1: false, l2: false },
-      trendShowValues: false
+      trendShowValues: false,
+      certModel: "all", certExamples: "all", certScope: "all", certView: "2x2", certMasking: "unmasked"
     };
 
     // Inspected rows are development data (read, mined for prompt examples,
@@ -1519,19 +1602,36 @@ html <- paste0(
       });
       $("trendReset").addEventListener("click", resetTrendControls);
 
+      $("tabBtnCertainty").addEventListener("click", () => setTab("certainty"));
+      $("certModel").addEventListener("change", () => { state.certModel = $("certModel").value; renderCertainty(); });
+      $("certExamples").addEventListener("change", () => { state.certExamples = $("certExamples").value; renderCertainty(); });
+      $("certView2x2").addEventListener("click", () => setCertView("2x2"));
+      $("certViewCalib").addEventListener("click", () => setCertView("calib"));
+      $("certScopeAll").addEventListener("click", () => setCertScope("all"));
+      $("certScopeClean").addEventListener("click", () => setCertScope("clean"));
+      $("certMaskVisible").addEventListener("click", () => setCertMasking("unmasked"));
+      $("certMaskMasked").addEventListener("click", () => setCertMasking("masked"));
+
       window.addEventListener("resize", sizeWorkspace);
       window.addEventListener("resize", () => { if (!$("tabTrends").classList.contains("hidden")) renderTrends(); });
+      window.addEventListener("resize", () => { if (!$("tabCertainty").classList.contains("hidden")) renderCertainty(); });
     }
 
     function setTab(tab) {
       $("tabExplorer").classList.toggle("hidden", tab !== "explorer");
       $("tabTrends").classList.toggle("hidden", tab !== "trends");
+      $("tabCertainty").classList.toggle("hidden", tab !== "certainty");
       $("tabBtnExplorer").classList.toggle("active", tab === "explorer");
       $("tabBtnTrends").classList.toggle("active", tab === "trends");
+      $("tabBtnCertainty").classList.toggle("active", tab === "certainty");
       if (tab === "trends") {
         if (state.trendLanguages === null) state.trendLanguages = [meta.language || "Unknown"];
         populateTrendControls();
         renderTrends();
+      }
+      else if (tab === "certainty") {
+        populateCertControls();
+        renderCertainty();
       }
       else sizeWorkspace();
     }
@@ -1665,7 +1765,10 @@ html <- paste0(
         ? `<span class="collapse-note">counted as ${esc(collapsed)} for agreement</span>` : "";
 
       const certBits = [];
-      if (who !== "llm") {
+      if (who === "llm") {
+        const cert = clean(row.llm_certain);
+        if (cert) certBits.push(`Certain: <b>${esc(cert)}</b>`);
+      } else {
         const cert = clean(row[who + "_certain"]);
         const alt = clean(row[who + "_other_possibility"]);
         const oneOfTwo = clean(row[who + "_one_of_two"]);
@@ -2266,6 +2369,233 @@ html <- paste0(
           <td class="numeric">${pct(s.l1.agreement)} <span class="muted">(&kappa; ${num(s.l1.kappa)}, n=${s.l1.n})</span></td>
           <td class="numeric">${pct(s.l2.agreement)} <span class="muted">(&kappa; ${num(s.l2.kappa)}, n=${s.l2.n})</span></td>
         </tr>`).join("")
+      }</tbody></table>`;
+    }
+
+    // ---- Certainty tab ----
+
+    const certComboLevels = ["Yes / Yes", "Yes / No", "No / Yes", "No / No"];
+    const modelPalette = ["#1f6f68", "#a45c19", "#2d5f8b", "#7b5ea7", "#b0413e", "#3b7a57"];
+    // Stable per-model colors and a stable language order (first appearance in
+    // the run list, which the R builder already sorts by language).
+    const certModelList = [...new Set(payload.runs.map(r => r.meta.model || "Unknown"))].sort();
+    const modelColor = Object.fromEntries(certModelList.map((m, i) => [m, modelPalette[i % modelPalette.length]]));
+    const certLangOrder = [...new Set(payload.runs.map(r => r.meta.language || "Unknown"))];
+
+    // Binary certainty. The LLM emits an explicit Yes/No. Humans fill
+    // certain_bloom inconsistently (some only mark No when unsure, leaving the
+    // cell blank when confident), so a labeled human row counts as certain
+    // unless it explicitly says No.
+    const certLLM = (v) => { const c = clean(v).toLowerCase(); return c === "yes" ? "Yes" : c === "no" ? "No" : ""; };
+    const certHuman = (v) => clean(v).toLowerCase() === "no" ? "No" : "Yes";
+    const runHasCertain = (run) => run.rows.some(r => certLLM(r.llm_certain));
+
+    function certRuns() {
+      return payload.runs.filter(run =>
+        runHasCertain(run) &&
+        // Masked and unmasked are separate arms scored against different row
+        // sets (the masked split is pre-filtered), so they must never be pooled.
+        (run.meta.masking || "unmasked") === state.certMasking &&
+        (state.certModel === "all" || (run.meta.model || "Unknown") === state.certModel) &&
+        (state.certExamples === "all" ||
+          (state.certExamples === "matched" && exampleCondition(run.meta).matched) ||
+          (state.certExamples === "english" && !exampleCondition(run.meta).matched)));
+    }
+
+    // One observation per (LLM prediction, human coder that labeled the row),
+    // so a double-coded row contributes twice. Mirrors the IRR report
+    // certainty section and scripts/build_certainty_agreement.R.
+    function certPairs(rowSet) {
+      const out = [];
+      for (const r of rowSet) {
+        const lc = certLLM(r.llm_certain);
+        const ll = clean(r.llm_label_collapsed);
+        if (!lc || !ll) continue;
+        for (const who of ["human_1", "human_2"]) {
+          const hl = clean(r[who + "_label_collapsed"]);
+          if (!hl) continue;
+          out.push({ llmC: lc, humC: certHuman(r[who + "_certain"]), agree: ll === hl });
+        }
+      }
+      return out;
+    }
+
+    function certCells(pairs) {
+      const m = Object.fromEntries(certComboLevels.map(c => [c, { n: 0, a: 0 }]));
+      for (const p of pairs) { const k = p.llmC + " / " + p.humC; m[k].n++; if (p.agree) m[k].a++; }
+      return certComboLevels.map(c => ({ label: c, n: m[c].n, agreement: m[c].n ? m[c].a / m[c].n : NaN }));
+    }
+
+    function certCalib(pairs) {
+      const m = { Yes: { n: 0, a: 0 }, No: { n: 0, a: 0 } };
+      for (const p of pairs) { m[p.llmC].n++; if (p.agree) m[p.llmC].a++; }
+      return ["Yes", "No"].map(k => ({ label: k, n: m[k].n, agreement: m[k].n ? m[k].a / m[k].n : NaN }));
+    }
+
+    // language -> Map(model -> pooled rows) across the filtered runs, honoring
+    // the clean-rows scope. Runs of the same model+language (e.g. localized and
+    // English-example prompt arms) are pooled, matching the static figures.
+    function certLangData() {
+      const byLang = new Map();
+      for (const run of certRuns()) {
+        const lang = run.meta.language || "Unknown";
+        const model = run.meta.model || "Unknown";
+        const base = state.certScope === "clean" ? run.rows.filter(r => !isInspected(r)) : run.rows;
+        if (!byLang.has(lang)) byLang.set(lang, new Map());
+        const mm = byLang.get(lang);
+        mm.set(model, (mm.get(model) || []).concat(base));
+      }
+      return byLang;
+    }
+
+    function setCertView(view) {
+      state.certView = view;
+      $("certView2x2").classList.toggle("active", view === "2x2");
+      $("certViewCalib").classList.toggle("active", view === "calib");
+      renderCertainty();
+    }
+
+    function setCertScope(scope) {
+      state.certScope = scope;
+      $("certScopeAll").classList.toggle("active", scope === "all");
+      $("certScopeClean").classList.toggle("active", scope === "clean");
+      renderCertainty();
+    }
+
+    function setCertMasking(masking) {
+      state.certMasking = masking;
+      $("certMaskVisible").classList.toggle("active", masking === "unmasked");
+      $("certMaskMasked").classList.toggle("active", masking === "masked");
+      renderCertainty();
+    }
+
+    function populateCertControls() {
+      const models = [...new Set(payload.runs.filter(runHasCertain).map(r => r.meta.model || "Unknown"))].sort();
+      $("certModel").innerHTML = `<option value="all">All models (${models.length})</option>` +
+        models.map(m => `<option value="${esc(m)}">${esc(m)}</option>`).join("");
+      if (![...$("certModel").options].some(o => o.value === state.certModel)) state.certModel = "all";
+      $("certModel").value = state.certModel;
+      $("certExamples").value = state.certExamples;
+    }
+
+    // Grouped bar chart: one group per certainty cell (or per LLM-certain value
+    // in calibration view), one bar per model within a group.
+    function renderCertSvg(groups, models, containerW, axisCaption) {
+      const ml = 44, mr = 12, mt = 16, mb = 70;
+      const width = Math.max(containerW, 300);
+      const height = 300;
+      const plotH = height - mt - mb;
+      const plotW = width - ml - mr;
+      const yPos = (v) => mt + plotH - v * plotH;
+      const groupW = plotW / groups.length;
+      const parts = [];
+      parts.push(`<svg viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" font-family="inherit" role="img" aria-label="certainty agreement chart">`);
+      for (const t of [0, 0.25, 0.5, 0.75, 1]) {
+        const y = yPos(t);
+        parts.push(`<line x1="${ml}" y1="${y}" x2="${width - mr}" y2="${y}" stroke="#e3e7e2" stroke-width="1"/>`);
+        parts.push(`<text x="${ml - 6}" y="${y + 4}" text-anchor="end" font-size="10.5" fill="#687076">${(t * 100).toFixed(0)}%</text>`);
+      }
+      groups.forEach((g, gi) => {
+        const gx = ml + groupW * gi;
+        const bars = g.bars;
+        const usable = groupW * 0.72;
+        const barW = bars.length ? Math.min(46, usable / bars.length) : 0;
+        const startX = gx + (groupW - barW * bars.length) / 2;
+        bars.forEach((b, bi) => {
+          const x = startX + barW * bi;
+          const h = Number.isFinite(b.agreement) ? b.agreement * plotH : 0;
+          const y = mt + plotH - h;
+          const col = modelColor[b.model] || "#888";
+          parts.push(`<rect x="${x + 2}" y="${y}" width="${Math.max(1, barW - 4)}" height="${h}" fill="${col}" rx="1.5"><title>${esc(b.model)} &mdash; ${esc(g.label)}: ${pct(b.agreement)} (n=${b.n})</title></rect>`);
+          parts.push(`<text x="${x + barW / 2}" y="${y - 3}" text-anchor="middle" font-size="9.5" fill="#202124">${Number.isFinite(b.agreement) ? (b.agreement * 100).toFixed(0) : "&ndash;"}</text>`);
+          if (h > 30) parts.push(`<text x="${x + barW / 2}" y="${mt + plotH - 4}" text-anchor="middle" font-size="8.5" fill="#fff" font-weight="700" transform="rotate(-90 ${x + barW / 2} ${mt + plotH - 4})">n=${b.n}</text>`);
+        });
+        parts.push(`<text x="${gx + groupW / 2}" y="${mt + plotH + 16}" text-anchor="middle" font-size="11" font-weight="700" fill="#202124">${esc(g.label)}</text>`);
+      });
+      parts.push(`<text x="${ml + plotW / 2}" y="${height - 6}" text-anchor="middle" font-size="10.5" fill="#687076">${esc(axisCaption)}</text>`);
+      parts.push("</svg>");
+      return parts.join("");
+    }
+
+    function renderCertainty() {
+      const byLang = certLangData();
+      const view = state.certView;
+      const groupLabels = view === "2x2" ? certComboLevels : ["Yes", "No"];
+      const axisCaption = view === "2x2" ? "LLM certain / human coder certain" : "LLM says it is certain";
+      const nRuns = certRuns().length;
+      const armLabel = state.certMasking === "masked" ? "masked" : "visible-negator";
+      const nCertainRuns = payload.runs.filter(runHasCertain).length;
+      const nArmRuns = payload.runs.filter(r => runHasCertain(r) && (r.meta.masking || "unmasked") === state.certMasking).length;
+      $("certCount").textContent = nCertainRuns === 0
+        ? "No runs carry a certain field yet (v4+ only)."
+        : `Pooling ${nRuns} of ${nArmRuns} ${armLabel} run${nArmRuns === 1 ? "" : "s"} (of ${nCertainRuns} with certainty).`;
+
+      if (!byLang.size) {
+        const msg = nCertainRuns === 0
+          ? `<b>No certainty data.</b><br>The <code>certain</code> field is emitted by v4 and later runs only; re-render this viewer once such runs are scored.`
+          : `<b>No runs match these filters.</b><br>Try the other negator arm (Visible/Masked) or widen the model or prompt-examples filter.`;
+        $("certChart").innerHTML = `<div class="trend-empty">${msg}</div>`;
+        $("certLegend").innerHTML = "";
+        $("certTableCaption").textContent = "";
+        $("certTable").innerHTML = "";
+        return;
+      }
+
+      const langs = certLangOrder.filter(l => byLang.has(l));
+      const gridW = $("certChart").clientWidth || 1100;
+      const columns = Math.max(1, Math.floor((gridW + 12) / 452));
+      const visibleColumns = Math.min(columns, langs.length);
+      const facetW = Math.max(380, (gridW - 12 * (visibleColumns - 1)) / visibleColumns - 22);
+
+      // cells per language per model, reused by chart and table.
+      const cellData = new Map();
+      const modelsSeen = new Set();
+      for (const lang of langs) {
+        const mm = byLang.get(lang);
+        const models = certModelList.filter(m => mm.has(m));
+        models.forEach(m => modelsSeen.add(m));
+        const perModel = {};
+        models.forEach(m => {
+          const pairs = certPairs(mm.get(m));
+          perModel[m] = { cells: certCells(pairs), calib: certCalib(pairs) };
+        });
+        cellData.set(lang, { models, perModel });
+      }
+
+      $("certChart").innerHTML = langs.map(lang => {
+        const { models, perModel } = cellData.get(lang);
+        const source = (m, gi) => view === "2x2" ? perModel[m].cells[gi] : perModel[m].calib[gi];
+        const groups = groupLabels.map((gl, gi) => ({
+          label: gl,
+          bars: models.map(m => ({ model: m, n: source(m, gi).n, agreement: source(m, gi).agreement }))
+            .filter(b => b.n > 0)
+        }));
+        return `<section class="trend-facet">
+            <div class="trend-facet-head"><h3>${esc(lang)}</h3><span>${models.length} model${models.length === 1 ? "" : "s"}</span></div>
+            <div class="trend-svg-wrap">${renderCertSvg(groups, models, facetW, axisCaption)}</div>
+          </section>`;
+      }).join("");
+
+      const legendModels = certModelList.filter(m => modelsSeen.has(m));
+      $("certLegend").innerHTML =
+        legendModels.map(m => `<span><span class="series-dot" style="background:${modelColor[m]}"></span>${esc(m)}</span>`).join("") +
+        `<span style="margin-left:8px; border-left:1px solid var(--border); padding-left:14px; color:var(--muted);">Bar height = Bloom-label agreement; number above = %, n inside. Human &ldquo;certain&rdquo; = did not explicitly answer No.</span>`;
+
+      $("certTableCaption").innerHTML = view === "2x2"
+        ? `Agreement in each LLM&times;human certainty cell. ${state.certScope === "clean" ? "Clean rows only. " : "All rows. "}Denominator is LLM&ndash;coder pairs where both have a Bloom label.`
+        : `Calibration: agreement when the LLM says certain = Yes vs No. Yes should beat No for every model, else the field is not informative. ${state.certScope === "clean" ? "Clean rows only." : "All rows."}`;
+
+      const cell = (o) => `${pct(o.agreement)} <span class="muted">(n=${o.n})</span>`;
+      $("certTable").innerHTML = `<table><thead><tr>
+          <th>Language</th><th>Model</th>${groupLabels.map(g => `<th class="numeric">${esc(g)}</th>`).join("")}
+        </tr></thead><tbody>${
+        langs.flatMap(lang => {
+          const { models, perModel } = cellData.get(lang);
+          return models.map((m, i) => `<tr>
+            <td>${i === 0 ? `<b>${esc(lang)}</b>` : ""}</td><td>${esc(m)}</td>${
+            groupLabels.map((gl, gi) => `<td class="numeric">${cell(view === "2x2" ? perModel[m].cells[gi] : perModel[m].calib[gi])}</td>`).join("")
+          }</tr>`);
+        }).join("")
       }</tbody></table>`;
     }
 

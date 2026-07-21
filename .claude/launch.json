@@ -2,10 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "viewer",
+      "name": "xling-viewer",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8741", "--directory", "/Users/annika/Documents/Research/XLing/Data/XLing-LLM_coding"],
-      "port": 8741
+      "runtimeArgs": ["-m", "http.server", "8712"],
+      "port": 8712
     }
   ]
 }

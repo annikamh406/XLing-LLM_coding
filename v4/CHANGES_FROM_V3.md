@@ -115,6 +115,22 @@ Two deliberate design notes:
 - No other behavior changes; v1–v3 remain reproducible via
   `--prompt/--schema-version/--prompt-version/--results-dir`.
 
+**2026-07-07 retry-seed fix.** The batch-retry loop now draws a **random**
+per-attempt seed (`random.randrange(2**31)`) and escalates temperature across
+attempts (attempt 1 = 0.4, attempt 2 = 0.7), replacing the old fixed
+per-attempt seed (1, 2). The fixed seed made retries deterministic *across
+submissions*, not just within a run: a batch that exhausted its retries once
+would fail identically on every resubmit. This is why the 2026-07-06/07 rerun
+of the three stuck v4 cells (gemma `p004m-de-engex` batch 251, thinking-channel
+runaway; llama `p004`/`p004m` english batches 30/7, duplicate `record_id`)
+reproduced the exact same failures. With a random seed a fresh submit genuinely
+resamples. Scope: this affects only the retry path (attempt ≥ 1), so completed
+runs are unchanged, but retry behavior is deliberately no longer bit-repeatable
+across submissions. `scripts/rerun_v4_failures.sh` now also defaults
+`BATCH_SIZE=2` (fewer siblings for a duplicate/omitted id to collide with,
+shorter runway for a thinking loop); `BATCH_SIZE` is a passthrough env var in
+`submit_v4_all.sh` and `run_v4_language.sh` (default 5).
+
 ## 5. Masked-negator variant (new)
 
 Purpose: measure how much of the coding signal comes from discourse context
