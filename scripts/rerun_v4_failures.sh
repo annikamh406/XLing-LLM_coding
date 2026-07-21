@@ -1,15 +1,20 @@
 #!/usr/bin/env bash
-# Rerun the two v4 cells whose runs aborted on a stuck batch (finished
-# 2026-07-05/06), leaving no predictions file:
+# Rerun every v4 arm whose run aborted on a stuck batch (inventory checked
+# 2026-07-21), leaving no predictions file. This submits 6 Slurm jobs covering
+# 10 missing arms:
 #
-#   1. gemma4:31b  german:engex  MASKED arm only  (p004m-de-engex,
-#      failed_batch-251, thinking-channel runaway -> empty content). The
-#      unmasked p004-de-engex arm completed (1502 rows), so only the masked
-#      arm is resubmitted.
-#   2. llama3.3:70b  english:en  BOTH arms  (p004 failed_batch-30 AND
-#      p004m failed_batch-7, both "Duplicate record_id"). Both English base
-#      arms aborted, so the whole cell is resubmitted with the default
-#      RUN_SETS=unmasked,masked.
+#   gemma4:31b
+#     - german:engex  MASKED only (p004m-de-engex; failed batch 251)
+#
+#   llama3.3:70b
+#     - english:en    BOTH arms (p004 batch 30; p004m batch 7)
+#     - hebrew:engex  BOTH arms (p004 batch 182; p004m batch 51)
+#     - hebrew:loc    MASKED only (p004m-he-loc batch 51)
+#     - tagalog:loc   BOTH arms (p004-tl-loc batch 3; p004m-tl-loc batch 1)
+#     - tagalog:engex BOTH arms (p004-tl-engex batch 3; p004m-tl-engex batch 1)
+#
+# All other v4 matrix arms already have full-length prediction files locally.
+# Restricting RUN_SETS per group avoids overwriting completed arms.
 #
 # Why the FIRST rerun (2026-07-06/07) went nowhere, and why this one is
 # different: run_bloom_coding.py retries a failed batch with a bumped
@@ -29,9 +34,12 @@
 # resources: gemma on 1 L40S/48g, llama on 2 L40S/64g + OLLAMA_SCHED_SPREAD +
 # --num-ctx 16384 (the 2026-07-01 KV-cache incident).
 #
-# Usage (on Oscar, from anywhere):
-#   ./scripts/rerun_v4_failures.sh            # submit both reruns
-#   DRY_RUN=1 ./scripts/rerun_v4_failures.sh  # print the sbatch commands only
+# Usage on Oscar:
+#   cd /oscar/data/rfeiman/amcderm6/XLing-LLM_coding
+#   git pull
+#   DRY_RUN=1 ./scripts/rerun_v4_failures.sh  # verify the 6 sbatch commands
+#   ./scripts/rerun_v4_failures.sh            # submit all 10 missing arms
+#   squeue -u "$USER"                         # monitor the jobs
 #
 # After the jobs finish, pull the results back and regenerate reports + viewer:
 #   Rscript scripts/render_irr_report.R v4 --exclude 'limit-'
@@ -45,9 +53,22 @@ cd "$LLM_DIR"
 # Smaller batches for the stuck cells (default is 5). Override at call time if
 # a cell still won't clear, e.g. BATCH_SIZE=1 ./scripts/rerun_v4_failures.sh.
 export BATCH_SIZE="${BATCH_SIZE:-2}"
+# These are specifically the missing full dev_train arms. Clear any inherited
+# smoke-test limit and pin the split so a stale shell variable cannot submit a
+# different workload by accident.
+export LIMIT=""
+export SPLIT="dev_train"
 
 # 1. gemma4:31b — masked German-engex arm only.
 RUN_SETS=masked CELLS="german:engex" MODELS="gemma4:31b" ./scripts/submit_v4_all.sh
 
-# 2. llama3.3:70b — English base cell, both arms (default RUN_SETS).
-CELLS="english:en" MODELS="llama3.3:70b" ./scripts/submit_v4_all.sh
+# 2. llama3.3:70b — four cells missing both arms. Each cell is one Slurm
+# job; its unmasked and masked runs execute sequentially on the allocated GPUs.
+RUN_SETS=unmasked,masked \
+  CELLS="english:en hebrew:engex tagalog:loc tagalog:engex" \
+  MODELS="llama3.3:70b" ./scripts/submit_v4_all.sh
+
+# 3. llama3.3:70b — Hebrew localized examples, masked arm only. The matching
+# unmasked p004-he-loc run is already complete (963 rows).
+RUN_SETS=masked CELLS="hebrew:loc" MODELS="llama3.3:70b" \
+  ./scripts/submit_v4_all.sh
