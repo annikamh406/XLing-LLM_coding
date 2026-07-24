@@ -78,18 +78,19 @@ All coder workbooks are row-aligned to their master `Code` sheet (verified: 0
 alignment mismatches, 0 missing context windows, no record/transcript leakage
 across splits).
 
-Per version (current version: **v3**):
+Per version (current version: **v5**):
 
-- `v3/CHANGES_FROM_V2.md`: complete v2 -> v3 change log — every change with
-  the v2 adjudications that motivated it, plus the criteria for judging
-  whether the changes worked. (Same pattern as `v2/CHANGES_FROM_V1.md`.)
-- `v3/Bloom_coding_policy_v3.md`: label and flag policy. Since v3 the policy
+- `v5/CHANGES_FROM_V4.md`: complete v4 -> v5 change log, including the
+  adjudication principle, retained rules, prompt changes, and falsification
+  criteria.
+- `v5/Bloom_coding_policy_v5.md`: label and flag policy. Since v3 the policy
   is a pure rules document: change history lives only in the CHANGES file, so
   the policy can be used in prompts without leaking evaluation details. (The
   v2 policy keeps its embedded changelog; v2 is frozen.)
-- `v3/bloom_v3_english_prompt.md`: prompt (`p003`).
-- `v3/bloom_v3_output.schema.json`: output schema contract.
-- `v3/results/`: run outputs and evaluation reports for v3 (ignored by Git).
+- `v5/bloom_v5_english_prompt.md`: English prompt (`p005`); the four
+  non-English languages each have localized- and English-example variants.
+- `v5/bloom_v5_output.schema.json`: output schema contract.
+- `v5/results/`: run outputs and evaluation reports for v5 (ignored by Git).
 
 v1 artifacts are frozen under `v1/` (policy, prompt `p001`, schema, and
 `v1/results/` with the limit-20 run, the IRR report, the item-level audit CSV,
@@ -105,6 +106,61 @@ The repo lives on GitHub (`annikamh406/XLing-LLM_coding`) and is cloned on
 Oscar at `/oscar/data/rfeiman/amcderm6/XLing-LLM_coding`. A run only needs
 Git-tracked files (splits, prompt, scripts) — the gitignored `datasets/` and
 `v1/inputs/` do not need to exist on Oscar.
+
+### Recommended v5 Slurm workflow
+
+The v5 batch launchers use CCV's shared Ollama model store by default and
+start one private, job-local Ollama server per Slurm job. Do not start a
+separate interactive `ollama serve` process for these runs.
+
+Four-model, first-10-English-record smoke test:
+
+```bash
+DRY_RUN=1 ./scripts/submit_v5_smoke.sh  # inspect the four sbatch commands
+./scripts/submit_v5_smoke.sh
+```
+
+The four models and their L40S allocations are:
+
+- `gemma4:31b`: one GPU;
+- `qwen3.5:122b`: two GPUs;
+- `qwen3.6:35b-a3b`: one GPU; and
+- `gpt-oss:120b`: two GPUs.
+
+All four use the unmasked English v5 prompt, `dev_train`, batch size 5, a
+32,768-token context window, and `LIMIT=10`. Their output filenames contain
+`_limit-10`, so the smoke outputs cannot collide with the later full outputs.
+Once the jobs leave the queue, verify all four produced 10 validated
+predictions in two size-5 batches:
+
+```bash
+./scripts/check_v5_smoke.sh
+```
+
+After all smoke jobs finish successfully, submit the complete primary matrix:
+
+```bash
+DRY_RUN=1 ./scripts/submit_v5_full.sh  # inspect the 20 sbatch commands
+./scripts/submit_v5_full.sh
+```
+
+This submits 20 independent jobs: four models times English plus the
+English-example prompt for German, Hebrew, Spanish, and Tagalog. It runs the
+full unmasked `dev_train` split and never accesses `test_lockbox`. Useful
+status commands are:
+
+```bash
+squeue -u "$USER"
+find v5/results/logs -maxdepth 1 -type f -name 'sbatch_v5_*.out' -print
+```
+
+To submit only selected models or cells, override `MODELS` or `CELLS`:
+
+```bash
+MODELS="qwen3.5:122b gpt-oss:120b" \
+CELLS="english:en german:engex" \
+./scripts/submit_v5_full.sh
+```
 
 ### 1. Push from the local machine
 
@@ -164,9 +220,9 @@ ollama pull gemma4:31b
 python3 scripts/run_bloom_coding.py --split dev_train --model gemma4:31b --limit 20 --batch-size 5
 ```
 
-The runner defaults to the current version (v3 prompt, `bloom_v3` schema,
-prompt version `p003`) and writes directly into `v3/results/` (a
-`test_lockbox` run is automatically routed to `v3/results/lockbox/` to keep
+The runner defaults to the current version (v5 prompt, `bloom_v5` schema,
+prompt version `p005`) and writes directly into `v5/results/` (a
+`test_lockbox` run is automatically routed to `v5/results/lockbox/` to keep
 the final evaluation physically separate). Prefer
 `--batch-size` of 5 or more: multiple negator tokens from the same utterance
 then appear in the same request, which the repetition-flag instructions rely
@@ -177,18 +233,18 @@ on (v1 used `--batch-size 1`).
 Results are gitignored, so copy them with rsync (run from the local machine):
 
 ```bash
-rsync -av <user>@ssh.ccv.brown.edu:/oscar/data/rfeiman/amcderm6/XLing-LLM_coding/v3/results/ \
-  ~/Documents/Research/XLing/Data/XLing-LLM_coding/v3/results/
+rsync -av <user>@ssh.ccv.brown.edu:/oscar/data/rfeiman/amcderm6/XLing-LLM_coding/v5/results/ \
+  ~/Documents/Research/XLing/Data/XLing-LLM_coding/v5/results/
 ```
 
 ### 5. Score the run
 
 ```bash
-Rscript scripts/render_irr_report.R v3
+Rscript scripts/render_irr_report.R v5
 Rscript scripts/build_coding_viewer.R
 ```
 
-The first command finds every `*_predictions.jsonl` under `v3/results/`
+The first command finds every `*_predictions.jsonl` under `v5/results/`
 (including legacy `dev/` and `lockbox/` subfolders) and renders the shared
 report template
 (`scripts/llm_human_irr_report.Rmd`) for each, writing
@@ -201,13 +257,11 @@ audit byte-for-byte), so numbers are comparable across versions.
 The second command rebuilds the viewer; the new run appears in the run
 selector and on the agreement-across-versions chart automatically.
 
-Then check the run against the falsification criteria at the bottom of the
-current CHANGES file (`v3/CHANGES_FROM_V2.md`). Important: the 20 smoke-test
-rows (eng_000001-15, eng_000067-71) are development data — they were mined
-for prompt examples and adjudicated — so headline dev_train metrics are
-computed on the remaining ~1,501 uninspected rows; the inspected chunk is
-reported separately as a rule-compliance check (see the contamination-control
-section of `v3/CHANGES_FROM_V2.md`).
+Then check the run against the falsification criteria in
+`v5/CHANGES_FROM_V4.md`. Rows listed in each language's
+`splits/*/inspected_rows.txt` are development material, so headline metrics
+must be computed on the uninspected remainder; report the inspected rows
+separately as a rule-compliance check.
 
 Useful options:
 

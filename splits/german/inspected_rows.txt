@@ -51,3 +51,24 @@ ger_000168
 ger_000169
 ger_000170
 ger_000172
+
+# Read/cited in v4/2026-07-23_gemma_v4_error_analysis.md.
+ger_003214
+ger_003215
+ger_003216
+ger_003217
+ger_003218
+ger_003220
+ger_004276
+ger_004277
+ger_004278
+ger_004279
+ger_004280
+ger_004281
+ger_004282
+ger_004283
+ger_004646
+ger_006386
+ger_008425
+ger_008631
+ger_009503

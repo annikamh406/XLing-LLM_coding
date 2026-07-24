@@ -25,14 +25,14 @@ from pathlib import Path
 # the script portable after the folder is pushed to its own Git repository and
 # cloned onto Oscar.
 LLM_DIR = Path(__file__).resolve().parents[1]
-DEFAULT_PROMPT = LLM_DIR / "v4" / "bloom_v4_english_prompt.md"
+DEFAULT_PROMPT = LLM_DIR / "v5" / "bloom_v5_english_prompt.md"
 DEFAULT_SPLIT_DIR = LLM_DIR / "splits" / "english"
 # Development runs write directly into the version's results folder; the
 # split name in every output filename keeps runs distinguishable. The one
 # exception is the final lockbox evaluation, which is routed to a lockbox/
 # subfolder automatically so its outputs stay physically separated from dev
 # outputs, per LLM_validation_plan.md.
-DEFAULT_RESULTS_DIR = LLM_DIR / "v4" / "results"
+DEFAULT_RESULTS_DIR = LLM_DIR / "v5" / "results"
 DEFAULT_OLLAMA_URL = "http://localhost:11434/api/chat"
 
 # These version strings are saved in raw-response metadata and the terminal
@@ -40,8 +40,8 @@ DEFAULT_OLLAMA_URL = "http://localhost:11434/api/chat"
 # compact run locators; the full prompt path stays in metadata. Defaults track
 # the current policy/prompt version; pass --schema-version/--prompt-version
 # (with matching --prompt and --results-dir) to reproduce an older run.
-DEFAULT_SCHEMA_VERSION = "bloom_v4"
-DEFAULT_PROMPT_VERSION = "p004"
+DEFAULT_SCHEMA_VERSION = "bloom_v5"
+DEFAULT_PROMPT_VERSION = "p005"
 
 # Local copies of the schema constraints. Keeping these in code makes validation
 # cheap and avoids depending on external JSON-schema packages on Oscar.

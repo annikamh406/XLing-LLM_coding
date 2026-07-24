@@ -62,3 +62,17 @@ eng_000645
 eng_000648
 eng_000649
 eng_000650
+
+# Read/cited in v4/2026-07-23_gemma_v4_error_analysis.md.
+eng_000449
+eng_000683
+eng_000945
+eng_001513
+eng_002267
+eng_002268
+eng_002272
+eng_003819
+eng_004223
+eng_004229
+eng_004230
+eng_004258

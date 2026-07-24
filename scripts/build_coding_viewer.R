@@ -845,7 +845,7 @@ html <- paste0(
         <h1>XLing LLM&ndash;Human Coding Viewer</h1>
         <p class="subhead" id="pageSub"></p>
       </div>
-      <div class="run-picker">
+      <div class="run-picker" id="runPicker">
         <span class="masking-badge" id="maskingBadge"></span>
         <label for="runSelect">Run</label>
         <select id="runSelect"></select>
@@ -1016,7 +1016,7 @@ html <- paste0(
       <section class="trend-panel">
         <div class="trend-head">
           <h2>Certainty vs. agreement</h2>
-          <p class="subhead">Since v4 the model answers a yes/no <b>certain</b>, mirroring the human coders&rsquo; <code>certain_bloom</code> column. Each LLM prediction is paired with each human coder that labeled the row, and the pair&rsquo;s Bloom-label agreement is bucketed by whether each side called itself certain.</p>
+          <p class="subhead">Since v4 the model answers a yes/no <b>certain</b>, mirroring the human coders&rsquo; <code>certain_bloom</code> column. Each negation contributes once when both humans supplied the same Bloom label. LLM&ndash;consensus agreement is separated by the LLM&rsquo;s certainty and the two human coders&rsquo; ordered certainty responses.</p>
         </div>
         <div class="trend-toolbar">
           <div>
@@ -1046,7 +1046,7 @@ html <- paste0(
           <div class="trend-display-group">
             <label>View</label>
             <div class="trend-controls segmented" style="grid-template-columns: 1fr 1fr;">
-              <button id="certView2x2" class="seg-btn active" type="button">LLM &times; human 2&times;2</button>
+              <button id="certView2x2" class="seg-btn active" type="button">LLM &times; humans 2&times;4</button>
               <button id="certViewCalib" class="seg-btn" type="button">LLM calibration</button>
             </div>
           </div>
@@ -1621,6 +1621,7 @@ html <- paste0(
       $("tabExplorer").classList.toggle("hidden", tab !== "explorer");
       $("tabTrends").classList.toggle("hidden", tab !== "trends");
       $("tabCertainty").classList.toggle("hidden", tab !== "certainty");
+      $("runPicker").classList.toggle("hidden", tab !== "explorer");
       $("tabBtnExplorer").classList.toggle("active", tab === "explorer");
       $("tabBtnTrends").classList.toggle("active", tab === "trends");
       $("tabBtnCertainty").classList.toggle("active", tab === "certainty");
@@ -2374,7 +2375,15 @@ html <- paste0(
 
     // ---- Certainty tab ----
 
-    const certComboLevels = ["Yes / Yes", "Yes / No", "No / Yes", "No / No"];
+    const certHumanProfiles = [
+      "Both Yes",
+      "Coder 1 Yes, Coder 2 No",
+      "Coder 1 No, Coder 2 Yes",
+      "Both No"
+    ];
+    const certComboLevels = ["Yes", "No"].flatMap(llm =>
+      certHumanProfiles.map(humans => `${llm} / ${humans}`)
+    );
     const modelPalette = ["#1f6f68", "#a45c19", "#2d5f8b", "#7b5ea7", "#b0413e", "#3b7a57"];
     // Stable per-model colors and a stable language order (first appearance in
     // the run list, which the R builder already sorts by language).
@@ -2402,33 +2411,43 @@ html <- paste0(
           (state.certExamples === "english" && !exampleCondition(run.meta).matched)));
     }
 
-    // One observation per (LLM prediction, human coder that labeled the row),
-    // so a double-coded row contributes twice. Mirrors the IRR report
-    // certainty section and scripts/build_certainty_agreement.R.
-    function certPairs(rowSet) {
+    // One observation per negation. Agreement is defined against the shared
+    // human Bloom label, so rows without two human labels or with split human
+    // labels are excluded rather than double-counted or assigned an arbitrary
+    // reference coder.
+    function certRows(rowSet) {
       const out = [];
       for (const r of rowSet) {
         const lc = certLLM(r.llm_certain);
         const ll = clean(r.llm_label_collapsed);
-        if (!lc || !ll) continue;
-        for (const who of ["human_1", "human_2"]) {
-          const hl = clean(r[who + "_label_collapsed"]);
-          if (!hl) continue;
-          out.push({ llmC: lc, humC: certHuman(r[who + "_certain"]), agree: ll === hl });
-        }
+        const h1 = clean(r.human_1_label_collapsed);
+        const h2 = clean(r.human_2_label_collapsed);
+        if (!lc || !ll || !h1 || !h2 || h1 !== h2) continue;
+        const c1 = certHuman(r.human_1_certain);
+        const c2 = certHuman(r.human_2_certain);
+        const humanProfile =
+          c1 === "Yes" && c2 === "Yes" ? "Both Yes" :
+          c1 === "Yes" && c2 === "No" ? "Coder 1 Yes, Coder 2 No" :
+          c1 === "No" && c2 === "Yes" ? "Coder 1 No, Coder 2 Yes" :
+          "Both No";
+        out.push({ llmC: lc, humanProfile, agree: ll === h1 });
       }
       return out;
     }
 
-    function certCells(pairs) {
+    function certCells(observations) {
       const m = Object.fromEntries(certComboLevels.map(c => [c, { n: 0, a: 0 }]));
-      for (const p of pairs) { const k = p.llmC + " / " + p.humC; m[k].n++; if (p.agree) m[k].a++; }
+      for (const o of observations) {
+        const k = o.llmC + " / " + o.humanProfile;
+        m[k].n++;
+        if (o.agree) m[k].a++;
+      }
       return certComboLevels.map(c => ({ label: c, n: m[c].n, agreement: m[c].n ? m[c].a / m[c].n : NaN }));
     }
 
-    function certCalib(pairs) {
+    function certCalib(observations) {
       const m = { Yes: { n: 0, a: 0 }, No: { n: 0, a: 0 } };
-      for (const p of pairs) { m[p.llmC].n++; if (p.agree) m[p.llmC].a++; }
+      for (const o of observations) { m[o.llmC].n++; if (o.agree) m[o.llmC].a++; }
       return ["Yes", "No"].map(k => ({ label: k, n: m[k].n, agreement: m[k].n ? m[k].a / m[k].n : NaN }));
     }
 
@@ -2481,13 +2500,19 @@ html <- paste0(
     // Grouped bar chart: one group per certainty cell (or per LLM-certain value
     // in calibration view), one bar per model within a group.
     function renderCertSvg(groups, models, containerW, axisCaption) {
-      const ml = 44, mr = 12, mt = 16, mb = 70;
-      const width = Math.max(containerW, 300);
-      const height = 300;
+      const ml = 44, mr = 12, mt = 16, mb = 86;
+      const width = Math.max(containerW, groups.length * 118 + ml + mr, 300);
+      const height = 316;
       const plotH = height - mt - mb;
       const plotW = width - ml - mr;
       const yPos = (v) => mt + plotH - v * plotH;
       const groupW = plotW / groups.length;
+      const humanAxisLabel = (profile) => ({
+        "Both Yes": "C1 Yes · C2 Yes",
+        "Coder 1 Yes, Coder 2 No": "C1 Yes · C2 No",
+        "Coder 1 No, Coder 2 Yes": "C1 No · C2 Yes",
+        "Both No": "C1 No · C2 No"
+      })[profile] || profile;
       const parts = [];
       parts.push(`<svg viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" font-family="inherit" role="img" aria-label="certainty agreement chart">`);
       for (const t of [0, 0.25, 0.5, 0.75, 1]) {
@@ -2510,7 +2535,14 @@ html <- paste0(
           parts.push(`<text x="${x + barW / 2}" y="${y - 3}" text-anchor="middle" font-size="9.5" fill="#202124">${Number.isFinite(b.agreement) ? (b.agreement * 100).toFixed(0) : "&ndash;"}</text>`);
           if (h > 30) parts.push(`<text x="${x + barW / 2}" y="${mt + plotH - 4}" text-anchor="middle" font-size="8.5" fill="#fff" font-weight="700" transform="rotate(-90 ${x + barW / 2} ${mt + plotH - 4})">n=${b.n}</text>`);
         });
-        parts.push(`<text x="${gx + groupW / 2}" y="${mt + plotH + 16}" text-anchor="middle" font-size="11" font-weight="700" fill="#202124">${esc(g.label)}</text>`);
+        const labelParts = g.label.split(" / ");
+        const labelX = gx + groupW / 2;
+        const labelY = mt + plotH + 16;
+        if (labelParts.length === 2) {
+          parts.push(`<text x="${labelX}" y="${labelY}" text-anchor="middle" font-size="10.5" font-weight="700" fill="#202124"><tspan x="${labelX}">LLM ${esc(labelParts[0])}</tspan><tspan x="${labelX}" dy="14">${esc(humanAxisLabel(labelParts[1]))}</tspan></text>`);
+        } else {
+          parts.push(`<text x="${labelX}" y="${labelY}" text-anchor="middle" font-size="11" font-weight="700" fill="#202124">${esc(g.label)}</text>`);
+        }
       });
       parts.push(`<text x="${ml + plotW / 2}" y="${height - 6}" text-anchor="middle" font-size="10.5" fill="#687076">${esc(axisCaption)}</text>`);
       parts.push("</svg>");
@@ -2521,7 +2553,7 @@ html <- paste0(
       const byLang = certLangData();
       const view = state.certView;
       const groupLabels = view === "2x2" ? certComboLevels : ["Yes", "No"];
-      const axisCaption = view === "2x2" ? "LLM certain / human coder certain" : "LLM says it is certain";
+      const axisCaption = view === "2x2" ? "LLM certain / ordered human-coder certainty profile" : "LLM says it is certain";
       const nRuns = certRuns().length;
       const armLabel = state.certMasking === "masked" ? "masked" : "visible-negator";
       const nCertainRuns = payload.runs.filter(runHasCertain).length;
@@ -2556,8 +2588,8 @@ html <- paste0(
         models.forEach(m => modelsSeen.add(m));
         const perModel = {};
         models.forEach(m => {
-          const pairs = certPairs(mm.get(m));
-          perModel[m] = { cells: certCells(pairs), calib: certCalib(pairs) };
+          const observations = certRows(mm.get(m));
+          perModel[m] = { cells: certCells(observations), calib: certCalib(observations) };
         });
         cellData.set(lang, { models, perModel });
       }
@@ -2579,11 +2611,11 @@ html <- paste0(
       const legendModels = certModelList.filter(m => modelsSeen.has(m));
       $("certLegend").innerHTML =
         legendModels.map(m => `<span><span class="series-dot" style="background:${modelColor[m]}"></span>${esc(m)}</span>`).join("") +
-        `<span style="margin-left:8px; border-left:1px solid var(--border); padding-left:14px; color:var(--muted);">Bar height = Bloom-label agreement; number above = %, n inside. Human &ldquo;certain&rdquo; = did not explicitly answer No.</span>`;
+        `<span style="margin-left:8px; border-left:1px solid var(--border); padding-left:14px; color:var(--muted);">Bar height = LLM&ndash;human-consensus Bloom-label agreement; number above = %, n inside. Each negation contributes once. Human &ldquo;certain&rdquo; = did not explicitly answer No.</span>`;
 
       $("certTableCaption").innerHTML = view === "2x2"
-        ? `Agreement in each LLM&times;human certainty cell. ${state.certScope === "clean" ? "Clean rows only. " : "All rows. "}Denominator is LLM&ndash;coder pairs where both have a Bloom label.`
-        : `Calibration: agreement when the LLM says certain = Yes vs No. Yes should beat No for every model, else the field is not informative. ${state.certScope === "clean" ? "Clean rows only." : "All rows."}`;
+        ? `LLM&ndash;human-consensus agreement in each ordered certainty cell. ${state.certScope === "clean" ? "Clean rows only. " : "All rows. "}Each negation appears once; rows require two matching human Bloom labels.`
+        : `Calibration against the shared human Bloom label when the LLM says certain = Yes vs No. Each negation appears once and requires two matching human Bloom labels. Yes should beat No for every model, else the field is not informative. ${state.certScope === "clean" ? "Clean rows only." : "All rows."}`;
 
       const cell = (o) => `${pct(o.agreement)} <span class="muted">(n=${o.n})</span>`;
       $("certTable").innerHTML = `<table><thead><tr>

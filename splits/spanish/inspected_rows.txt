@@ -52,3 +52,16 @@ spa_000486
 spa_000487
 spa_000488
 spa_000489
+
+# Read/cited in v4/2026-07-23_gemma_v4_error_analysis.md.
+spa_000637
+spa_000638
+spa_000643
+spa_001982
+spa_002206
+spa_002209
+spa_002210
+spa_002710
+spa_003929
+spa_004302
+spa_005044

@@ -37,3 +37,25 @@ heb_000293
 heb_000294
 heb_000431
 heb_000434
+
+# Read/cited in v4/2026-07-23_gemma_v4_error_analysis.md.
+heb_000310
+heb_000655
+heb_001367
+heb_001368
+heb_001369
+heb_001370
+heb_001371
+heb_001372
+heb_001373
+heb_001374
+heb_001375
+heb_001376
+heb_001377
+heb_001378
+heb_001379
+heb_001721
+heb_001774
+heb_002094
+heb_003153
+heb_004771
