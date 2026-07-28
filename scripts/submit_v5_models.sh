@@ -3,16 +3,18 @@
 #
 # Default models:
 #   gemma4:31b
-#   qwen3.5:122b
 #   qwen3.6:35b-a3b
 #   gpt-oss:120b
+#
+# qwen3.5:122b remains an explicit legacy override for reproducibility, but is
+# intentionally excluded from all defaults after its v5 runaway failures.
 #
 # Default cells are the five primary, unmasked v5 prompts:
 #   english:en  german:engex  hebrew:engex  spanish:engex  tagalog:engex
 #
 # Prefer the two purpose-specific wrappers:
-#   ./scripts/submit_v5_smoke.sh  # four models x first 10 English items
-#   ./scripts/submit_v5_full.sh   # four models x five full dev_train cells
+#   ./scripts/submit_v5_smoke.sh  # three models x first 10 English items
+#   ./scripts/submit_v5_full.sh   # three models x five full dev_train cells
 #
 # Useful overrides:
 #   DRY_RUN=1 ./scripts/submit_v5_smoke.sh
@@ -25,7 +27,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LLM_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$LLM_DIR"
 
-MODELS="${MODELS:-gemma4:31b qwen3.5:122b qwen3.6:35b-a3b gpt-oss:120b}"
+MODELS="${MODELS:-gemma4:31b qwen3.6:35b-a3b gpt-oss:120b}"
 CELLS="${CELLS:-english:en german:engex hebrew:engex spanish:engex tagalog:engex}"
 DRY_RUN="${DRY_RUN:-}"
 WALLTIME="${WALLTIME:-24:00:00}"

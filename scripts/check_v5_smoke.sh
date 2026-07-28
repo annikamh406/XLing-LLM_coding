@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verify that all four standard v5 English smoke tests produced complete output.
+# Verify that all three active v5 English smoke tests produced complete output.
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -9,7 +9,7 @@ cd "$LLM_DIR"
 RESULTS_DIR="${RESULTS_DIR:-v5/results}"
 EXPECTED_PREDICTIONS="${EXPECTED_PREDICTIONS:-10}"
 EXPECTED_BATCHES="${EXPECTED_BATCHES:-2}"
-MODELS="${MODELS:-gemma4:31b qwen3.5:122b qwen3.6:35b-a3b gpt-oss:120b}"
+MODELS="${MODELS:-gemma4:31b qwen3.6:35b-a3b gpt-oss:120b}"
 status=0
 
 printf '%-22s %12s %12s %s\n' "MODEL" "PREDICTIONS" "BATCHES" "STATUS"
@@ -50,7 +50,7 @@ for model in $MODELS; do
 done
 
 if (( status == 0 )); then
-  echo "All four v5 smoke tests are complete; the full matrix is ready to submit."
+  echo "All three v5 smoke tests are complete; the full matrix is ready to submit."
 else
   echo "At least one smoke test is missing or incomplete. Check v5/results/logs before submitting full runs." >&2
 fi

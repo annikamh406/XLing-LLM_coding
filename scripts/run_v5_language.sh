@@ -11,6 +11,9 @@
 #   RUN_SETS    default unmasked; set masked or unmasked,masked for the
 #               secondary masked experiment
 #   RESULTS_DIR default v5/results
+#   PROMPT_OVERRIDE / PROMPT_VERSION_OVERRIDE
+#               optional paired overrides for model/prompt experiments;
+#               currently supported only for RUN_SETS=unmasked
 #
 # Example:
 #   MODEL=gemma4:31b LANGUAGE=german VARIANT=engex \
@@ -56,6 +59,19 @@ else
     *) echo "VARIANT must be loc or engex for $LANGUAGE" >&2; exit 2 ;;
   esac
   PROMPT_VERSION="p005-${LANG_CODE}-${VARIANT}"
+fi
+
+if [[ -n "${PROMPT_OVERRIDE:-}" || -n "${PROMPT_VERSION_OVERRIDE:-}" ]]; then
+  if [[ -z "${PROMPT_OVERRIDE:-}" || -z "${PROMPT_VERSION_OVERRIDE:-}" ]]; then
+    echo "PROMPT_OVERRIDE and PROMPT_VERSION_OVERRIDE must be set together." >&2
+    exit 2
+  fi
+  if [[ "$RUN_SETS" != "unmasked" ]]; then
+    echo "Prompt overrides currently require RUN_SETS=unmasked." >&2
+    exit 2
+  fi
+  PROMPT="$PROMPT_OVERRIDE"
+  PROMPT_VERSION="$PROMPT_VERSION_OVERRIDE"
 fi
 
 COMMON_ARGS=(

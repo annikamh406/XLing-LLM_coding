@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Submit four independent 10-item English dev_train smoke tests, one per model.
+# Submit three independent 10-item English dev_train smoke tests, one per
+# active model. qwen3.5:122b is intentionally retired from new default runs.
 #
 # The smoke outputs include `_limit-10` in their filenames, so they cannot
 # collide with the later full-run outputs.

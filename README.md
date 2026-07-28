@@ -113,24 +113,27 @@ The v5 batch launchers use CCV's shared Ollama model store by default and
 start one private, job-local Ollama server per Slurm job. Do not start a
 separate interactive `ollama serve` process for these runs.
 
-Four-model, first-10-English-record smoke test:
+Three-model, first-10-English-record smoke test:
 
 ```bash
-DRY_RUN=1 ./scripts/submit_v5_smoke.sh  # inspect the four sbatch commands
+DRY_RUN=1 ./scripts/submit_v5_smoke.sh  # inspect the three sbatch commands
 ./scripts/submit_v5_smoke.sh
 ```
 
-The four models and their L40S allocations are:
+The three active models and their L40S allocations are:
 
 - `gemma4:31b`: one GPU;
-- `qwen3.5:122b`: two GPUs;
-- `qwen3.6:35b-a3b`: one GPU; and
+- `qwen3.6:35b-a3b`: one GPU;
 - `gpt-oss:120b`: two GPUs.
 
-All four use the unmasked English v5 prompt, `dev_train`, batch size 5, a
+`qwen3.5:122b` is retired from new default runs after its v5 full-run
+thinking-channel failures. It remains available only as an explicit legacy
+override.
+
+All three use the unmasked English v5 prompt, `dev_train`, batch size 5, a
 32,768-token context window, and `LIMIT=10`. Their output filenames contain
 `_limit-10`, so the smoke outputs cannot collide with the later full outputs.
-Once the jobs leave the queue, verify all four produced 10 validated
+Once the jobs leave the queue, verify all three produced 10 validated
 predictions in two size-5 batches:
 
 ```bash
@@ -140,11 +143,11 @@ predictions in two size-5 batches:
 After all smoke jobs finish successfully, submit the complete primary matrix:
 
 ```bash
-DRY_RUN=1 ./scripts/submit_v5_full.sh  # inspect the 20 sbatch commands
+DRY_RUN=1 ./scripts/submit_v5_full.sh  # inspect the 15 sbatch commands
 ./scripts/submit_v5_full.sh
 ```
 
-This submits 20 independent jobs: four models times English plus the
+This submits 15 independent jobs: three models times English plus the
 English-example prompt for German, Hebrew, Spanish, and Tagalog. It runs the
 full unmasked `dev_train` split and never accesses `test_lockbox`. Useful
 status commands are:
@@ -157,9 +160,19 @@ find v5/results/logs -maxdepth 1 -type f -name 'sbatch_v5_*.out' -print
 To submit only selected models or cells, override `MODELS` or `CELLS`:
 
 ```bash
-MODELS="qwen3.5:122b gpt-oss:120b" \
+MODELS="qwen3.6:35b-a3b gpt-oss:120b" \
 CELLS="english:en german:engex" \
 ./scripts/submit_v5_full.sh
+```
+
+To repair the incomplete July 2026 full runs and run the focused
+cross-model prompt experiments, see
+[`v5/PROMPT_EXPERIMENT_PLAN.md`](v5/PROMPT_EXPERIMENT_PLAN.md). The short
+entry points are:
+
+```bash
+DRY_RUN=1 ./scripts/resubmit_v5_failed.sh
+DRY_RUN=1 ./scripts/submit_v5_prompt_experiments.sh
 ```
 
 ### 1. Push from the local machine

@@ -310,6 +310,9 @@ def ollama_chat(
     records: list[dict],
     output_schema: dict,
     temperature: float,
+    top_p: float | None,
+    top_k: int | None,
+    min_p: float | None,
     timeout: int,
     num_ctx: int | None = None,
     num_predict: int | None = None,
@@ -333,6 +336,12 @@ def ollama_chat(
     # to the schema (structured outputs). validate_response below stays as a
     # backstop for the properties a grammar cannot express.
     options = {"temperature": temperature}
+    if top_p is not None:
+        options["top_p"] = top_p
+    if top_k is not None:
+        options["top_k"] = top_k
+    if min_p is not None:
+        options["min_p"] = min_p
     # Pin the context window when asked. The default (model/server-chosen, often
     # 32k) sizes a multi-GB KV cache that can force a large model to spill layers
     # onto CPU; batches here are small, so a few-thousand-token window is ample
@@ -431,6 +440,38 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument(
+        "--seed",
+        type=int,
+        default=None,
+        help="Optional reproducible base seed. Batch N uses seed + N - 1 on "
+        "its first attempt; retries derive deterministic fresh seeds.",
+    )
+    parser.add_argument(
+        "--top-p",
+        type=float,
+        default=None,
+        help="Optional nucleus-sampling threshold forwarded to Ollama.",
+    )
+    parser.add_argument(
+        "--top-k",
+        type=int,
+        default=None,
+        help="Optional top-k sampling cutoff forwarded to Ollama.",
+    )
+    parser.add_argument(
+        "--min-p",
+        type=float,
+        default=None,
+        help="Optional min-p sampling cutoff forwarded to Ollama.",
+    )
+    parser.add_argument(
+        "--reasoning-effort",
+        choices=("low", "medium", "high"),
+        default=None,
+        help="Optional Harmony reasoning-effort header. This is a native "
+        "gpt-oss control; omit it for the historical/default behavior.",
+    )
+    parser.add_argument(
         "--num-ctx",
         type=int,
         default=None,
@@ -508,6 +549,18 @@ def main() -> int:
     if args.max_retries < 0:
         print("--max-retries must be zero or positive.", file=sys.stderr)
         return 2
+    if args.seed is not None and args.seed < 0:
+        print("--seed must be zero or positive.", file=sys.stderr)
+        return 2
+    if args.top_p is not None and not 0 < args.top_p <= 1:
+        print("--top-p must be in (0, 1].", file=sys.stderr)
+        return 2
+    if args.top_k is not None and args.top_k <= 0:
+        print("--top-k must be positive.", file=sys.stderr)
+        return 2
+    if args.min_p is not None and not 0 <= args.min_p <= 1:
+        print("--min-p must be in [0, 1].", file=sys.stderr)
+        return 2
 
     # Locate the requested split and prompt. By default these are resolved
     # relative to the standalone XLing-LLM_coding folder.
@@ -552,8 +605,20 @@ def main() -> int:
         return 2
 
     prompt = args.prompt.read_text(encoding="utf-8")
+    if args.reasoning_effort is not None:
+        prompt = f"Reasoning: {args.reasoning_effort}\n\n{prompt}"
+    decoding_options = {
+        "temperature": args.temperature,
+        "seed": args.seed,
+        "top_p": args.top_p,
+        "top_k": args.top_k,
+        "min_p": args.min_p,
+        "num_ctx": args.num_ctx,
+        "num_predict": args.num_predict,
+    }
     predictions = []
     raw_responses = []
+    retry_rng = random.Random(args.seed) if args.seed is not None else random.SystemRandom()
     started_at = time.time()
 
     # Process records in deterministic order. Each batch is independently
@@ -587,18 +652,21 @@ def main() -> int:
             # would repeat identically on every retry. On retries, nudge the
             # temperature up and vary the seed so the resample can escape.
             #
-            # The seed must be drawn randomly, not fixed to the attempt index:
-            # a fixed seed makes retries deterministic ACROSS submissions too,
-            # so a batch that exhausts its retries once fails identically on
-            # every resubmit (the v4 rerun that went nowhere on 2026-07-06/07).
-            # A random per-attempt seed lets a fresh submit actually draw new
-            # samples, and escalating temperature widens the escape.
+            # By default retry seeds come from system randomness so a fresh
+            # resubmission can escape a repeatedly degenerate batch. An
+            # explicit --seed deliberately makes the experiment reproducible,
+            # including its retry sequence.
             attempt_temperature = (
                 args.temperature
                 if attempt == 0
                 else max(args.temperature, 0.4 + 0.3 * (attempt - 1))
             )
-            attempt_seed = None if attempt == 0 else random.randrange(2**31)
+            if attempt == 0:
+                attempt_seed = (
+                    None if args.seed is None else args.seed + batch_number - 1
+                )
+            else:
+                attempt_seed = retry_rng.randrange(2**31)
             try:
                 payload, raw_response = ollama_chat(
                     url=args.ollama_url,
@@ -607,6 +675,9 @@ def main() -> int:
                     records=batch_records,
                     output_schema=output_schema,
                     temperature=attempt_temperature,
+                    top_p=args.top_p,
+                    top_k=args.top_k,
+                    min_p=args.min_p,
                     timeout=args.timeout,
                     num_ctx=args.num_ctx,
                     num_predict=args.num_predict,
@@ -645,6 +716,8 @@ def main() -> int:
                         "schema_version": args.schema_version,
                         "prompt_version": args.prompt_version,
                         "prompt_path": str(args.prompt),
+                        "reasoning_effort": args.reasoning_effort or "default",
+                        "decoding_options": decoding_options,
                         "validation_error": str(last_error),
                         "parsed_payload": last_payload,
                         "raw_response": last_raw_response,
@@ -666,6 +739,8 @@ def main() -> int:
                 "schema_version": args.schema_version,
                 "prompt_version": args.prompt_version,
                 "prompt_path": str(args.prompt),
+                "reasoning_effort": args.reasoning_effort or "default",
+                "decoding_options": decoding_options,
                 "raw_response": raw_response,
             }
         )
@@ -683,6 +758,8 @@ def main() -> int:
                 "schema_version": args.schema_version,
                 "prompt_version": args.prompt_version,
                 "prompt_path": str(args.prompt),
+                "reasoning_effort": args.reasoning_effort or "default",
+                "decoding_options": decoding_options,
                 "n_records": len(records),
                 "batch_size": args.batch_size,
                 "prediction_path": str(prediction_path),

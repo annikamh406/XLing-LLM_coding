@@ -37,14 +37,19 @@ case "$MODEL" in
   qwen3.5:122b|gpt-oss:120b) REQUIRED_GPUS=2 ;;
   *)                         REQUIRED_GPUS=1 ;;
 esac
-if [[ -n "${CUDA_VISIBLE_DEVICES:-}" ]]; then
-  IFS=',' read -r -a VISIBLE_GPUS <<<"$CUDA_VISIBLE_DEVICES"
-  if (( ${#VISIBLE_GPUS[@]} < REQUIRED_GPUS )); then
-    echo "ERROR: $MODEL requires $REQUIRED_GPUS GPU(s), but CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}." >&2
-    echo "Submit through scripts/submit_v5_models.sh to get the correct resources." >&2
-    exit 2
-  fi
+if [[ -z "${CUDA_VISIBLE_DEVICES:-}" ]]; then
+  echo "ERROR: Slurm exposed no CUDA devices to $MODEL." >&2
+  echo "SLURM_JOB_ID=${SLURM_JOB_ID:-unset} SLURM_JOB_NODELIST=${SLURM_JOB_NODELIST:-unset} SLURM_JOB_GPUS=${SLURM_JOB_GPUS:-unset}" >&2
+  echo "Refusing to let Ollama silently run this GPU job on CPU." >&2
+  exit 2
 fi
+IFS=',' read -r -a VISIBLE_GPUS <<<"$CUDA_VISIBLE_DEVICES"
+if (( ${#VISIBLE_GPUS[@]} < REQUIRED_GPUS )); then
+  echo "ERROR: $MODEL requires $REQUIRED_GPUS GPU(s), but CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}." >&2
+  echo "Submit through scripts/submit_v5_models.sh to get the correct resources." >&2
+  exit 2
+fi
+echo "GPU preflight: model=$MODEL required=$REQUIRED_GPUS visible=$CUDA_VISIBLE_DEVICES"
 
 if (( REQUIRED_GPUS > 1 )); then
   export OLLAMA_SCHED_SPREAD=1
@@ -59,8 +64,9 @@ if ! command -v ollama >/dev/null 2>&1; then
   echo "ERROR: the Ollama executable is unavailable after 'module load ollama'." >&2
   exit 1
 fi
-mkdir -p v5/results/logs
-ollama serve >"v5/results/logs/ollama_serve_${SLURM_JOB_ID}.log" 2>&1 &
+WORKER_LOG_DIR="${LOG_DIR:-v5/results/logs}"
+mkdir -p "$WORKER_LOG_DIR"
+ollama serve >"$WORKER_LOG_DIR/ollama_serve_${SLURM_JOB_ID}.log" 2>&1 &
 OLLAMA_PID=$!
 trap 'kill "$OLLAMA_PID" 2>/dev/null || true' EXIT
 

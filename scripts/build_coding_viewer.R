@@ -9,12 +9,13 @@
 #     (preferring the frozen copy in vN/inputs/splits/english/ when present)
 #   - coder certainty fields from the human-reference JSONL
 #   - model chain-of-thought from the *_raw_responses.jsonl in the same
-#     results folder (paired by record-id overlap; for multi-record batches
-#     the thinking is attached to every record with a shared-batch count)
+#     results folder (paired by record-id overlap; multi-record batch thinking
+#     is stored once per run and rows carry a small reference to it)
 #
-# The audit CSV rows are embedded verbatim; all agreement/kappa numbers are
-# computed in the browser from the same collapsed-label columns and
-# denominators as the IRR reports. Rows on the inspected list
+# Audit values are embedded verbatim except that duplicated flattened context
+# strings are replaced by references to the shared structured context store.
+# All agreement/kappa numbers are computed in the browser from the same
+# collapsed-label columns and denominators as the IRR reports. Rows on the inspected list
 # (splits/english/inspected_rows.txt) are badged, and both the run explorer
 # and the trends tab can restrict their stats to the clean (headline) subset,
 # mirroring the IRR report's clean-vs-inspected stratification.
@@ -93,6 +94,22 @@ example_order <- function(prompt_version) {
   0L
 }
 
+# Transcript context is identical across models and prompt versions that use
+# the same split. Keep one global copy and place only a zero-based reference on
+# each audit row; otherwise the same 40-line window is embedded dozens of times
+# as the run matrix grows.
+context_index <- new.env(parent = emptyenv(), hash = TRUE)
+context_store <- list()
+context_id_for <- function(key, value) {
+  if (exists(key, envir = context_index, inherits = FALSE)) {
+    return(get(key, envir = context_index, inherits = FALSE))
+  }
+  id <- length(context_store)
+  context_store[[id + 1]] <<- value
+  assign(key, id, envir = context_index)
+  id
+}
+
 build_run <- function(audit_path, version) {
   rows <- readr::read_csv(audit_path, col_types = readr::cols(.default = readr::col_character()))
   rows[is.na(rows)] <- ""
@@ -140,7 +157,7 @@ build_run <- function(audit_path, version) {
   }
 
   thinking_map <- list()
-  thinking_shared <- list()
+  thinking_batches <- list()
   model <- ""
   schema_version <- ""
   prompt_version <- ""
@@ -155,9 +172,17 @@ build_run <- function(audit_path, version) {
       ids <- b$record_ids
       think <- chr1(b$raw_response$message$thinking)
       if (!nzchar(think)) next
+      # Raw responses are normally batches of five records. Store the shared
+      # reasoning once and let every row point to its zero-based array index;
+      # embedding the same long string on all five rows made the self-contained
+      # viewer exceed browser string limits as the run matrix grew.
+      thinking_id <- length(thinking_batches)
+      thinking_batches[[thinking_id + 1]] <- list(
+        text = think,
+        shared_n = length(ids)
+      )
       for (id in ids) {
-        thinking_map[[id]] <- think
-        thinking_shared[[id]] <- length(ids)
+        thinking_map[[id]] <- thinking_id
       }
     }
   }
@@ -220,20 +245,37 @@ build_run <- function(audit_path, version) {
     row$llm_certain <- NULL
     s <- split_records[[rid]]
     h <- human_records[[rid]]
+    before_lines <- context_list(s$context_before)
+    after_lines <- context_list(s$context_after)
+    # The audit CSV carries flattened context strings, while the split supplies
+    # the same content as structured lines for rendering. Keep the flattened
+    # fallback only when structured context is unavailable.
+    fallback_before <- chr1(row$context_before)
+    fallback_after <- chr1(row$context_after)
+    row$context_before <- NULL
+    row$context_after <- NULL
+    context_source <- if (!is.na(split_path)) split_path else audit_path
+    context_id <- context_id_for(
+      paste(context_source, rid, sep = "\037"),
+      list(
+        before = before_lines,
+        after = after_lines,
+        fallback_before = if (!length(before_lines)) fallback_before else "",
+        fallback_after = if (!length(after_lines)) fallback_after else ""
+      )
+    )
     extras <- list(
       llm_certain = chr1(llm_certain_map[[rid]]),
       child_age_raw = chr1(s$child_age_raw),
       child_age_months = chr1(s$child_age_months),
-      context_before_lines = context_list(s$context_before),
-      context_after_lines = context_list(s$context_after),
+      context_id = context_id,
       human_1_certain = chr1(h$coder_1$certain_bloom),
       human_1_other_possibility = chr1(h$coder_1$other_possibility_bloom),
       human_1_one_of_two = chr1(h$coder_1$definitely_one_of_two_bloom),
       human_2_certain = chr1(h$coder_2$certain_bloom),
       human_2_other_possibility = chr1(h$coder_2$other_possibility_bloom),
       human_2_one_of_two = chr1(h$coder_2$definitely_one_of_two_bloom),
-      llm_thinking = chr1(thinking_map[[rid]]),
-      llm_thinking_shared_n = chr1(thinking_shared[[rid]])
+      llm_thinking_id = chr1(thinking_map[[rid]])
     )
     c(row, extras)
   })
@@ -260,7 +302,8 @@ build_run <- function(audit_path, version) {
       n_rows = nrow(rows),
       audit_csv = basename(audit_path)
     ),
-    rows = rows_list
+    rows = rows_list,
+    thinking = thinking_batches
   )
 }
 
@@ -296,7 +339,8 @@ runs <- runs[run_order]
 
 payload <- list(
   generated_on = format(Sys.Date()),
-  runs = runs
+  runs = runs,
+  contexts = context_store
 )
 json_data <- jsonlite::toJSON(payload, auto_unbox = TRUE, null = "null")
 json_data <- gsub("</", "<\\/", json_data, fixed = TRUE)
@@ -730,9 +774,23 @@ html <- paste0(
       background: #fafbf9;
     }
     .trend-toolbar select { min-height: 34px; }
-    .trend-language-filter { grid-column: span 2; }
+    .trend-language-filter, .trend-version-filter, .trend-model-filter {
+      grid-column: 1 / -1;
+      min-width: 0;
+    }
     .trend-language-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
     .trend-language-options { display: flex; gap: 6px; flex-wrap: wrap; }
+    .trend-version-options, .trend-model-options { display: flex; gap: 6px; flex-wrap: wrap; }
+    .trend-filter-label {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+    }
+    .trend-filter-label .trend-selection-count {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 500;
+    }
     .language-action {
       border: 0;
       background: transparent;
@@ -843,12 +901,12 @@ html <- paste0(
     <header class="page-head">
       <div>
         <h1>XLing LLM&ndash;Human Coding Viewer</h1>
-        <p class="subhead" id="pageSub"></p>
+        <p class="subhead" id="pageSub">Loading embedded run data&hellip;</p>
       </div>
       <div class="run-picker" id="runPicker">
         <span class="masking-badge" id="maskingBadge"></span>
         <label for="runSelect">Run</label>
-        <select id="runSelect"></select>
+        <select id="runSelect"><option>Loading&hellip;</option></select>
       </div>
     </header>
 
@@ -939,7 +997,7 @@ html <- paste0(
       <section class="trend-panel">
         <div class="trend-head">
           <h2>Compare runs</h2>
-          <p class="subhead">Start with one language, then widen the comparison only when needed. Filters apply to both the chart and the exact run-by-run table.</p>
+          <p class="subhead">Language, version/example arm, and model selections are cross-cutting. Every run matching their intersection appears in both the chart and exact run-by-run table.</p>
         </div>
         <div class="trend-toolbar">
           <div class="trend-language-filter">
@@ -950,17 +1008,21 @@ html <- paste0(
               <button class="language-action" id="trendLanguagesCurrent" type="button">Current only</button>
             </div>
           </div>
-          <div>
-            <label for="trendModel">Model</label>
-            <select id="trendModel"></select>
+          <div class="trend-version-filter">
+            <label class="trend-filter-label">Version + examples <span class="trend-selection-count" id="trendVersionsCount"></span></label>
+            <div class="trend-language-row">
+              <div class="trend-version-options" id="trendVersions"></div>
+              <button class="language-action" id="trendVersionsAll" type="button">Select all</button>
+              <button class="language-action" id="trendVersionsNone" type="button">Clear</button>
+            </div>
           </div>
-          <div>
-            <label for="trendExamples">Prompt examples</label>
-            <select id="trendExamples">
-              <option value="all">All example conditions</option>
-              <option value="matched">Match target language</option>
-              <option value="english">English examples</option>
-            </select>
+          <div class="trend-model-filter">
+            <label class="trend-filter-label">Models <span class="trend-selection-count" id="trendModelsCount"></span></label>
+            <div class="trend-language-row">
+              <div class="trend-model-options" id="trendModels"></div>
+              <button class="language-action" id="trendModelsAll" type="button">Select all</button>
+              <button class="language-action" id="trendModelsNone" type="button">Clear</button>
+            </div>
           </div>
           <div>
             <label for="trendBasis">Comparison</label>
@@ -1074,7 +1136,16 @@ html <- paste0(
 
   <script id="audit-data" type="application/json">', json_data, '</script>
   <script>
-    const payload = JSON.parse(document.getElementById("audit-data").textContent);
+    let payload;
+    try {
+      payload = JSON.parse(document.getElementById("audit-data").textContent);
+    } catch (error) {
+      document.getElementById("pageSub").textContent =
+        "The embedded run data could not be loaded. Rebuild the viewer with scripts/build_coding_viewer.R.";
+      document.getElementById("runSelect").innerHTML = "<option>Load failed</option>";
+      throw error;
+    }
+    const contexts = payload.contexts || [];
     const labelLevels = ["nonexistence", "rejection", "denial", "uncoded", "excluded", "other"];
     const contentLevels = ["nonexistence", "rejection", "denial"];
     const flagNames = ["foreign_language_negation", "singing", "mimicry", "tag_question", "repetition", "not_a_negation"];
@@ -1102,10 +1173,20 @@ html <- paste0(
     // "matched" = examples are in the target language (native English or -loc).
     function exampleCondition(meta) {
       const pv = meta.prompt_version || "";
-      if (/-engex$/.test(pv)) return { matched: false, short: "Eng ex.", label: "English examples" };
-      if (/-loc$/.test(pv))   return { matched: true,  short: "Localized", label: "Localized examples" };
-      return { matched: true, short: "Native", label: "Native (English) examples" };
+      if (/-engex$/.test(pv)) return { key: "english", matched: false, short: "Eng ex.", label: "English examples" };
+      if (/-loc$/.test(pv))   return { key: "localized", matched: true, short: "Localized", label: "Localized examples" };
+      return { key: "native", matched: true, short: "Native", label: "Native (English) examples" };
     }
+
+    // For cross-language comparison, the native English prompt and a
+    // non-English "-engex" prompt belong to the same English-example arm.
+    // Localized prompts remain a separate arm.
+    function versionExampleGroup(meta) {
+      return exampleCondition(meta).key === "localized"
+        ? { key: "localized", label: "Localized examples" }
+        : { key: "english", label: "English examples" };
+    }
+    const versionExampleKey = (meta) => `${meta.version || "?"}::${versionExampleGroup(meta).key}`;
 
     function maskingCondition(meta) {
       const masked = meta.masking === "masked" || /^p[0-9]+m(?:-|$)/.test(meta.prompt_version || "");
@@ -1146,13 +1227,14 @@ html <- paste0(
     // ---- per-run state (recomputed by loadRun) ----
     let rows = [];
     let meta = {};
+    let thinking = [];
     let coderName = {};
     let coderShort = {};
     let pairDefs = [];
     const state = {
       runIdx: 0, selectedId: null, sort: "line", scope: "all",
       trendMetric: "agreement", trendScope: "all", trendBasis: "full",
-      trendLanguages: null, trendModel: "all", trendExamples: "all",
+      trendLanguages: null, trendVersionExamples: null, trendModels: null,
       trendSeries: { hh: true, cons: true, l1: false, l2: false },
       trendShowValues: false,
       certModel: "all", certExamples: "all", certScope: "all", certView: "2x2", certMasking: "unmasked"
@@ -1365,6 +1447,7 @@ html <- paste0(
       const run = payload.runs[idx];
       rows = run.rows;
       meta = run.meta;
+      thinking = run.thinking || [];
 
       coderName = { llm: "LLM" };
       coderShort = { llm: "LLM" };
@@ -1581,12 +1664,24 @@ html <- paste0(
         populateTrendControls();
         renderTrends();
       });
-      $("trendModel").addEventListener("change", () => {
-        state.trendModel = $("trendModel").value;
+      $("trendModelsAll").addEventListener("click", () => {
+        state.trendModels = [...new Set(payload.runs.map(r => r.meta.model || "Unknown"))];
+        populateTrendControls();
         renderTrends();
       });
-      $("trendExamples").addEventListener("change", () => {
-        state.trendExamples = $("trendExamples").value;
+      $("trendModelsNone").addEventListener("click", () => {
+        state.trendModels = [];
+        populateTrendControls();
+        renderTrends();
+      });
+      $("trendVersionsAll").addEventListener("click", () => {
+        state.trendVersionExamples = [...new Set(payload.runs.map(r => versionExampleKey(r.meta)))];
+        populateTrendControls();
+        renderTrends();
+      });
+      $("trendVersionsNone").addEventListener("click", () => {
+        state.trendVersionExamples = [];
+        populateTrendControls();
         renderTrends();
       });
       $("trendBasis").addEventListener("change", () => setTrendBasis($("trendBasis").value));
@@ -1664,9 +1759,14 @@ html <- paste0(
         if (flagMode === "raised" && !flagInfo(row).length) return false;
         if (flagMode === "mismatch" && !flagInfo(row).some(f => f.mismatch)) return false;
         if (q) {
+          const rowContext = contexts[Number(row.context_id)] || {};
+          const contextText = [
+            ...(rowContext.before || []),
+            ...(rowContext.after || [])
+          ].map(line => [line.line, line.speaker, line.utterance].map(clean).join(" ")).join(" ");
           const haystack = [
             row.record_id, row.transcript_id, row.target_utterance, row.target_negator,
-            row.context_before, row.context_after,
+            rowContext.fallback_before, rowContext.fallback_after, contextText,
             row.llm_bloom, row.human_1_bloom, row.human_2_bloom,
             row.llm_comments, row.human_1_comments, row.human_2_comments
           ].map(clean).join(" ").toLowerCase();
@@ -1868,8 +1968,9 @@ html <- paste0(
         tokenPos
       ].filter(Boolean).join(" &middot; ");
 
-      const beforeLines = row.context_before_lines || [];
-      const afterLines = row.context_after_lines || [];
+      const rowContext = contexts[Number(row.context_id)] || {};
+      const beforeLines = rowContext.before || [];
+      const afterLines = rowContext.after || [];
       let convoInner;
       if (beforeLines.length || afterLines.length) {
         const before = beforeLines.map(l => transcriptLine(l, "", null)).join("");
@@ -1880,18 +1981,21 @@ html <- paste0(
         );
         convoInner = before + target + after;
       } else {
-        convoInner = `<div class="no-context">${esc(fallbackContext(row.context_before))}
+        convoInner = `<div class="no-context">${esc(fallbackContext(rowContext.fallback_before))}
 
 ` + transcriptLine({ line: row.line, speaker: row.speaker, utterance: row.target_utterance }, "target", row.target_negator) +
-          `<div class="no-context">${esc(fallbackContext(row.context_after))}</div></div>`;
+          `<div class="no-context">${esc(fallbackContext(rowContext.fallback_after))}</div></div>`;
       }
 
-      const sharedN = Number(row.llm_thinking_shared_n);
+      const thinkingId = clean(row.llm_thinking_id);
+      const thinkingEntry = thinkingId === "" ? null : thinking[Number(thinkingId)];
+      const thinkingText = clean(thinkingEntry && thinkingEntry.text);
+      const sharedN = Number(thinkingEntry && thinkingEntry.shared_n);
       const reasoningTitle = Number.isFinite(sharedN) && sharedN > 1
         ? `Model reasoning (shared across a batch of ${sharedN} records)`
         : "Model reasoning for this token";
-      const reasoning = clean(row.llm_thinking)
-        ? `<details class="reasoning"><summary>${reasoningTitle}</summary><pre>${esc(row.llm_thinking)}</pre></details>`
+      const reasoning = thinkingText
+        ? `<details class="reasoning"><summary>${reasoningTitle}</summary><pre>${esc(thinkingText)}</pre></details>`
         : "";
 
       $("detailPanel").innerHTML = `
@@ -2086,8 +2190,29 @@ html <- paste0(
     function populateTrendControls() {
       const languages = [...new Set(payload.runs.map(r => r.meta.language || "Unknown"))].sort();
       const models = [...new Set(payload.runs.map(r => r.meta.model || "Unknown"))].sort();
+      const conditionOrder = { english: 0, localized: 1 };
+      const versionOptions = [...new Map(payload.runs.map(run => {
+        const condition = versionExampleGroup(run.meta);
+        const key = versionExampleKey(run.meta);
+        return [key, {
+          key,
+          version: run.meta.version || "?",
+          condition,
+          label: `${run.meta.version || "?"} · ${condition.label}`
+        }];
+      })).values()].sort((a, b) =>
+        Number(a.version.replace(/^v/, "")) - Number(b.version.replace(/^v/, "")) ||
+        conditionOrder[a.condition.key] - conditionOrder[b.condition.key]
+      );
+      const versionKeys = versionOptions.map(option => option.key);
       const validLanguages = new Set(languages);
+      const validModels = new Set(models);
+      const validVersionKeys = new Set(versionKeys);
       state.trendLanguages = (state.trendLanguages || []).filter(lang => validLanguages.has(lang));
+      state.trendVersionExamples = (state.trendVersionExamples === null ? versionKeys : state.trendVersionExamples)
+        .filter(key => validVersionKeys.has(key));
+      state.trendModels = (state.trendModels === null ? models : state.trendModels)
+        .filter(model => validModels.has(model));
       $("trendLanguages").innerHTML = languages.map(lang =>
         `<label class="series-toggle"><input type="checkbox" data-trend-language="${esc(lang)}"
           ${state.trendLanguages.includes(lang) ? "checked" : ""}>${esc(lang)}</label>`
@@ -2101,11 +2226,38 @@ html <- paste0(
           renderTrends();
         });
       });
-      $("trendModel").innerHTML = `<option value="all">All models (${models.length})</option>` +
-        models.map(model => `<option value="${esc(model)}">${esc(model)}</option>`).join("");
-      if (![...$("trendModel").options].some(o => o.value === state.trendModel)) state.trendModel = "all";
-      $("trendModel").value = state.trendModel;
-      $("trendExamples").value = state.trendExamples;
+      $("trendVersions").innerHTML = versionOptions.map(option =>
+        `<label class="series-toggle"><input type="checkbox" data-trend-version="${esc(option.key)}"
+          ${state.trendVersionExamples.includes(option.key) ? "checked" : ""}>${esc(option.label)}</label>`
+      ).join("");
+      document.querySelectorAll("[data-trend-version]").forEach(input => {
+        input.addEventListener("change", () => {
+          const key = input.dataset.trendVersion;
+          state.trendVersionExamples = input.checked
+            ? [...new Set([...state.trendVersionExamples, key])]
+            : state.trendVersionExamples.filter(value => value !== key);
+          $("trendVersionsCount").textContent =
+            `${state.trendVersionExamples.length} of ${versionOptions.length} selected`;
+          renderTrends();
+        });
+      });
+      $("trendModels").innerHTML = models.map(model =>
+        `<label class="series-toggle"><input type="checkbox" data-trend-model="${esc(model)}"
+          ${state.trendModels.includes(model) ? "checked" : ""}>${esc(model)}</label>`
+      ).join("");
+      document.querySelectorAll("[data-trend-model]").forEach(input => {
+        input.addEventListener("change", () => {
+          const model = input.dataset.trendModel;
+          state.trendModels = input.checked
+            ? [...new Set([...state.trendModels, model])]
+            : state.trendModels.filter(value => value !== model);
+          $("trendModelsCount").textContent = `${state.trendModels.length} of ${models.length} selected`;
+          renderTrends();
+        });
+      });
+      $("trendVersionsCount").textContent =
+        `${state.trendVersionExamples.length} of ${versionOptions.length} selected`;
+      $("trendModelsCount").textContent = `${state.trendModels.length} of ${models.length} selected`;
       $("trendBasis").value = state.trendBasis;
       $("seriesHh").checked = state.trendSeries.hh;
       $("seriesCons").checked = state.trendSeries.cons;
@@ -2116,8 +2268,8 @@ html <- paste0(
 
     function resetTrendControls() {
       state.trendLanguages = [meta.language || "Unknown"];
-      state.trendModel = "all";
-      state.trendExamples = "all";
+      state.trendVersionExamples = [...new Set(payload.runs.map(r => versionExampleKey(r.meta)))];
+      state.trendModels = [...new Set(payload.runs.map(r => r.meta.model || "Unknown"))];
       state.trendBasis = "full";
       state.trendMetric = "agreement";
       state.trendScope = "all";
@@ -2133,12 +2285,9 @@ html <- paste0(
 
     function trendRuns() {
       return payload.runs.filter(run => {
-        const condition = exampleCondition(run.meta);
         return state.trendLanguages.includes(run.meta.language || "Unknown") &&
-          (state.trendModel === "all" || (run.meta.model || "Unknown") === state.trendModel) &&
-          (state.trendExamples === "all" ||
-            (state.trendExamples === "matched" && condition.matched) ||
-            (state.trendExamples === "english" && !condition.matched));
+          state.trendVersionExamples.includes(versionExampleKey(run.meta)) &&
+          state.trendModels.includes(run.meta.model || "Unknown");
       });
     }
 

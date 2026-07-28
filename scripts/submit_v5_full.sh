@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Submit the full primary v5 dev_train matrix:
-# four models x five language/prompt cells = 20 independent Slurm jobs.
+# three active models x five language/prompt cells = 15 independent Slurm jobs.
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
