@@ -77,6 +77,14 @@ def stable_rank(seed: str, record_id: str) -> str:
     return hashlib.sha256(f"{seed}:{record_id}".encode()).hexdigest()
 
 
+def portable_path(path: Path) -> str:
+    """Keep repository-owned manifest paths portable across machines."""
+    try:
+        return str(path.resolve().relative_to(LLM_DIR))
+    except ValueError:
+        return str(path)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--split", type=Path, default=DEFAULT_SPLIT)
@@ -151,9 +159,9 @@ def main() -> int:
     write_jsonl(reference_out, selected_references)
     manifest = {
         "schema_version": "v5_prompt_experiment_split_v1",
-        "source_split": str(args.split),
-        "source_reference": str(args.reference),
-        "inspected_ids_excluded": str(args.inspected),
+        "source_split": portable_path(args.split),
+        "source_reference": portable_path(args.reference),
+        "inspected_ids_excluded": portable_path(args.inspected),
         "seed": args.seed,
         "requested_quotas": DEFAULT_QUOTAS,
         "selected_counts": dict(selected_counts),

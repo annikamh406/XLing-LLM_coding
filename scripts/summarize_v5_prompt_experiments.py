@@ -7,6 +7,7 @@ import argparse
 import csv
 import json
 import math
+import re
 from collections import defaultdict
 from pathlib import Path
 
@@ -72,6 +73,23 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def read_run_log(results_dir: Path, prefix: str) -> dict:
+    """Recover the final run summary and retry count from the companion log."""
+    log_path = results_dir / "logs" / f"{prefix}.log"
+    if not log_path.exists():
+        return {}
+    text = log_path.read_text(encoding="utf-8", errors="replace")
+    starts = [match.start() + 1 for match in re.finditer(r'\n\{\n  "split":', text)]
+    summary = {}
+    if starts:
+        try:
+            summary = json.loads(text[starts[-1] :])
+        except json.JSONDecodeError:
+            pass
+    summary["retry_count"] = text.count("Retrying batch")
+    return summary
+
+
 def main() -> int:
     args = parse_args()
     output_path = args.output or args.results_dir / "summary.csv"
@@ -133,6 +151,8 @@ def main() -> int:
             for record_id in ids
             if str(by_id[record_id].get("certain", "")).strip().lower() == "yes"
         ]
+        log_summary = read_run_log(args.results_dir, prefix)
+        elapsed_seconds = log_summary.get("elapsed_seconds")
         batch_sizes = sorted({len(batch.get("record_ids", [])) for batch in raw})
         decoding = meta.get("decoding_options") or {}
         run = {
@@ -148,6 +168,11 @@ def main() -> int:
             "min_p": decoding.get("min_p"),
             "batch_sizes": ",".join(map(str, batch_sizes)),
             "n": len(ids),
+            "rejection_n": len(by_human["Rejection"]),
+            "denial_n": len(by_human["Denial"]),
+            "nonexistence_n": len(by_human["Nonexistence"]),
+            "excluded_n": len(by_human["Excluded"]),
+            "uncoded_n": len(by_human["Uncoded"]),
             "exact_accuracy_pct": pct(mean(exact_ok)),
             "collapsed_accuracy_pct": pct(mean(list(collapsed_ok.values()))),
             "rejection_accuracy_pct": pct(mean(by_human["Rejection"])),
@@ -157,6 +182,19 @@ def main() -> int:
             "uncoded_accuracy_pct": pct(mean(by_human["Uncoded"])),
             "certain_yes_pct": pct(mean(certain_yes)),
             "certain_yes_accuracy_pct": pct(mean(certain_yes_ok)),
+            "elapsed_seconds": (
+                round(float(elapsed_seconds), 2)
+                if elapsed_seconds is not None
+                else None
+            ),
+            "seconds_per_record": (
+                round(float(elapsed_seconds) / len(ids), 3)
+                if elapsed_seconds is not None
+                else None
+            ),
+            "retry_count": log_summary.get("retry_count"),
+            "is_model_baseline": False,
+            "delta_vs_model_baseline_pp": None,
             "wins_vs_model_baseline": None,
             "losses_vs_model_baseline": None,
             "exact_sign_p_vs_model_baseline": None,
@@ -170,8 +208,17 @@ def main() -> int:
     }
     for run in runs:
         baseline = baselines.get(run["model"])
-        if baseline is None or baseline["run_prefix"] == run["run_prefix"]:
+        if baseline is None:
             continue
+        if baseline["run_prefix"] == run["run_prefix"]:
+            run["is_model_baseline"] = True
+            run["delta_vs_model_baseline_pp"] = 0.0
+            continue
+        run["delta_vs_model_baseline_pp"] = round(
+            float(run["collapsed_accuracy_pct"])
+            - float(baseline["collapsed_accuracy_pct"]),
+            3,
+        )
         current = correctness[run["run_prefix"]]
         reference = correctness[baseline["run_prefix"]]
         shared = current.keys() & reference.keys()

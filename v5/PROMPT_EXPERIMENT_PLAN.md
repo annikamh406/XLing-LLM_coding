@@ -103,8 +103,9 @@ PROMPTS=condensed BATCH_SIZES=1 ARMS=core \
 ```
 
 Experiment outputs and logs stay isolated under
-`v5/results/prompt_experiments/`; they are not automatically added to the
-main coding viewer.
+`v5/results/prompt_experiments/`. They appear in a dedicated prompt-experiment
+tab when `scripts/build_coding_viewer.R` is run, but are intentionally excluded
+from the main population-oriented run comparison.
 
 ## Summarize completed conditions
 
@@ -119,6 +120,11 @@ The script writes `v5/results/prompt_experiments/summary.csv` and reports:
 - certainty use and accuracy when certain;
 - paired wins/losses and an exact sign-test p-value relative to each model's
   full-prompt, batch-5, temperature-0 baseline.
+- elapsed time, seconds per record, retry count, class denominators, and
+  percentage-point change from that baseline.
+
+The completed matrix and decisions are reported in
+[`2026-07-29_prompt_experiment_results.md`](2026-07-29_prompt_experiment_results.md).
 
 ## Promotion criteria
 

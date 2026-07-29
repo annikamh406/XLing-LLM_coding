@@ -337,10 +337,67 @@ run_order <- order(
 )
 runs <- runs[run_order]
 
+# Prompt experiments are a deliberately class-enriched English diagnostic, so
+# they belong in their own viewer tab rather than in the population-oriented
+# scored-run comparisons above. Refresh the compact summary when source
+# predictions are newer, then embed it with the split manifest. The viewer
+# remains usable when no prompt experiments have been copied to this machine.
+prompt_results_dir <- file.path(llm_dir, "v5", "results", "prompt_experiments")
+prompt_summary_path <- file.path(prompt_results_dir, "summary.csv")
+prompt_manifest_path <- file.path(
+  llm_dir, "splits", "english", "dev_train_prompttest_v5_manifest.json"
+)
+prompt_summarizer <- file.path(llm_dir, "scripts", "summarize_v5_prompt_experiments.py")
+prompt_prediction_files <- if (dir.exists(prompt_results_dir)) {
+  list.files(prompt_results_dir, pattern = "_predictions\\.jsonl$", full.names = TRUE)
+} else {
+  character(0)
+}
+if (
+  length(prompt_prediction_files) &&
+  file.exists(prompt_manifest_path) &&
+  file.exists(prompt_summarizer)
+) {
+  needs_refresh <- !file.exists(prompt_summary_path) ||
+    max(file.info(prompt_prediction_files)$mtime, na.rm = TRUE) >
+      file.info(prompt_summary_path)$mtime
+  if (needs_refresh) {
+    summary_output <- system2(
+      "python3", prompt_summarizer, stdout = TRUE, stderr = TRUE
+    )
+    status <- attr(summary_output, "status")
+    if (!is.null(status) && status != 0) {
+      warning("Prompt-experiment summary refresh failed:\n", paste(summary_output, collapse = "\n"))
+    }
+  }
+}
+
+prompt_experiment_rows <- list()
+if (file.exists(prompt_summary_path)) {
+  prompt_df <- readr::read_csv(
+    prompt_summary_path,
+    col_types = readr::cols(.default = readr::col_character())
+  )
+  prompt_df[is.na(prompt_df)] <- ""
+  prompt_experiment_rows <- lapply(seq_len(nrow(prompt_df)), function(i) {
+    as.list(prompt_df[i, ])
+  })
+}
+prompt_manifest <- if (file.exists(prompt_manifest_path)) {
+  jsonlite::fromJSON(prompt_manifest_path, simplifyVector = FALSE)
+} else {
+  list()
+}
+
 payload <- list(
   generated_on = format(Sys.Date()),
   runs = runs,
-  contexts = context_store
+  contexts = context_store,
+  prompt_experiments = list(
+    available = length(prompt_experiment_rows) > 0,
+    rows = prompt_experiment_rows,
+    manifest = prompt_manifest
+  )
 )
 json_data <- jsonlite::toJSON(payload, auto_unbox = TRUE, null = "null")
 json_data <- gsub("</", "<\\/", json_data, fixed = TRUE)
@@ -880,17 +937,115 @@ html <- paste0(
     .trend-legend .swatch { display: inline-block; width: 18px; height: 0; border-top: 3px solid; vertical-align: middle; margin-right: 5px; border-radius: 2px; }
     .trend-legend .shape { font-family: var(--mono); margin-right: 4px; color: var(--ink); }
 
+    .experiment-note {
+      margin-bottom: 12px;
+      padding: 12px 14px;
+      border: 1px solid #b9cdc9;
+      border-radius: 9px;
+      background: #f4f9f7;
+      color: #294a45;
+      font-size: 13px;
+    }
+    .experiment-note b { color: #173f39; }
+    .experiment-note ul { margin: 7px 0 0; padding-left: 20px; }
+    .experiment-note li + li { margin-top: 4px; }
+    .experiment-cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .experiment-card {
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: #fff;
+      min-width: 0;
+    }
+    .experiment-card .eyebrow {
+      color: var(--muted);
+      font-size: 10.5px;
+      font-weight: 750;
+      letter-spacing: .045em;
+      text-transform: uppercase;
+    }
+    .experiment-card .score {
+      margin-top: 4px;
+      font-size: 24px;
+      font-weight: 780;
+      line-height: 1.05;
+    }
+    .experiment-card .condition { margin-top: 4px; font-size: 12px; color: var(--muted); }
+    .experiment-card .condition b { color: var(--ink); }
+    .experiment-chart { display: grid; gap: 7px; margin-top: 12px; }
+    .experiment-row {
+      display: grid;
+      grid-template-columns: minmax(255px, 1.3fr) minmax(240px, 2fr) 86px 92px;
+      gap: 10px;
+      align-items: center;
+      min-height: 36px;
+      padding: 5px 8px;
+      border-radius: 6px;
+    }
+    .experiment-row:hover { background: #f8faf7; }
+    .experiment-condition { min-width: 0; }
+    .experiment-condition b { display: block; font-size: 12.5px; }
+    .experiment-condition span { color: var(--muted); font-size: 11px; }
+    .experiment-track {
+      height: 18px;
+      border-radius: 4px;
+      background:
+        linear-gradient(to right, transparent 0 49.8%, #d9ded8 49.8% 50.2%, transparent 50.2%),
+        #edf0ec;
+      overflow: hidden;
+      position: relative;
+    }
+    .experiment-bar {
+      height: 100%;
+      min-width: 2px;
+      border-radius: 4px;
+      background: var(--accent);
+    }
+    .experiment-value { text-align: right; font-size: 13px; font-weight: 750; font-variant-numeric: tabular-nums; }
+    .experiment-delta { text-align: right; font-size: 11.5px; font-variant-numeric: tabular-nums; }
+    .experiment-delta.up { color: var(--good); }
+    .experiment-delta.down { color: var(--bad); }
+    .experiment-delta.base { color: var(--muted); }
+    .experiment-method {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 11.5px;
+    }
+    .experiment-table-wrap { overflow-x: auto; }
+    .experiment-table-wrap .best-row { background: #f4f9f7; }
+    .sig-chip {
+      display: inline-block;
+      margin-left: 4px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: var(--good-weak);
+      color: var(--good);
+      font-size: 10px;
+      font-weight: 750;
+    }
+
     @media (max-width: 1100px) {
       .workspace { grid-template-columns: 1fr; height: auto !important; }
       .list-panel, .detail-panel { display: block; overflow: visible; }
       .record-list { max-height: 420px; }
       .summary-strip { grid-template-columns: 1fr 1fr; }
+      .experiment-cards { grid-template-columns: 1fr 1fr; }
+      .experiment-row { grid-template-columns: minmax(220px, 1fr) minmax(180px, 1.5fr) 72px 82px; }
       .trend-toolbar { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 720px) {
       .page { padding: 12px; }
       .coding-grid, .control-row { grid-template-columns: 1fr; }
       .run-picker select { min-width: 0; }
+      .experiment-cards { grid-template-columns: 1fr; }
+      .experiment-row { grid-template-columns: 1fr 70px; }
+      .experiment-track { grid-column: 1 / -1; grid-row: 2; }
+      .experiment-delta { grid-column: 2; grid-row: 1; }
       .trend-toolbar { grid-template-columns: 1fr; }
       .trend-language-filter { grid-column: span 1; }
     }
@@ -914,6 +1069,7 @@ html <- paste0(
       <button class="tab-btn active" id="tabBtnExplorer" type="button">Run explorer</button>
       <button class="tab-btn" id="tabBtnTrends" type="button">Compare runs</button>
       <button class="tab-btn" id="tabBtnCertainty" type="button">Certainty</button>
+      <button class="tab-btn" id="tabBtnExperiments" type="button">Prompt experiments</button>
     </nav>
 
     <div id="tabExplorer">
@@ -1074,6 +1230,44 @@ html <- paste0(
       </section>
     </div>
 
+    <div id="tabExperiments" class="hidden">
+      <section class="trend-panel">
+        <div class="trend-head">
+          <h2>V5 prompt experiments</h2>
+          <p class="subhead">A paired, class-enriched English diagnostic for choosing prompts and inference settings. These runs are kept separate from the main comparison because their class mix is intentionally not population-representative.</p>
+        </div>
+        <div class="experiment-note" id="experimentFindings"></div>
+        <div class="experiment-cards" id="experimentCards"></div>
+        <div class="trend-toolbar">
+          <div>
+            <label for="experimentModel">Model</label>
+            <select id="experimentModel"></select>
+          </div>
+          <div>
+            <label for="experimentMetric">Measure</label>
+            <select id="experimentMetric">
+              <option value="collapsed_accuracy_pct">Overall collapsed accuracy</option>
+              <option value="rejection_accuracy_pct">Rejection accuracy</option>
+              <option value="denial_accuracy_pct">Denial accuracy</option>
+              <option value="nonexistence_accuracy_pct">Nonexistence accuracy</option>
+              <option value="excluded_accuracy_pct">Excluded accuracy</option>
+            </select>
+          </div>
+          <div class="trend-toolbar-actions">
+            <span class="trend-count" id="experimentCount"></span>
+          </div>
+        </div>
+        <div class="experiment-chart" id="experimentChart"></div>
+        <p class="experiment-method" id="experimentMethod"></p>
+      </section>
+
+      <section class="table-panel">
+        <h2>All experimental conditions</h2>
+        <p class="caption" id="experimentTableCaption"></p>
+        <div class="experiment-table-wrap" id="experimentTable"></div>
+      </section>
+    </div>
+
     <div id="tabCertainty" class="hidden">
       <section class="trend-panel">
         <div class="trend-head">
@@ -1146,6 +1340,7 @@ html <- paste0(
       throw error;
     }
     const contexts = payload.contexts || [];
+    const promptExperiments = payload.prompt_experiments || { available: false, rows: [], manifest: {} };
     const labelLevels = ["nonexistence", "rejection", "denial", "uncoded", "excluded", "other"];
     const contentLevels = ["nonexistence", "rejection", "denial"];
     const flagNames = ["foreign_language_negation", "singing", "mimicry", "tag_question", "repetition", "not_a_negation"];
@@ -1237,7 +1432,8 @@ html <- paste0(
       trendLanguages: null, trendVersionExamples: null, trendModels: null,
       trendSeries: { hh: true, cons: true, l1: false, l2: false },
       trendShowValues: false,
-      certModel: "all", certExamples: "all", certScope: "all", certView: "2x2", certMasking: "unmasked"
+      certModel: "all", certExamples: "all", certScope: "all", certView: "2x2", certMasking: "unmasked",
+      experimentModel: "all", experimentMetric: "collapsed_accuracy_pct"
     };
 
     // Inspected rows are development data (read, mined for prompt examples,
@@ -1633,6 +1829,7 @@ html <- paste0(
 
       $("tabBtnExplorer").addEventListener("click", () => setTab("explorer"));
       $("tabBtnTrends").addEventListener("click", () => setTab("trends"));
+      $("tabBtnExperiments").addEventListener("click", () => setTab("experiments"));
 
       $("sortLine").addEventListener("click", () => setSort("line"));
       $("sortReview").addEventListener("click", () => setSort("review"));
@@ -1707,6 +1904,15 @@ html <- paste0(
       $("certMaskVisible").addEventListener("click", () => setCertMasking("unmasked"));
       $("certMaskMasked").addEventListener("click", () => setCertMasking("masked"));
 
+      $("experimentModel").addEventListener("change", () => {
+        state.experimentModel = $("experimentModel").value;
+        renderExperiments();
+      });
+      $("experimentMetric").addEventListener("change", () => {
+        state.experimentMetric = $("experimentMetric").value;
+        renderExperiments();
+      });
+
       window.addEventListener("resize", sizeWorkspace);
       window.addEventListener("resize", () => { if (!$("tabTrends").classList.contains("hidden")) renderTrends(); });
       window.addEventListener("resize", () => { if (!$("tabCertainty").classList.contains("hidden")) renderCertainty(); });
@@ -1716,10 +1922,12 @@ html <- paste0(
       $("tabExplorer").classList.toggle("hidden", tab !== "explorer");
       $("tabTrends").classList.toggle("hidden", tab !== "trends");
       $("tabCertainty").classList.toggle("hidden", tab !== "certainty");
+      $("tabExperiments").classList.toggle("hidden", tab !== "experiments");
       $("runPicker").classList.toggle("hidden", tab !== "explorer");
       $("tabBtnExplorer").classList.toggle("active", tab === "explorer");
       $("tabBtnTrends").classList.toggle("active", tab === "trends");
       $("tabBtnCertainty").classList.toggle("active", tab === "certainty");
+      $("tabBtnExperiments").classList.toggle("active", tab === "experiments");
       if (tab === "trends") {
         if (state.trendLanguages === null) state.trendLanguages = [meta.language || "Unknown"];
         populateTrendControls();
@@ -1728,6 +1936,10 @@ html <- paste0(
       else if (tab === "certainty") {
         populateCertControls();
         renderCertainty();
+      }
+      else if (tab === "experiments") {
+        populateExperimentControls();
+        renderExperiments();
       }
       else sizeWorkspace();
     }
@@ -2520,6 +2732,187 @@ html <- paste0(
           <td class="numeric">${pct(s.l2.agreement)} <span class="muted">(&kappa; ${num(s.l2.kappa)}, n=${s.l2.n})</span></td>
         </tr>`).join("")
       }</tbody></table>`;
+    }
+
+    // ---- V5 prompt-experiment tab ----
+
+    const experimentMetricDefs = {
+      collapsed_accuracy_pct: { label: "Overall collapsed accuracy", n: "n" },
+      rejection_accuracy_pct: { label: "Rejection accuracy", n: "rejection_n" },
+      denial_accuracy_pct: { label: "Denial accuracy", n: "denial_n" },
+      nonexistence_accuracy_pct: { label: "Nonexistence accuracy", n: "nonexistence_n" },
+      excluded_accuracy_pct: { label: "Excluded accuracy", n: "excluded_n" }
+    };
+    const expNumber = (value) => {
+      const n = Number(value);
+      return Number.isFinite(n) ? n : NaN;
+    };
+    const expPct = (value) => Number.isFinite(expNumber(value)) ? expNumber(value).toFixed(1) + "%" : "&ndash;";
+    const experimentRows = () => promptExperiments.rows || [];
+    const experimentPrompt = (row) => clean(row.prompt_version).includes("-condensed-") ? "Condensed prompt" : "Full prompt";
+    const experimentBatch = (row) => {
+      const match = clean(row.prompt_version).match(/-b([0-9]+)-/);
+      return match ? Number(match[1]) : Number(clean(row.batch_sizes).split(",").pop()) || 0;
+    };
+    const experimentDecoding = (row) => clean(row.prompt_version).includes("-qsample")
+      ? "sampled decoding"
+      : "temperature 0";
+    const experimentCondition = (row) => {
+      const reasoning = clean(row.reasoning_effort) === "high" ? "high reasoning" : "default reasoning";
+      return `${experimentPrompt(row)} · batch ${experimentBatch(row)} · ${reasoning} · ${experimentDecoding(row)}`;
+    };
+    const bestExperiment = (model, rows = experimentRows()) => {
+      const candidates = rows.filter(row => clean(row.model) === model);
+      return [...candidates].sort((a, b) =>
+        expNumber(b.collapsed_accuracy_pct) - expNumber(a.collapsed_accuracy_pct)
+      )[0];
+    };
+    const findExperiment = (model, fragment) => experimentRows().find(row =>
+      clean(row.model) === model && clean(row.prompt_version).includes(fragment)
+    );
+    const expDelta = (row) => {
+      const value = expNumber(row.delta_vs_model_baseline_pp);
+      if (!Number.isFinite(value)) return "";
+      const sign = value > 0 ? "+" : "";
+      return `${sign}${value.toFixed(1)} pp`;
+    };
+    const expP = (row) => {
+      const value = expNumber(row.exact_sign_p_vs_model_baseline);
+      if (!Number.isFinite(value)) return "";
+      return value < 0.001 ? "p<.001" : `p=${value.toFixed(3).replace(/^0/, "")}`;
+    };
+
+    function populateExperimentControls() {
+      const models = [...new Set(experimentRows().map(row => clean(row.model)).filter(Boolean))].sort();
+      $("experimentModel").innerHTML = `<option value="all">All models (${models.length})</option>` +
+        models.map(model => `<option value="${esc(model)}">${esc(model)}</option>`).join("");
+      if (!models.includes(state.experimentModel)) state.experimentModel = "all";
+      $("experimentModel").value = state.experimentModel;
+      $("experimentMetric").value = state.experimentMetric;
+    }
+
+    function renderExperiments() {
+      const allRows = experimentRows();
+      if (!promptExperiments.available || !allRows.length) {
+        $("experimentFindings").innerHTML = `<b>No prompt-experiment summary is embedded.</b> Rebuild the deterministic prompt-test split, run the completed conditions, then rebuild this viewer.`;
+        $("experimentCards").innerHTML = "";
+        $("experimentChart").innerHTML = "";
+        $("experimentMethod").textContent = "";
+        $("experimentTableCaption").textContent = "";
+        $("experimentTable").innerHTML = "";
+        return;
+      }
+
+      const gemma = bestExperiment("gemma4:31b");
+      const qwen = bestExperiment("qwen3.6:35b-a3b");
+      const gpt = bestExperiment("gpt-oss:120b");
+      const gemmaB1 = findExperiment("gemma4:31b", "full-b1-rdefault-t0");
+      const gemmaBase = findExperiment("gemma4:31b", "full-b5-rdefault-t0");
+      const qwenBase = findExperiment("qwen3.6:35b-a3b", "full-b5-rdefault-t0");
+      const gptHigh = findExperiment("gpt-oss:120b", "full-b5-rhigh-t0");
+      const qwenSampled = allRows.filter(row =>
+        clean(row.model) === "qwen3.6:35b-a3b" && clean(row.prompt_version).includes("-qsample")
+      );
+      const qwenSamplingDiffs = qwenSampled.map(sampled => {
+        const deterministicVersion = clean(sampled.prompt_version).replace("-qsample", "-t0");
+        const deterministic = allRows.find(row =>
+          clean(row.model) === clean(sampled.model) &&
+          clean(row.prompt_version) === deterministicVersion
+        );
+        return deterministic
+          ? expNumber(sampled.collapsed_accuracy_pct) - expNumber(deterministic.collapsed_accuracy_pct)
+          : NaN;
+      }).filter(Number.isFinite);
+      const qwenSampleMin = qwenSamplingDiffs.length ? Math.min(...qwenSamplingDiffs) : NaN;
+      const qwenSampleMax = qwenSamplingDiffs.length ? Math.max(...qwenSamplingDiffs) : NaN;
+
+      $("experimentFindings").innerHTML = `<b>Decision readout:</b>
+        <ul>
+          <li><b>Advance two settings to dev_check_1:</b> Qwen full prompt / batch 5 / temperature 0 as the pragmatic default, and Gemma full prompt / batch 1 as the accuracy-seeking challenger. Retaining the full common prompt avoids a model-specific prompt without giving up a supported gain.</li>
+          <li>Gemma full/batch-1 reaches <b>${expPct(gemmaB1 && gemmaB1.collapsed_accuracy_pct)}</b>, ${esc(expDelta(gemmaB1 || {}))} vs its batch-5 baseline (${esc(expP(gemmaB1 || {}))}), but takes ${expNumber(gemmaB1 && gemmaB1.seconds_per_record).toFixed(1)} vs ${expNumber(gemmaBase && gemmaBase.seconds_per_record).toFixed(1)} seconds per record.</li>
+          <li>GPT-OSS needs high reasoning: full/batch-5/high reaches <b>${expPct(gptHigh && gptHigh.collapsed_accuracy_pct)}</b>, ${esc(expDelta(gptHigh || {}))} vs its baseline (${esc(expP(gptHigh || {}))}). Qwen sampling is not supported: all ${qwenSamplingDiffs.length} sampled arms are worse by ${Math.abs(qwenSampleMax).toFixed(1)}&ndash;${Math.abs(qwenSampleMin).toFixed(1)} points.</li>
+        </ul>`;
+
+      const manifest = promptExperiments.manifest || {};
+      const card = (eyebrow, row) => row ? `<article class="experiment-card">
+          <div class="eyebrow">${esc(eyebrow)}</div>
+          <div class="score">${expPct(row.collapsed_accuracy_pct)}</div>
+          <div class="condition"><b>${esc(row.model)}</b><br>${esc(experimentCondition(row))}</div>
+        </article>` : "";
+      $("experimentCards").innerHTML =
+        `<article class="experiment-card">
+          <div class="eyebrow">Diagnostic sample</div>
+          <div class="score">${esc(manifest.n_records || allRows[0].n || "?")}</div>
+          <div class="condition"><b>paired English rows</b><br>class-enriched; not population-weighted</div>
+        </article>` +
+        card("Best Gemma", gemma) + card("Best Qwen", qwen) + card("Best GPT-OSS", gpt);
+
+      const metric = experimentMetricDefs[state.experimentMetric];
+      const filtered = allRows.filter(row =>
+        state.experimentModel === "all" || clean(row.model) === state.experimentModel
+      ).sort((a, b) => {
+        const modelCompare = clean(a.model).localeCompare(clean(b.model));
+        return state.experimentModel === "all" && modelCompare
+          ? modelCompare
+          : expNumber(b[state.experimentMetric]) - expNumber(a[state.experimentMetric]);
+      });
+      $("experimentCount").textContent =
+        `${filtered.length} of ${allRows.length} completed condition${filtered.length === 1 ? "" : "s"}.`;
+
+      const colors = {
+        "gemma4:31b": "#1f6f68",
+        "qwen3.6:35b-a3b": "#2d5f8b",
+        "gpt-oss:120b": "#a45c19"
+      };
+      $("experimentChart").innerHTML = filtered.map(row => {
+        const value = expNumber(row[state.experimentMetric]);
+        const baseline = isTrue(row.is_model_baseline);
+        const delta = expNumber(row.delta_vs_model_baseline_pp);
+        const deltaClass = baseline ? "base" : delta > 0 ? "up" : delta < 0 ? "down" : "base";
+        const right = state.experimentMetric === "collapsed_accuracy_pct"
+          ? (baseline ? "baseline" : expDelta(row))
+          : `n=${esc(row[metric.n] || "")}`;
+        return `<div class="experiment-row">
+          <div class="experiment-condition"><b>${esc(row.model)}</b><span>${esc(experimentCondition(row))}</span></div>
+          <div class="experiment-track"><div class="experiment-bar" style="width:${Math.max(0, Math.min(100, value))}%; background:${colors[row.model] || "#1f6f68"}"></div></div>
+          <div class="experiment-value">${expPct(value)}</div>
+          <div class="experiment-delta ${deltaClass}">${esc(right)}</div>
+        </div>`;
+      }).join("");
+      $("experimentMethod").innerHTML =
+        `<b>${esc(metric.label)}.</b> The center guide marks 50%. Overall deltas use each model full-prompt / batch-5 / default-reasoning / temperature-0 baseline.`;
+
+      const bestPrefixes = new Set(
+        [...new Set(allRows.map(row => clean(row.model)))].map(model => clean(bestExperiment(model).run_prefix))
+      );
+      const tableRows = [...filtered].sort((a, b) =>
+        expNumber(b.collapsed_accuracy_pct) - expNumber(a.collapsed_accuracy_pct)
+      );
+      $("experimentTableCaption").innerHTML =
+        `Every condition uses the same ${esc(manifest.n_records || allRows[0].n || "?")} rows. Rejection n=${esc(allRows[0].rejection_n)}, denial n=${esc(allRows[0].denial_n)}, nonexistence n=${esc(allRows[0].nonexistence_n)}, excluded n=${esc(allRows[0].excluded_n)}. Paired exact sign tests are two-sided, relative to the within-model baseline, and uncorrected for multiple comparisons. Runtime comparisons are most meaningful within model.`;
+      $("experimentTable").innerHTML = `<table><thead><tr>
+          <th>Model</th><th>Condition</th>
+          <th class="numeric">Overall</th><th class="numeric">Rejection</th><th class="numeric">Denial</th>
+          <th class="numeric">Nonexist.</th><th class="numeric">Excluded</th>
+          <th class="numeric">Certain Yes / acc.</th><th class="numeric">sec/row</th>
+          <th class="numeric">vs baseline</th>
+        </tr></thead><tbody>${tableRows.map(row => {
+          const p = expP(row);
+          const significant = Number.isFinite(expNumber(row.exact_sign_p_vs_model_baseline)) &&
+            expNumber(row.exact_sign_p_vs_model_baseline) < 0.05;
+          return `<tr class="${bestPrefixes.has(clean(row.run_prefix)) ? "best-row" : ""}">
+            <td><b>${esc(row.model)}</b></td>
+            <td>${esc(experimentCondition(row))}</td>
+            <td class="numeric"><b>${expPct(row.collapsed_accuracy_pct)}</b></td>
+            <td class="numeric">${expPct(row.rejection_accuracy_pct)}</td>
+            <td class="numeric">${expPct(row.denial_accuracy_pct)}</td>
+            <td class="numeric">${expPct(row.nonexistence_accuracy_pct)}</td>
+            <td class="numeric">${expPct(row.excluded_accuracy_pct)}</td>
+            <td class="numeric">${expPct(row.certain_yes_pct)} / ${expPct(row.certain_yes_accuracy_pct)}</td>
+            <td class="numeric">${Number.isFinite(expNumber(row.seconds_per_record)) ? expNumber(row.seconds_per_record).toFixed(1) : "&ndash;"}</td>
+            <td class="numeric">${isTrue(row.is_model_baseline) ? "baseline" : `${esc(expDelta(row))}<br><span class="muted">${esc(p)}</span>${significant ? `<span class="sig-chip">p&lt;.05</span>` : ""}`}</td>
+          </tr>`;
+        }).join("")}</tbody></table>`;
     }
 
     // ---- Certainty tab ----

@@ -1,7 +1,7 @@
 # Render the LLM-human IRR report for a version's run(s).
 #
 # Usage:
-#   Rscript scripts/render_irr_report.R <version> [--overwrite] [--outdir DIR] [--lang LANG]
+#   Rscript scripts/render_irr_report.R <version> [--overwrite] [--outdir DIR] [--lang LANG] [--include REGEX]
 #
 # Example:
 #   Rscript scripts/render_irr_report.R v2
@@ -42,6 +42,8 @@ lang_override <- if (length(lang_flag) && lang_flag < length(args)) args[[lang_f
 #   Rscript scripts/render_irr_report.R v4 --exclude 'limit-'
 exclude_flag <- which(args == "--exclude")
 exclude_pattern <- if (length(exclude_flag) && exclude_flag < length(args)) args[[exclude_flag + 1]] else NA_character_
+include_flag <- which(args == "--include")
+include_pattern <- if (length(include_flag) && include_flag < length(args)) args[[include_flag + 1]] else NA_character_
 
 # record_id prefix -> language folder under splits/. The two Tagalog corpora
 # (tgm = MPI, tgn = new corpus) are split separately but run combined, so both
@@ -77,12 +79,23 @@ out_dir <- if (!is.na(outdir_override)) normalizePath(outdir_override, mustWork 
 
 # Predictions normally sit directly in results/; dev/ is a legacy location
 # and lockbox/ is where the runner routes the final test_lockbox evaluation.
-search_dirs <- c(results_dir, file.path(results_dir, "dev"), file.path(results_dir, "lockbox"))
+search_dirs <- c(
+  results_dir,
+  file.path(results_dir, "dev"),
+  file.path(results_dir, "lockbox"),
+  file.path(results_dir, "multilingual_production_pair")
+)
 prediction_files <- unlist(lapply(
   search_dirs[dir.exists(search_dirs)],
   function(d) list.files(d, pattern = "_predictions\\.jsonl$", full.names = TRUE)
 ))
 if (!length(prediction_files)) stop("No *_predictions.jsonl found under ", results_dir)
+if (!is.na(include_pattern)) {
+  keep <- grepl(include_pattern, basename(prediction_files))
+  if (any(!keep)) message("Ignoring ", sum(!keep), " prediction file(s) outside /", include_pattern, "/")
+  prediction_files <- prediction_files[keep]
+  if (!length(prediction_files)) stop("No prediction files matched --include ", include_pattern)
+}
 if (!is.na(exclude_pattern)) {
   keep <- !grepl(exclude_pattern, basename(prediction_files))
   if (any(!keep)) message("Excluding ", sum(!keep), " prediction file(s) matching /", exclude_pattern, "/")
@@ -90,7 +103,15 @@ if (!is.na(exclude_pattern)) {
   if (!length(prediction_files)) stop("All *_predictions.jsonl excluded by --exclude ", exclude_pattern)
 }
 
-known_splits <- c("dev_train", "dev_check_1", "dev_check_2", "test_lockbox", "uncoded_by_neither")
+known_splits <- c(
+  "dev_train_promptpair_v5",
+  "dev_train_prompttest_v5",
+  "dev_train",
+  "dev_check_1",
+  "dev_check_2",
+  "test_lockbox",
+  "uncoded_by_neither"
+)
 
 first_existing <- function(paths) {
   for (p in paths) if (file.exists(p)) return(p)
@@ -100,7 +121,12 @@ first_existing <- function(paths) {
 for (prediction_path in sort(prediction_files)) {
   prefix <- sub("_predictions\\.jsonl$", "", basename(prediction_path))
 
-  split_name <- known_splits[startsWith(prefix, known_splits)]
+  split_matches <- known_splits[startsWith(prefix, known_splits)]
+  split_name <- if (length(split_matches)) {
+    split_matches[[which.max(nchar(split_matches))]]
+  } else {
+    character(0)
+  }
   if (length(split_name) != 1) {
     warning("Cannot determine split for ", basename(prediction_path), "; skipping.")
     next

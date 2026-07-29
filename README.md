@@ -23,6 +23,10 @@ to one policy/prompt iteration lives in its version folder (`v1/`, `v2/`, ...).
   model / prompt-example filters, and plots each selected language separately
   in a responsive grid. Agreement or kappa and optional diagnostic coder lines
   share the same controls; exact filtered results remain in the table below.
+  A separate "Prompt experiments" tab summarizes the class-enriched v5
+  condition matrix without mixing it into the population-oriented run trends;
+  when prompt-experiment outputs and their generated split are present, the
+  viewer refreshes and embeds `v5/results/prompt_experiments/summary.csv`.
 - `splits/english/*.jsonl`: transcript-level evaluation splits (shared across
   versions; `splits/english/diagnostics/` holds split diagnostics).
 - `datasets/`: token-level source datasets (ignored by Git).
@@ -174,6 +178,12 @@ entry points are:
 DRY_RUN=1 ./scripts/resubmit_v5_failed.sh
 DRY_RUN=1 ./scripts/submit_v5_prompt_experiments.sh
 ```
+
+The completed 2026-07-29 matrix and promotion recommendations are documented
+in
+[`v5/2026-07-29_full_matrix_results.md`](v5/2026-07-29_full_matrix_results.md)
+and
+[`v5/2026-07-29_prompt_experiment_results.md`](v5/2026-07-29_prompt_experiment_results.md).
 
 ### 1. Push from the local machine
 
