@@ -26,6 +26,7 @@ LABELS = (
 EXPECTED_CONFIGS = {
     "gemma_full_b1_t0": ("gemma4:31b", "full", 1),
     "qwen_condensed_b5_t0": ("qwen3.6:35b-a3b", "condensed", 5),
+    "qwen_full_b5_t0": ("qwen3.6:35b-a3b", "full", 5),
 }
 
 
@@ -51,6 +52,8 @@ def config_from_prompt(prompt_version: str) -> str | None:
         return "gemma_full_b1_t0"
     if re.search(r"-condensed-b5-rdefault-t0$", prompt_version):
         return "qwen_condensed_b5_t0"
+    if re.search(r"-full-b5-rdefault-t0$", prompt_version):
+        return "qwen_full_b5_t0"
     return None
 
 
@@ -128,7 +131,7 @@ def main() -> int:
                 f"{prediction_path.name}: missing={len(missing)}, "
                 f"unexpected={len(unexpected)}."
             )
-        if Counter(raw_ids) != Counter(pred_by_id):
+        if Counter(raw_ids) != Counter(pred_by_id.keys()):
             issues.append(f"{prediction_path.name}: raw/prediction ID coverage differs.")
         prediction_maps[(language, config)] = pred_by_id
 
@@ -242,6 +245,37 @@ def main() -> int:
                 }
             )
 
+    configuration_pairs = []
+    for language in LANGUAGES:
+        samples = sample_maps[language]
+        for left_config, right_config in (
+            ("qwen_full_b5_t0", "qwen_condensed_b5_t0"),
+            ("gemma_full_b1_t0", "qwen_full_b5_t0"),
+        ):
+            left = prediction_maps.get((language, left_config))
+            right = prediction_maps.get((language, right_config))
+            if left is None or right is None:
+                continue
+            for subset_value in ("double_coded_consensus", "single_human_label"):
+                ids = [record_id for record_id, sample in samples.items()
+                       if sample["evaluation_subset"] == subset_value
+                       and record_id in left and record_id in right]
+                if not ids:
+                    continue
+                for metric, normalize in (("exact", lambda x: x), ("collapsed", collapsed)):
+                    left_correct = [normalize(left[i]["bloom_label"]) == normalize(samples[i]["sampling_label"]) for i in ids]
+                    right_correct = [normalize(right[i]["bloom_label"]) == normalize(samples[i]["sampling_label"]) for i in ids]
+                    wins = sum(a and not b for a, b in zip(left_correct, right_correct))
+                    losses = sum(b and not a for a, b in zip(left_correct, right_correct))
+                    configuration_pairs.append({
+                        "language": language, "evaluation_subset": subset_name(subset_value),
+                        "metric": metric, "left_config": left_config, "right_config": right_config,
+                        "n": len(ids), "left_correct": sum(left_correct), "right_correct": sum(right_correct),
+                        "left_accuracy": sum(left_correct) / len(ids), "right_accuracy": sum(right_correct) / len(ids),
+                        "left_only_correct": wins, "right_only_correct": losses,
+                        "exact_sign_pvalue": exact_sign_pvalue(wins, losses),
+                    })
+
     expected_runs = {
         (language, config)
         for language in LANGUAGES
@@ -262,6 +296,7 @@ def main() -> int:
 
     write_csv(RESULTS_DIR / "summary.csv", run_rows)
     write_csv(RESULTS_DIR / "paired_summary.csv", paired_rows)
+    write_csv(RESULTS_DIR / "configuration_pairs.csv", configuration_pairs)
     status = {
         "expected_runs": len(expected_runs),
         "completed_runs": len(prediction_maps),

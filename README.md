@@ -1,5 +1,33 @@
 # XLing LLM Coding
 
+## Qwen full-prompt multilingual follow-up (2026-10-08)
+
+`scripts/submit_v5_multilingual_qwen_full.sh` submits only four new Qwen 3.6
+35B-A3B jobs: German, Hebrew, Spanish, and Tagalog, using the existing frozen
+`dev_train_promptpair_v5` samples, full English-example prompts, batch size 5,
+temperature 0, and a 32,768-token context window. Output tags are
+`p005y-<language-code>-full-b5-rdefault-t0`; existing Gemma and condensed-Qwen
+outputs are preserved. No check split or lockbox is used.
+
+From the Oscar checkout:
+
+```bash
+DRY_RUN=1 bash scripts/submit_v5_multilingual_qwen_full.sh
+bash scripts/submit_v5_multilingual_qwen_full.sh
+```
+
+After downloading completed outputs into `v5/results/multilingual_production_pair/`:
+
+```bash
+python3 scripts/summarize_v5_multilingual_production_pair.py
+```
+
+The scorer now expects 12 runs (the existing eight plus four new ones).
+`summary.csv` contains per-condition metrics; `configuration_pairs.csv` adds
+paired Qwen full-versus-condensed and Gemma-versus-Qwen-full comparisons using
+both exact and collapsed labels, with Tagalog's single-human subset separate.
+`paired_summary.csv` retains the original Gemma-versus-condensed-Qwen comparison.
+
 This folder contains the Phase 1 English Bloom-coding LLM pilot.
 
 ## Layout
