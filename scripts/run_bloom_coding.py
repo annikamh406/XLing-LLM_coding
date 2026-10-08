@@ -9,13 +9,17 @@ validates model output before writing predictions.
 from __future__ import annotations
 
 import argparse
+import fcntl
+import hashlib
 import http.client
 import json
+import os
 import random
 import re
 import socket
 import sys
 import time
+import tempfile
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -117,9 +121,22 @@ def read_jsonl(path: Path) -> list[dict]:
 def write_jsonl(path: Path, records: list[dict]) -> None:
     """Write records as newline-delimited JSON, creating the parent directory."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as handle:
-        for record in records:
-            handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+    atomic_write(path, "".join(json.dumps(record, ensure_ascii=False) + "\n" for record in records))
+
+
+def atomic_write(path: Path, content: str) -> None:
+    """Publish a complete file; an interruption leaves its predecessor intact."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, name = tempfile.mkstemp(prefix=path.name + ".", dir=path.parent)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            handle.write(content)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(name, path)
+    finally:
+        if os.path.exists(name):
+            os.unlink(name)
 
 
 def clean_model_name(model: str) -> str:
@@ -526,11 +543,16 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Overwrite existing prediction/raw response files.",
     )
+    parser.add_argument("--resume", action="store_true",
+                        help="Checkpoint each validated batch and resume a matching interrupted run.")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
+    if args.resume and args.overwrite:
+        print("--resume and --overwrite cannot be combined.", file=sys.stderr)
+        return 2
 
     # Lockbox discipline: the held-out test split requires an explicit override
     # so it cannot be run accidentally during prompt iteration.
@@ -594,9 +616,21 @@ def main() -> int:
         )
     prediction_path = results_dir / f"{output_prefix}_predictions.jsonl"
     raw_path = results_dir / f"{output_prefix}_raw_responses.jsonl"
+    checkpoint_path = results_dir / f"{output_prefix}_checkpoint.json"
+    results_dir.mkdir(parents=True, exist_ok=True)
+    # Lock every run, including non-resuming jobs, so two jobs cannot publish
+    # the same output prefix concurrently. The kernel releases it on eviction.
+    output_lock = (results_dir / f"{output_prefix}.lock").open("a")
+    try:
+        fcntl.flock(output_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        print("Another process is writing this run. Use a separate results directory.", file=sys.stderr)
+        return 2
 
     # Avoid clobbering previous runs unless the user explicitly requests it.
-    if not args.overwrite and (prediction_path.exists() or raw_path.exists()):
+    if not args.overwrite and not (args.resume and checkpoint_path.exists()) and (
+        prediction_path.exists() or raw_path.exists() or checkpoint_path.exists()
+    ):
         print(
             f"Output already exists. Use --overwrite to replace:\n"
             f"  {prediction_path}\n  {raw_path}",
@@ -618,6 +652,41 @@ def main() -> int:
     }
     predictions = []
     raw_responses = []
+    completed_batches = 0
+    provenance = {
+        "model": args.model, "schema_version": args.schema_version,
+        "prompt_version": args.prompt_version, "reasoning_effort": args.reasoning_effort,
+        "batch_size": args.batch_size, "max_retries": args.max_retries,
+        "decoding_options": decoding_options,
+        "records_sha256": hashlib.sha256(json.dumps(records, sort_keys=True, ensure_ascii=False).encode()).hexdigest(),
+        "prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(),
+        "runner_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+    }
+    if args.resume and checkpoint_path.exists():
+        state = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+        if state.get("provenance") != provenance:
+            print("Checkpoint does not match the sample, prompt, model, settings, or runner. Refusing to resume.", file=sys.stderr)
+            return 2
+        predictions = state["predictions"]
+        raw_responses = state["raw_responses"]
+        completed_batches = len(raw_responses)
+        expected_batches = list(chunks(records, args.batch_size))
+        if completed_batches > len(expected_batches):
+            raise ValidationError("Checkpoint contains too many batches.")
+        offset = 0
+        for index, metadata in enumerate(raw_responses):
+            ids = [r["record_id"] for r in expected_batches[index][1]]
+            if metadata["batch_number"] != index + 1 or metadata["record_ids"] != ids:
+                raise ValidationError("Checkpoint batch IDs do not match the frozen sample.")
+            validate_response({"schema_version": args.schema_version,
+                               "predictions": predictions[offset:offset + len(ids)]}, ids, args.schema_version)
+            offset += len(ids)
+        if offset != len(predictions):
+            raise ValidationError("Checkpoint has extra predictions.")
+        for path, saved in ((prediction_path, predictions), (raw_path, raw_responses)):
+            if path.exists() and read_jsonl(path) != saved:
+                raise ValidationError("Existing final output differs from the checkpoint.")
+        print(f"Resuming after {completed_batches} validated batches ({len(predictions)} records).", file=sys.stderr)
     retry_rng = random.Random(args.seed) if args.seed is not None else random.SystemRandom()
     started_at = time.time()
 
@@ -625,6 +694,8 @@ def main() -> int:
     # validated, then appended to the run-level outputs.
     for batch_index, batch in chunks(records, args.batch_size):
         batch_number = batch_index // args.batch_size + 1
+        if batch_number <= completed_batches:
+            continue
         batch_records = [prompt_record(record) for record in batch]
         expected_ids = [record["record_id"] for record in batch_records]
         output_schema = build_output_schema(expected_ids, args.schema_version)
@@ -744,6 +815,11 @@ def main() -> int:
                 "raw_response": raw_response,
             }
         )
+        if args.resume:
+            atomic_write(checkpoint_path, json.dumps({
+                "provenance": provenance, "predictions": predictions,
+                "raw_responses": raw_responses,
+            }, ensure_ascii=False) + "\n")
 
     # Write only after every batch succeeds. This prevents partial prediction
     # files from looking like complete validated outputs.

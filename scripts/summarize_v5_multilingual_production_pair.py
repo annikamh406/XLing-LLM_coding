@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import csv
+import argparse
 import json
 import math
 import re
@@ -65,8 +66,16 @@ def subset_name(value: str) -> str:
 
 
 def main() -> int:
+    global RESULTS_DIR
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--results-dir", type=Path, default=RESULTS_DIR)
+    parser.add_argument("--additional-results-dir", type=Path, action="append", default=[],
+                        help="Read isolated scavenger outputs alongside the original runs.")
+    args = parser.parse_args()
+    RESULTS_DIR = args.results_dir
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    prediction_files = sorted(RESULTS_DIR.glob(f"{SPLIT_STEM}_*_predictions.jsonl"))
+    prediction_files = sorted({path for directory in [RESULTS_DIR, *args.additional_results_dir]
+                               for path in directory.glob(f"{SPLIT_STEM}_*_predictions.jsonl")})
     run_rows: list[dict] = []
     prediction_maps: dict[tuple[str, str], dict[str, dict]] = {}
     sample_maps: dict[str, dict[str, dict]] = {}
@@ -109,6 +118,9 @@ def main() -> int:
         language = code_to_language.get(language_code.group(1) if language_code else "")
         if language is None or config is None:
             issues.append(f"{prediction_path.name}: unrecognized prompt version {prompt_version}.")
+            continue
+        if (language, config) in prediction_maps:
+            issues.append(f"duplicate run for {language} {config}; select only one completed attempt.")
             continue
         expected_model, prompt_arm, batch_size = EXPECTED_CONFIGS[config]
         if model != expected_model:

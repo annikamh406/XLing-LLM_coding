@@ -50,6 +50,15 @@ if (( ${#VISIBLE_GPUS[@]} < REQUIRED_GPUS )); then
   exit 2
 fi
 echo "GPU preflight: model=$MODEL required=$REQUIRED_GPUS visible=$CUDA_VISIBLE_DEVICES"
+if [[ -n "${MIN_GPU_MEMORY_MIB:-}" ]]; then
+  GPU_MEMORY=$(nvidia-smi --id="$CUDA_VISIBLE_DEVICES" --query-gpu=memory.total --format=csv,noheader,nounits) || exit 2
+  while read -r memory; do
+    if [[ ! "$memory" =~ ^[0-9]+$ ]] || (( memory < MIN_GPU_MEMORY_MIB )); then
+      echo "ERROR: allocated GPU has ${memory} MiB; need at least ${MIN_GPU_MEMORY_MIB} MiB." >&2
+      exit 2
+    fi
+  done <<<"$GPU_MEMORY"
+fi
 
 if (( REQUIRED_GPUS > 1 )); then
   export OLLAMA_SCHED_SPREAD=1
@@ -68,7 +77,15 @@ WORKER_LOG_DIR="${LOG_DIR:-v5/results/logs}"
 mkdir -p "$WORKER_LOG_DIR"
 ollama serve >"$WORKER_LOG_DIR/ollama_serve_${SLURM_JOB_ID}.log" 2>&1 &
 OLLAMA_PID=$!
-trap 'kill "$OLLAMA_PID" 2>/dev/null || true' EXIT
+RUNNER_PID=""
+cleanup() {
+  if [[ -n "$RUNNER_PID" ]]; then
+    kill -TERM -- "-$RUNNER_PID" 2>/dev/null || true
+  fi
+  kill "$OLLAMA_PID" 2>/dev/null || true
+}
+trap cleanup EXIT
+trap 'echo "Interrupted; completed batches are checkpointed."; exit 143' TERM INT
 
 echo "Waiting for Ollama on port ${OLLAMA_PORT}..."
 for i in $(seq 1 60); do
@@ -98,5 +115,10 @@ fi
 
 MODEL="$MODEL" LANGUAGE="$LANGUAGE" VARIANT="$VARIANT" \
 LIMIT="${LIMIT:-}" SPLIT="${SPLIT:-dev_train}" RUN_SETS="${RUN_SETS:-unmasked}" \
-  ./scripts/run_v5_language.sh \
-    --num-predict 8000 --timeout 1200 --ollama-url "$OLLAMA_URL" "$@"
+  setsid ./scripts/run_v5_language.sh \
+    --num-predict 8000 --timeout 1200 --ollama-url "$OLLAMA_URL" "$@" &
+RUNNER_PID=$!
+wait "$RUNNER_PID"
+RUNNER_STATUS=$?
+RUNNER_PID=""
+exit "$RUNNER_STATUS"

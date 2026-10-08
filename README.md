@@ -28,6 +28,66 @@ paired Qwen full-versus-condensed and Gemma-versus-Qwen-full comparisons using
 both exact and collapsed labels, with Tagalog's single-human subset separate.
 `paired_summary.csv` retains the original Gemma-versus-condensed-Qwen comparison.
 
+### Preemptible scavenger option
+
+The scavenger launcher uses `--partition=gpu-scavenger`,
+`--account=gpu-scavenger`, `--requeue`, and `--signal=B:TERM@60`. The worker
+forwards termination to the coding process and stops its private Ollama server.
+The runner's `--resume` option saves an atomic checkpoint after every validated
+batch, checks sample/prompt/code/settings provenance, and skips completed
+batches on restart. Final prediction files are published only after all batches
+finish. A file lock prevents two updated runners writing the same output prefix.
+Do not combine `--resume` and `--overwrite` or change the runner during a run.
+
+Scavenger outputs are isolated in
+`v5/results/multilingual_production_pair_scavenger/`, so queued condo jobs can
+coexist without sharing output files. Completed condo/scavenger attempts of the
+same condition are separate replications; choose one before scoring, rather
+than mixing predictions or silently overwriting outputs.
+
+Copy these five scripts from your Mac to the existing Oscar checkout:
+
+```bash
+scp scripts/run_bloom_coding.py scripts/sbatch_v5.sh \
+  scripts/submit_v5_multilingual_qwen_full.sh \
+  scripts/submit_v5_multilingual_qwen_scavenger.sh \
+  scripts/summarize_v5_multilingual_production_pair.py \
+  oscar:/oscar/data/rfeiman/amcderm6/XLing-LLM_coding/scripts/
+```
+
+On Oscar, inspect available GPU node features and preview the four jobs:
+
+```bash
+cd /oscar/data/rfeiman/amcderm6/XLing-LLM_coding
+sinfo -p gpu-scavenger -o '%N %f %G'
+DRY_RUN=1 bash scripts/submit_v5_multilingual_qwen_scavenger.sh
+bash scripts/submit_v5_multilingual_qwen_scavenger.sh
+```
+
+The default constraint is `l40s|a6000`; `GPU_CONSTRAINT` can override it using
+features actually listed by `sinfo`. Both target 48-GB cards. The worker also
+verifies at least 45,000 MiB on each allocated GPU before starting Ollama. For
+example, `GPU_CONSTRAINT=a6000 bash scripts/submit_v5_multilingual_qwen_scavenger.sh`
+limits jobs to A6000 nodes. Scavenger availability and eligible GPU features
+must be checked on Oscar; these were not verified from the local machine.
+
+After downloading scavenger results to their isolated folder, score them
+alongside the original eight runs:
+
+```bash
+python3 scripts/summarize_v5_multilingual_production_pair.py \
+  --additional-results-dir v5/results/multilingual_production_pair_scavenger
+```
+
+If the condo full-prompt jobs also completed, this command will flag duplicate
+conditions; retain one attempt per condition in the scoring inputs.
+
+Local recovery tests (no model or GPU required):
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
 This folder contains the Phase 1 English Bloom-coding LLM pilot.
 
 ## Layout

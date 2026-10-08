@@ -14,6 +14,15 @@ LOG_DIR="${LOG_DIR:-$RESULTS_DIR/logs}"
 WALLTIME="${WALLTIME:-24:00:00}"
 NUM_CTX="${NUM_CTX:-32768}"
 DRY_RUN="${DRY_RUN:-}"
+EXTRA_SBATCH_ARGS=()
+[[ -z "${PARTITION:-}" ]] || EXTRA_SBATCH_ARGS+=(--partition="$PARTITION")
+[[ -z "${ACCOUNT:-}" ]] || EXTRA_SBATCH_ARGS+=(--account="$ACCOUNT")
+[[ -z "${GPU_CONSTRAINT:-}" ]] || EXTRA_SBATCH_ARGS+=(--constraint="$GPU_CONSTRAINT")
+RUNNER_ARGS=()
+if [[ "${RESUME:-0}" == "1" ]]; then
+  EXTRA_SBATCH_ARGS+=(--requeue --signal=B:TERM@60 --open-mode=append)
+  RUNNER_ARGS+=(--resume)
+fi
 
 mkdir -p "$LOG_DIR"
 
@@ -50,6 +59,7 @@ for language in $LANGUAGES; do
   done
 
   if ! submit sbatch \
+      "${EXTRA_SBATCH_ARGS[@]}" \
       --job-name="v5y-qwen-full-b5-$language" \
       --gres="gpu:1" \
       --mem="48g" \
@@ -57,7 +67,7 @@ for language in $LANGUAGES; do
       --output="$LOG_DIR/sbatch_v5y_%x_%j.out" \
       --export="ALL,SPLIT=$SPLIT_NAME,RUN_SETS=unmasked,BATCH_SIZE=5,RESULTS_DIR=$RESULTS_DIR,LOG_DIR=$LOG_DIR,PROMPT_OVERRIDE=$full_prompt,PROMPT_VERSION_OVERRIDE=p005y-$code-full-b5-rdefault-t0" \
       scripts/sbatch_v5.sh qwen3.6:35b-a3b "$language" engex \
-      --num-ctx "$NUM_CTX" --temperature 0; then
+      --num-ctx "$NUM_CTX" --temperature 0 "${RUNNER_ARGS[@]}"; then
     echo "ERROR: failed to submit Qwen $language." >&2
     status=1
   fi
