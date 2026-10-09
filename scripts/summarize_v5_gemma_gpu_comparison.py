@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Validate all Gemma GPU attempts and compare labels within and across GPUs."""
 import csv
+import argparse
 import itertools
 import json
 import re
@@ -18,10 +19,14 @@ def write_csv(path,rows):
         if rows:
             writer=csv.DictWriter(f,fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
 
-def main():
+def main(l40s_results_dir=None):
     RESULTS.mkdir(parents=True,exist_ok=True)
     maps={};summary=[];issues=[];signatures=set()
-    for p in sorted(RESULTS.glob('*_predictions.jsonl')):
+    prediction_files=list(RESULTS.glob('*_predictions.jsonl'))
+    if l40s_results_dir is not None:
+        prediction_files=[p for p in prediction_files if '-l40s-' not in p.name]
+        prediction_files+=list(l40s_results_dir.glob('*-l40s-*_predictions.jsonl'))
+    for p in sorted(prediction_files):
         m=re.search(r'p005g-(en|de|he|es|tl)-(l40s|a6000)-r([12])-full-b1-t0',p.name)
         if not m:continue
         code,gpu,repeat=m.groups();lang=LANGUAGES[code]
@@ -41,13 +46,15 @@ def main():
                 expected_name='L40S' if gpu=='l40s' else 'A6000'
                 if not names or any(expected_name not in n for n in names):raise ValueError('Wrong GPU hardware')
                 signatures.add((runtime['model_digest'],runtime['ollama_version'],runtime['template_sha256'],runtime['model_parameters_sha256']))
+            if (lang,gpu,repeat) in maps:raise ValueError('Duplicate condition; choose one attempt')
             maps[(lang,gpu,repeat)]=by_id
             summary.append({'language':lang,'gpu':gpu,'repeat':repeat,'n':40,
                 'exact_correct':sum(by_id[i]['bloom_label']==gold[i] for i in ids),
                 'collapsed_correct':sum(collapse(by_id[i]['bloom_label'])==collapse(gold[i]) for i in ids),
                 'certain_yes':sum(by_id[i]['certain']=='Yes' for i in ids),
                 'model_digest':raw[0]['runtime_provenance']['model_digest'],
-                'ollama_version':raw[0]['runtime_provenance']['ollama_version']})
+                'ollama_version':raw[0]['runtime_provenance']['ollama_version'],
+                'source_directory':str(p.parent)})
         except (ValueError,KeyError,OSError) as e:issues.append(f'{p.name}: {e}')
     if len(signatures)>1:issues.append('Different model/template/runtime signatures; hardware comparison is confounded.')
     expected=set(itertools.product(LANGUAGES.values(),('l40s','a6000'),('1','2')))
@@ -69,4 +76,8 @@ def main():
     (RESULTS/'status.json').write_text(json.dumps(status,indent=2)+'\n');print(json.dumps(status,indent=2))
     return 1 if issues else 0
 
-if __name__=='__main__':raise SystemExit(main())
+if __name__=='__main__':
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--l40s-results-dir',type=Path,
+                        help='Use condo L40S attempts instead of scavenger L40S attempts; keep A6000 from scavenger.')
+    raise SystemExit(main(parser.parse_args().l40s_results_dir))

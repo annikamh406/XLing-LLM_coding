@@ -2,6 +2,30 @@
 
 ## Gemma hardware comparison (2026-10-09)
 
+The regular-condo alternative `scripts/submit_v5_gemma_gpu_condo.sh` submits
+only the ten L40S jobs (five languages × two repeats), using partition
+`l40s-gcondo`, QOS `copsy-l40s-gcondo`, and the user's normal default account.
+Set `CONDO_ACCOUNT` only if an explicit account is needed. Inputs, prompts,
+seeds, and decoding settings are identical to the scavenger L40S conditions.
+Condo outputs go to `v5/results/gemma_gpu_comparison_condo/`; existing
+scavenger jobs and checkpoints are untouched.
+
+```bash
+DRY_RUN=1 bash scripts/submit_v5_gemma_gpu_condo.sh
+bash scripts/submit_v5_gemma_gpu_condo.sh
+```
+
+If the condo attempts finish first, score them with the scavenger A6000 runs:
+
+```bash
+python3 scripts/summarize_v5_gemma_gpu_comparison.py \
+  --l40s-results-dir v5/results/gemma_gpu_comparison_condo
+```
+
+This explicitly selects the two condo L40S repeats per language instead of
+the scavenger L40S repeats; it does not select individual rows or repeats by
+accuracy. Both original folders remain available for a later replication check.
+
 `scripts/submit_v5_gemma_gpu_comparison.sh` prepares 20 short scavenger jobs:
 five languages × L40S/A6000 × two identical repeats. Each language uses a
 frozen, class-enriched sample of 40 previously selected development records

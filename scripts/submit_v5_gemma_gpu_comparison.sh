@@ -10,6 +10,11 @@ RESULTS_DIR="${RESULTS_DIR:-v5/results/gemma_gpu_comparison}"
 LOG_DIR="$RESULTS_DIR/logs"
 WALLTIME="${WALLTIME:-04:00:00}"
 DRY_RUN="${DRY_RUN:-}"
+PARTITION="${PARTITION:-gpu-scavenger}"
+ACCOUNT="${ACCOUNT-gpu-scavenger}"
+ROUTING_ARGS=(--partition="$PARTITION")
+[[ -z "$ACCOUNT" ]] || ROUTING_ARGS+=(--account="$ACCOUNT")
+[[ -z "${QOS:-}" ]] || ROUTING_ARGS+=(--qos="$QOS")
 mkdir -p "$LOG_DIR"
 submit() {
   if [[ -n "$DRY_RUN" ]]; then printf 'DRY:'; printf ' %q' "$@"; printf '\n'; else "$@"; fi
@@ -31,7 +36,7 @@ for language in $LANGUAGES; do
     for repeat in $REPEATS; do
       [[ "$repeat" == 1 || "$repeat" == 2 ]] || { echo "Repeat must be 1 or 2" >&2; exit 2; }
       tag="p005g-$code-$gpu-r$repeat-full-b1-t0"
-      submit sbatch --partition=gpu-scavenger --account=gpu-scavenger \
+      submit sbatch "${ROUTING_ARGS[@]}" \
         --constraint="$gpu" --gres=gpu:1 --mem=48g --time="$WALLTIME" \
         --requeue --signal=B:TERM@60 --open-mode=append \
         --job-name="gemma-gpu-$code-$gpu-r$repeat" \
