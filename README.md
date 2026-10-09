@@ -1,5 +1,58 @@
 # XLing LLM Coding
 
+## Gemma hardware comparison (2026-10-09)
+
+`scripts/submit_v5_gemma_gpu_comparison.sh` prepares 20 short scavenger jobs:
+five languages × L40S/A6000 × two identical repeats. Each language uses a
+frozen, class-enriched sample of 40 previously selected development records
+with exact human consensus. Sample selection uses no model predictions and
+excludes inspected IDs. English's historical `Nonposession` spelling is
+normalized only in the sample's evaluation label. Spanish has no possession
+examples, so its two possession slots become Nonexistence examples. No
+validation or lockbox split is accessed.
+
+Every condition uses Gemma 4 31B, the full v5 prompt (English examples for
+non-English languages), batch 1, temperature 0, context 32,768, and an
+8,000-token generation limit. Both repeats use the same seed 20261009; each
+record's effective seed is that seed plus its zero-based position. Automatic
+sampled retries are disabled (`--max-retries 0`) to keep inference settings
+fixed. A failed batch remains a diagnostic failure; the same condition can be
+resubmitted to resume its validated checkpoints without changing decoding.
+
+Jobs explicitly request scavenger's account and partition and either `l40s`
+or `a6000` node features, use a four-hour limit, and enable preemption/requeue.
+Outputs are isolated under `v5/results/gemma_gpu_comparison/`, with different
+tags for each GPU and repeat. Runtime capture records the actual GPU name,
+UUID, driver, memory, model digest, model template/parameter hashes, and Ollama
+version. Every validated batch records its effective decoding options and
+runtime provenance. Resume rejects a changed GPU model or model/runtime
+signature. Keep the runner unchanged while these jobs are running; its hash
+is part of checkpoint provenance.
+
+On Oscar after copying the scripts and frozen samples:
+
+```bash
+DRY_RUN=1 bash scripts/submit_v5_gemma_gpu_comparison.sh
+bash scripts/submit_v5_gemma_gpu_comparison.sh
+```
+
+Use `LANGUAGES`, `GPU_TYPES`, and `REPEATS` to submit individual conditions,
+for example `LANGUAGES=hebrew GPU_TYPES=a6000 REPEATS=2 bash scripts/submit_v5_gemma_gpu_comparison.sh`.
+
+After downloading the result folder:
+
+```bash
+python3 scripts/summarize_v5_gemma_gpu_comparison.py
+```
+
+The scorer validates record coverage, actual GPU, effective seeds/temperature,
+singleton batches, and shared model/runtime signatures. `summary.csv` reports
+exact and collapsed agreement with human consensus; `repeatability.csv`
+compares labels, flags, and certainty within GPU type and across GPU types.
+Two repeats per type distinguish ordinary repeat variability from a pattern
+associated with hardware. Forty enriched records per language are a small
+diagnostic, not a precise accuracy estimate.
+
 ## Qwen full-prompt multilingual follow-up (2026-10-08)
 
 `scripts/submit_v5_multilingual_qwen_full.sh` submits only four new Qwen 3.6

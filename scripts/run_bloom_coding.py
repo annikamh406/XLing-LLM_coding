@@ -652,6 +652,8 @@ def main() -> int:
     }
     predictions = []
     raw_responses = []
+    runtime_path = os.environ.get("CODING_RUNTIME_PATH")
+    runtime = json.loads(Path(runtime_path).read_text()) if runtime_path else {}
     completed_batches = 0
     provenance = {
         "model": args.model, "schema_version": args.schema_version,
@@ -661,6 +663,10 @@ def main() -> int:
         "records_sha256": hashlib.sha256(json.dumps(records, sort_keys=True, ensure_ascii=False).encode()).hexdigest(),
         "prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(),
         "runner_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "runtime_signature": {k: runtime.get(k) for k in (
+            "model_digest", "ollama_version", "template_sha256", "model_parameters_sha256"
+        )} if runtime else {},
+        "gpu_model": sorted(g["name"] for g in runtime.get("gpus", [])),
     }
     if args.resume and checkpoint_path.exists():
         state = json.loads(checkpoint_path.read_text(encoding="utf-8"))
@@ -812,6 +818,10 @@ def main() -> int:
                 "prompt_path": str(args.prompt),
                 "reasoning_effort": args.reasoning_effort or "default",
                 "decoding_options": decoding_options,
+                "effective_decoding_options": {**decoding_options,
+                                               "temperature": attempt_temperature, "seed": attempt_seed},
+                "attempt_count": attempt + 1,
+                "runtime_provenance": runtime,
                 "raw_response": raw_response,
             }
         )

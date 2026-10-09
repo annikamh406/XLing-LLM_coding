@@ -300,7 +300,8 @@ build_run <- function(audit_path, version) {
       context_window = context_window,
       masking = if (masked) "masked" else "unmasked",
       n_rows = nrow(rows),
-      audit_csv = basename(audit_path)
+      audit_csv = basename(audit_path),
+      attempt = if (grepl("multilingual_production_pair_scavenger", audit_path)) "scavenger" else if (grepl("multilingual_production_pair", audit_path)) "condo / original" else ""
     ),
     rows = rows_list,
     thinking = thinking_batches
@@ -311,7 +312,11 @@ version_dirs <- list.files(llm_dir, pattern = "^v[0-9]+$", full.names = TRUE)
 version_dirs <- version_dirs[file.info(version_dirs)$isdir]
 runs <- list()
 for (vdir in version_dirs[order(as.integer(sub("^v", "", basename(version_dirs))))]) {
-  audits <- list.files(file.path(vdir, "results"), pattern = "llm-human-audit.*\\.csv$", full.names = TRUE)
+  audit_dirs <- c(file.path(vdir, "results"),
+                  file.path(vdir, "results", "multilingual_production_pair"),
+                  file.path(vdir, "results", "multilingual_production_pair_scavenger"))
+  audits <- unlist(lapply(audit_dirs[dir.exists(audit_dirs)], function(d)
+    list.files(d, pattern = "llm-human-audit.*\\.csv$", full.names = TRUE)))
   for (audit in sort(audits)) {
     message("Adding run: ", audit)
     runs[[length(runs) + 1]] <- build_run(audit, basename(vdir))
@@ -1400,6 +1405,7 @@ html <- paste0(
       const cond = exampleCondition(m);
       const bits = ["[" + maskingCondition(m).short + "]", m.language || "?", m.version];
       if (m.model) bits.push(m.model);
+      if (m.attempt) bits.push(m.attempt);
       bits.push(m.split, cond.label);
       if (m.prompt_version) bits.push(m.prompt_version);
       bits.push("n=" + m.n_rows);

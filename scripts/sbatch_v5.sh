@@ -113,6 +113,12 @@ if ! grep -Fxq "$MODEL" <<<"$AVAILABLE_MODELS"; then
   fi
 fi
 
+if [[ "${CAPTURE_RUNTIME:-0}" == "1" ]]; then
+  export CODING_RUNTIME_PATH="$WORKER_LOG_DIR/runtime_${SLURM_JOB_ID}_restart-${SLURM_RESTART_COUNT:-0}.json"
+  "${PYTHON_BIN:-python3}" scripts/capture_coding_runtime.py --model "$MODEL" \
+    --ollama-url "$OLLAMA_URL" --output "$CODING_RUNTIME_PATH" || exit 2
+fi
+
 MODEL="$MODEL" LANGUAGE="$LANGUAGE" VARIANT="$VARIANT" \
 LIMIT="${LIMIT:-}" SPLIT="${SPLIT:-dev_train}" RUN_SETS="${RUN_SETS:-unmasked}" \
   setsid ./scripts/run_v5_language.sh \

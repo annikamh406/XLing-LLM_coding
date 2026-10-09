@@ -83,7 +83,8 @@ search_dirs <- c(
   results_dir,
   file.path(results_dir, "dev"),
   file.path(results_dir, "lockbox"),
-  file.path(results_dir, "multilingual_production_pair")
+  file.path(results_dir, "multilingual_production_pair"),
+  file.path(results_dir, "multilingual_production_pair_scavenger")
 )
 prediction_files <- unlist(lapply(
   search_dirs[dir.exists(search_dirs)],
@@ -164,8 +165,9 @@ for (prediction_path in sort(prediction_files)) {
     next
   }
 
-  output_html <- file.path(out_dir, paste0("llm-human-irr_", prefix, ".html"))
-  audit_csv <- file.path(out_dir, paste0("llm-human-audit_", prefix, ".csv"))
+  run_out_dir <- if (is.na(outdir_override) && grepl("multilingual_production_pair", dirname(prediction_path))) dirname(prediction_path) else out_dir
+  output_html <- file.path(run_out_dir, paste0("llm-human-irr_", prefix, ".html"))
+  audit_csv <- file.path(run_out_dir, paste0("llm-human-audit_", prefix, ".csv"))
 
   if (!overwrite && (file.exists(output_html) || file.exists(audit_csv))) {
     message("Exists, skipping (use --overwrite to re-render): ", basename(output_html))
