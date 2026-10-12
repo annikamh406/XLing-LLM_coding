@@ -1,0 +1,118 @@
+{
+  "created_date": "2026-10-12",
+  "purpose": "First full out-of-slice validation of the two finalists; freeze before viewing results.",
+  "split": "dev_check_1",
+  "schema_version": "bloom_v5",
+  "results_dir": "v5/results/dev_check_1",
+  "ollama_version": "0.32.14",
+  "models": {
+    "gemma4:31b": {
+      "batch_size": 1,
+      "weights_blob_sha256": "280af6832eca23cb322c4dcc65edfea98a21b8f8ab07dc7553bd6f7e6e7a3313"
+    },
+    "qwen3.6:35b-a3b": {
+      "batch_size": 5,
+      "weights_blob_sha256": "f5ee307a2982106a6eb82b62b2c00b575c9072145a759ae4660378acda8dcf2d"
+    }
+  },
+  "decoding_options": {
+    "temperature": 0.0,
+    "seed": 20261009,
+    "top_p": null,
+    "top_k": null,
+    "min_p": null,
+    "num_ctx": 32768,
+    "num_predict": 8000
+  },
+  "max_retries": 0,
+  "reasoning_effort": "default",
+  "runtime": {
+    "gpu": "NVIDIA L40S",
+    "parallel_requests": 1,
+    "flash_attention": false,
+    "kv_cache_type": "f16"
+  },
+  "languages": {
+    "english": {
+      "code": "en",
+      "input": "splits/english/dev_check_1.jsonl",
+      "human_reference": "splits/english/dev_check_1_human_reference.jsonl",
+      "prompt": "v5/bloom_v5_english_prompt.md",
+      "records": 1918,
+      "transcripts": 121,
+      "dev_train_record_overlap": 0,
+      "dev_train_transcript_overlap": 0
+    },
+    "german": {
+      "code": "de",
+      "input": "splits/german/dev_check_1.jsonl",
+      "human_reference": "splits/german/dev_check_1_human_reference.jsonl",
+      "prompt": "v5/bloom_v5_german_prompt_english_examples.md",
+      "records": 1976,
+      "transcripts": 54,
+      "dev_train_record_overlap": 0,
+      "dev_train_transcript_overlap": 0
+    },
+    "hebrew": {
+      "code": "he",
+      "input": "splits/hebrew/dev_check_1.jsonl",
+      "human_reference": "splits/hebrew/dev_check_1_human_reference.jsonl",
+      "prompt": "v5/bloom_v5_hebrew_prompt_english_examples.md",
+      "records": 1199,
+      "transcripts": 73,
+      "dev_train_record_overlap": 0,
+      "dev_train_transcript_overlap": 0
+    },
+    "spanish": {
+      "code": "es",
+      "input": "splits/spanish/dev_check_1.jsonl",
+      "human_reference": "splits/spanish/dev_check_1_human_reference.jsonl",
+      "prompt": "v5/bloom_v5_spanish_prompt_english_examples.md",
+      "records": 1813,
+      "transcripts": 62,
+      "dev_train_record_overlap": 0,
+      "dev_train_transcript_overlap": 0
+    },
+    "tagalog": {
+      "code": "tl",
+      "input": "splits/tagalog/dev_check_1.jsonl",
+      "human_reference": "splits/tagalog/dev_check_1_human_reference.jsonl",
+      "prompt": "v5/bloom_v5_tagalog_prompt_english_examples.md",
+      "records": 314,
+      "transcripts": 28,
+      "dev_train_record_overlap": 0,
+      "dev_train_transcript_overlap": 0
+    }
+  },
+  "primary_evaluation": "Pairwise LLM-human agreement and kappa with shared human-human denominator and label-collapsing rules. Consensus subset is supplementary; compare aggregate results before inspecting validation records.",
+  "files_sha256": {
+    "LLM_validation_plan.md": "9e017a42968a1550c0f8c43109cddfec026c366c60c97cab5f341103d61b7c56",
+    "scripts/capture_coding_runtime.py": "622c1122930b2e583e5c03822190480960a688519f86878840680f68d911d67e",
+    "scripts/check_v5_dev_check_1_results.py": "890e1d2f04d83a122f4a1b5d1ab8f0f16387be14a70c40e34d1b945dee1d1d7f",
+    "scripts/check_v5_validation_freeze.py": "5fa45adc1ff7eb072a8aed828e1b1367f3c3857bf8aa8e84db6a87df61116704",
+    "scripts/llm_human_irr_report.Rmd": "de24725648f9196e01ca392b280d5de9ddf2abffed61e59699905b32d9c852d7",
+    "scripts/render_irr_report.R": "c23cbb35c797a1f0cf6754d286320fde7cb08a6dc22176c03f96bc163c5354b8",
+    "scripts/run_bloom_coding.py": "09be4f7a4f4803934586ef8c6388ba335612c622df9366d798d231498d3ec0b2",
+    "scripts/run_v5_language.sh": "0647fcce8a716ea09830665a934ab01ca8a79e50b156ebed507be87db67d8707",
+    "scripts/sbatch_v5.sh": "31cbb24b554ee7aeff1b01455646acc50fcd1fc37038840bc62e661a3daffb92",
+    "scripts/sbatch_v5_validation.sh": "7950ae17e074015a3b63b0d8167b525dcc5ed642de924598b4a57914b710c542",
+    "scripts/submit_v5_dev_check_1.sh": "56904318dd61b8df78488c5fce0f0deb8d789ba05a56a8e8ee9af30532dceb4d",
+    "splits/english/dev_check_1.jsonl": "e9d571fb982bffc0a68cc3182e12f286a982eef074c6dcfc89ca4c483dc77a79",
+    "splits/english/dev_check_1_human_reference.jsonl": "c25d81093738dd58bcd305acaf2d55036d9575895116f3bfdbb2d56f948c772f",
+    "splits/german/dev_check_1.jsonl": "f51039078fd038bbfa8fdd14347398fed7ef501782db672ea149b941c47cdd78",
+    "splits/german/dev_check_1_human_reference.jsonl": "032726057bae2dd4fdd2814d933a28a77b11445ef8ab66471f5415ba9509b69e",
+    "splits/hebrew/dev_check_1.jsonl": "5f7bf3f3456f314abaf0e24dcdbeda23dfc52b72cc4d7e66517de887cf42b1df",
+    "splits/hebrew/dev_check_1_human_reference.jsonl": "fd5f94b61312a2b298c6dfd08d7e90bf3497ec0f564d269b71a1ad6c14966776",
+    "splits/spanish/dev_check_1.jsonl": "db2537d61a11e2efca3323c373cfd70a62b252ea7367e1a322344ad64323bb7d",
+    "splits/spanish/dev_check_1_human_reference.jsonl": "dd6f048dc3633396d0c9ab7b822e000070f12a4820c228b2139856d00e49868c",
+    "splits/tagalog/dev_check_1.jsonl": "ea91d9bbf7041417a0c37f0359540e1b7ee0e37cb08af233a43d2549d341ffa4",
+    "splits/tagalog/dev_check_1_human_reference.jsonl": "e811c5f355bb3ca30958bc1678eb70710e8320423662782990bdfed5d1fb2cd5",
+    "v5/Bloom_coding_policy_v5.md": "a14260c8eb6fdfdbc1a666897b8e5e8fe284b1986abd816173e3cbd99504a75a",
+    "v5/bloom_v5_english_prompt.md": "90e25c44663ed4e9c6fc315faab5149015e8dc80257254f1a6072442868f7409",
+    "v5/bloom_v5_german_prompt_english_examples.md": "d02a985631cb2f74536c9d8d005854dbf53aaa4743dad08f555a19e0bf245977",
+    "v5/bloom_v5_hebrew_prompt_english_examples.md": "23da78be84143031d799093d6ecdb044ca843f51418c5f2b0c409706d3f9e19e",
+    "v5/bloom_v5_output.schema.json": "71a3ec82cbab8fa72d974e88ca11547dbe93ec721cb9ed25819782fc841b1e40",
+    "v5/bloom_v5_spanish_prompt_english_examples.md": "5c84ec2df39e71aff66541cb4776860bc46db6539df54e97a64c546090ea1419",
+    "v5/bloom_v5_tagalog_prompt_english_examples.md": "fcc0a9b0ea58781c179607e5da985f9e3f490f32ea04d2dfd7933caffadedf6d"
+  }
+}

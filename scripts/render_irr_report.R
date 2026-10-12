@@ -84,7 +84,8 @@ search_dirs <- c(
   file.path(results_dir, "dev"),
   file.path(results_dir, "lockbox"),
   file.path(results_dir, "multilingual_production_pair"),
-  file.path(results_dir, "multilingual_production_pair_scavenger")
+  file.path(results_dir, "multilingual_production_pair_scavenger"),
+  file.path(results_dir, "dev_check_1")
 )
 prediction_files <- unlist(lapply(
   search_dirs[dir.exists(search_dirs)],

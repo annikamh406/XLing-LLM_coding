@@ -20,6 +20,12 @@ def main():
     model=next((m for m in tags if m.get('name')==a.model or m.get('model')==a.model),None)
     if model is None:raise RuntimeError('Model digest unavailable')
     details=request('show',{'model':a.model})
+    expected_version=os.environ.get('EXPECTED_OLLAMA_VERSION')
+    if expected_version and version!=expected_version:
+        raise RuntimeError(f'Ollama version changed: expected {expected_version}, got {version}')
+    expected_blob=os.environ.get('EXPECTED_MODEL_BLOB_SHA256')
+    if expected_blob and expected_blob not in details.get('modelfile',''):
+        raise RuntimeError('Model weights differ from the frozen validation configuration')
     gpu_text=subprocess.check_output(['nvidia-smi','--id='+os.environ['CUDA_VISIBLE_DEVICES'],
         '--query-gpu=name,uuid,driver_version,memory.total','--format=csv,noheader,nounits'],text=True)
     gpus=[]
@@ -29,6 +35,8 @@ def main():
     result={'model':a.model,'model_digest':model['digest'],'ollama_version':version,
         'template_sha256':hashlib.sha256(details.get('template','').encode()).hexdigest(),
         'model_parameters_sha256':hashlib.sha256(details.get('parameters','').encode()).hexdigest(),
+        'model_parameters':details.get('parameters',''),
+        'model_modelfile':details.get('modelfile',''),
         'model_details':details.get('details',{}),'gpus':gpus,
         'slurm_job_id':os.environ.get('SLURM_JOB_ID'),'restart_count':os.environ.get('SLURM_RESTART_COUNT','0')}
     a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(result,indent=2)+'\n')

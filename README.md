@@ -1,5 +1,62 @@
 # XLing LLM Coding
 
+## First validation run (2026-10-12)
+
+`scripts/submit_v5_dev_check_1.sh` prepares ten regular-condo L40S jobs:
+Gemma 4 31B with the full prompt and batch 1, and Qwen 3.6 35B-A3B with the
+full prompt and batch 5, for English, German, Hebrew, Spanish and Tagalog.
+Non-English prompts use English examples. Each model codes all 7,220 records
+in `dev_check_1` (1,918 English; 1,976 German; 1,199 Hebrew; 1,813 Spanish;
+314 Tagalog), including human disagreement and missing-label rows.
+The split has no record or transcript overlap with `dev_train`.
+
+The committed `v5/dev_check_1_freeze.json` records input/reference, prompt,
+schema, policy, runner, worker and scoring hashes. The launcher and compute-node
+wrapper verify these files before execution, including after requeue.
+It pins the previously used model weight blobs and Ollama 0.32.14, temperature
+0, seed 20261009 plus batch position, context 32,768, and generation cap 8,000.
+Sampled retries are disabled; an invalid response stops that job and preserves
+completed batches for diagnosis. The seed/retry policy is now explicit for
+both finalists. Runtime settings are one parallel request, flash attention
+disabled, and f16 KV cache, following the controlled L40S diagnostic.
+Full parameter text and the model definition are saved alongside their hashes.
+
+Jobs use `l40s-gcondo`, QOS `copsy-l40s-gcondo`, one GPU, four CPU cores,
+48 GB system RAM and a 48-hour walltime. A batch checkpoint allows resuming
+after interruption or walltime; rerunning the same launcher skips completed
+conditions. Outputs are isolated in `v5/results/dev_check_1/`.
+No row limit, masked arm, other check split or lockbox is requested.
+
+On Oscar, after pulling:
+
+```bash
+git pull --ff-only
+DRY_RUN=1 bash scripts/submit_v5_dev_check_1.sh
+bash scripts/submit_v5_dev_check_1.sh
+```
+
+Optional scheduling controls are `CONDO_ACCOUNT` and `WALLTIME`.
+To resume only one condition, for example:
+
+```bash
+LANGUAGES=english MODELS=gemma4:31b bash scripts/submit_v5_dev_check_1.sh
+```
+
+After downloading outputs and logs, validate completeness and render reports:
+
+```bash
+python3 scripts/check_v5_dev_check_1_results.py
+Rscript scripts/render_irr_report.R v5 --include '^dev_check_1_' \
+  --outdir v5/results/dev_check_1
+```
+
+Review aggregate LLM–human agreement/kappa against the human–human baseline
+first, with the report's shared missingness, repetition and label-collapsing
+rules. Also compare consensus-subset scores, classes/flags and human-disagreement
+siding. Keep the prompts fixed through this evaluation and decide promotion
+before inspecting individual validation records. `dev_check_2` follows if
+generalization is satisfactory; final lockbox evaluation comes after freeze.
+
 ## Gemma hardware comparison (2026-10-09)
 
 The regular-condo alternative `scripts/submit_v5_gemma_gpu_condo.sh` submits
