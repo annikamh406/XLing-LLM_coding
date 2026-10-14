@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-14",
+  "policy": "validation-recovery-v1",
+  "original_freeze_sha256": "8e3f921bed7ccccd22f2689c05f0f4dc8631e04b4641445c4e0f87e52f59812e",
+  "scope": "Keep every successful batch, unchanged frozen inference for all first attempts; bounded Qwen recovery only. Resume all unfinished conditions; do not restart successful batches.",
+  "stages": [
+    {
+      "stage": 0,
+      "description": "Original attempt at frozen settings; historical failed-batch artifact counts as this attempt."
+    },
+    {
+      "stage": 1,
+      "description": "One identical retry, without feedback."
+    },
+    {
+      "stage": 2,
+      "description": "One final repair: ID/schema correction feedback at original settings for formatting failure; otherwise 16000 generation tokens and 2400-second request timeout, without feedback."
+    }
+  ],
+  "fixed": "Temperature 0; original per-batch seed; original prompt/model/batch size/context. No sampled retries, dropped records or singleton fallback.",
+  "durability": "Record attempt reservation before inference. Interrupted attempt consumes its slot. Persist successful response before publishing checkpoint; reuse it if publication was interrupted. Exhaustion stops condition as incomplete across resubmissions.",
+  "reporting": "Mark recovered batches and record IDs; report recovery frequency and completion alongside IRR. Full failed responses and every attempt are stored under results/dev_check_1/recovery/. Original failure files remain untouched.",
+  "files_sha256": {
+    "scripts/run_v5_validation_recovery.py": "a9fc590fb1c866bc7fd1aad45486b1b245d0eee379181d119a9da721524daef4",
+    "scripts/python_v5_recovery.sh": "9c957e8b85b7949f9d28dde1c393e49131f900c96e11d3ce8746b69a4132ba67",
+    "scripts/check_v5_recovery_freeze.py": "c9f66219204f8112575071dfa3f2cc8dc96aeb661de808d30ccf48b243a07643",
+    "scripts/sbatch_v5_recovery.sh": "efc2f8b72d2555392c54bce0983b576f10f49fb788ee072071cfd93e32b59891",
+    "scripts/submit_v5_validation_resume.sh": "4a111a6071405ccea6cafb1ccd0247a90af37234c73478ce6db04474cb8fcadd",
+    "scripts/check_v5_recovered_results.py": "74558dcad5556bec76d4923642686be9a23f8cf48a49794f7c833fc27a239a9a"
+  }
+}

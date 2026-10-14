@@ -2,6 +2,47 @@
 
 ## First validation run (2026-10-12)
 
+Recovery amendment (2026-10-14): retain all successful batches and resume only
+unfinished conditions with the separate launcher below. Its default walltime
+is four days; the original launcher and runner remain frozen and unchanged.
+The new launcher skips completed conditions and keeps the same output prefixes
+and checkpoint provenance. Gemma resumes unchanged; Qwen adds bounded recovery
+only when needed, including for future failures in its resumed German/Spanish
+runs. Do not run both launchers for the same condition concurrently.
+
+```bash
+git pull --ff-only
+DRY_RUN=1 bash scripts/submit_v5_validation_resume.sh
+bash scripts/submit_v5_validation_resume.sh
+```
+
+The recovery rule counts the original attempt (including an existing failed
+batch artifact), retries once unchanged, then allows one final repair.
+For format/ID failures, the repair adds a correction instruction listing all
+expected IDs, with unchanged temperature, seed and token budget. For an empty
+or interrupted inference response, it increases only generation budget to
+16,000 and request timeout to 2,400 seconds. Temperature stays zero throughout.
+No records are dropped or recoded individually. An exhausted batch stops the
+condition as incomplete, even on resubmission. Attempt reservations survive
+interruption, and a saved successful response is reused if checkpoint
+publication was interrupted. Original failure files remain untouched.
+
+`v5/dev_check_1_recovery_amendment.json` separately records and hashes this
+procedure; it does not replace the original freeze. All attempts and failures
+are retained under `v5/results/dev_check_1/recovery/`. Successful raw-response
+metadata flags recovered batches and their effective options. After downloading
+the complete outputs **and the recovery directory**, use the amended checker:
+
+```bash
+python3 scripts/check_v5_recovered_results.py
+Rscript scripts/render_irr_report.R v5 --include '^dev_check_1_' \
+  --outdir v5/results/dev_check_1
+```
+
+`recovery_status.json` reports recovered-batch counts and record IDs alongside
+completeness. Report these frequencies with IRR results and retain the
+distinction between original and recovered output in any sensitivity analysis.
+
 `scripts/submit_v5_dev_check_1.sh` prepares ten regular-condo L40S jobs:
 Gemma 4 31B with the full prompt and batch 1, and Qwen 3.6 35B-A3B with the
 full prompt and batch 5, for English, German, Hebrew, Spanish and Tagalog.
