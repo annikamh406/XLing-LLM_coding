@@ -1,5 +1,47 @@
 # XLing LLM Coding
 
+## Hebrew parser diagnostic (2026-10-15)
+
+`scripts/submit_qwen_hebrew_diagnostic.sh` submits one six-hour, one-L40S job
+with eight isolated requests: temperature 0 versus 0.4, buffered versus
+streaming HTTP responses, two repeats per combination. Each request starts a
+fresh Ollama server to remove cross-cell cache history. Model weights,
+Ollama 0.32.14, full Hebrew prompt, the original five failing record IDs,
+batch size, seed 20261009, context 32,768 and generation limit 8,000 remain
+fixed. Sampled cells change temperature only; this tests sampling without
+confounding it with historical randomly generated retry seeds.
+
+```bash
+git pull --ff-only
+DRY_RUN=1 bash scripts/submit_qwen_hebrew_diagnostic.sh
+bash scripts/submit_qwen_hebrew_diagnostic.sh
+```
+
+The job writes only to `v5/results/hebrew_parser_diagnostic/job_JOBID/`.
+It does not update validation checkpoints, consume/reset recovery attempts,
+or create production predictions. No human labels are sent to the model.
+Keep the diagnostic on the frozen runtime first; do not update Ollama or
+change prompts for these baseline comparisons.
+
+Download the whole diagnostic directory when done. Its `summary.json` records
+completion/schema outcomes, content/reasoning lengths and hashes, final-event
+presence, generation counts when available, and parser-error counts per cell.
+Each cell contains:
+
+- `request.json` and `request-body.bin`: readable payload and exact submitted bytes;
+- `response-body.bin`: received body bytes, including partial/invalid UTF-8;
+- `chunks.jsonl`: byte offsets, lengths and receipt times;
+- `events.jsonl`: decoded protocol events, assembled using incremental UTF-8 decoding;
+- `runtime.json`, `ollama-serve.log` and `result.json`: provenance, server logs and outcome.
+
+Only an explicit final completion event plus five unique schema-valid answers
+counts as success. A partial answer is rejected even if it looks plausible.
+Parser failures are experimental outcomes, so the diagnostic Slurm job can
+complete successfully while some cells fail; inspect `summary.json`, not
+only the Slurm exit state. Setup/transport/protocol errors require attention.
+Streaming may expose the same underlying parser failure and is not assumed
+to fix it. Later runtime changes can be compared in a separate diagnostic.
+
 ## First validation run (2026-10-12)
 
 Recovery amendment (2026-10-14): retain all successful batches and resume only
