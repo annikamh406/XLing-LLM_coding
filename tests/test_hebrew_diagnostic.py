@@ -6,6 +6,8 @@ import sys
 import tempfile
 import time
 import unittest
+import copy
+import unicodedata
 from unittest.mock import patch
 BASE=Path(__file__).resolve().parents[1];sys.path.insert(0,str(BASE/'scripts'))
 import diagnose_qwen_hebrew as diagnostic
@@ -23,6 +25,25 @@ def answer(ids):
        flags={k:'No' for k in runner.REQUIRED_FLAGS}) for i in ids]}
 
 class DiagnosticTests(unittest.TestCase):
+    def test_normalization_preserves_accents_and_source(self):
+        record={'record_id':'a','target_utterance':'xaruzi\u0304m ʔo\u0304k\u0323el',
+                'context_before':[{'utterance':'ʔo\u0304k\u0323el'}],'sampling_label':'Denial'}
+        original=copy.deepcopy(record)
+        targeted=diagnostic.normalize_records([record],'compose-o-macron')[0]
+        nfc=diagnostic.normalize_records([record],'nfc')[0]
+        self.assertEqual(targeted['target_utterance'],'xaruzi\u0304m ʔōk\u0323el')
+        self.assertEqual(nfc['target_utterance'],'xaruzīm ʔōḳel')
+        for transformed in [targeted,nfc]:
+            self.assertEqual(unicodedata.normalize('NFD',transformed['target_utterance']),
+                             unicodedata.normalize('NFD',record['target_utterance']))
+            self.assertNotIn('sampling_label',transformed)
+        self.assertEqual(record,original)
+        before=diagnostic.request_payload([record],'system o\u0304',0,False)
+        after=diagnostic.request_payload([record],'system o\u0304',0,False,'nfc')
+        self.assertEqual(before['messages'][0],after['messages'][0])
+        self.assertEqual(before['options'],after['options'])
+        self.assertEqual(before['format'],after['format'])
+
     def test_stream_fragmented_unicode_and_complete_response(self):
         events=[{'message':{'thinking':'שלום'},'done':False},
                 {'message':{'content':json.dumps(answer(['a']))},'done':False},

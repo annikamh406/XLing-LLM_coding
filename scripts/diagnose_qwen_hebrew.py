@@ -13,6 +13,7 @@ import sys
 import time
 import urllib.request
 import urllib.error
+import unicodedata
 import run_bloom_coding as runner
 from check_v5_validation_freeze import BASE, verify
 
@@ -21,10 +22,25 @@ CELLS = [(f't{label}-{transport}-r{repeat}',temp,transport=='stream')
          for label,temp in [('0',0.0),('04',0.4)]
          for transport in ['buffered','stream'] for repeat in [1,2]]
 
-def request_payload(records,prompt,temperature,stream):
+INPUT_VARIANTS = ('original','compose-o-macron','nfc')
+
+def normalize_records(records,variant):
+    """Transform only allowlisted model input; never mutate source records."""
+    if variant not in INPUT_VARIANTS:raise ValueError('Unknown input variant')
+    def transform(value):
+        if isinstance(value,str):
+            if variant=='compose-o-macron':return value.replace('o\u0304','\u014d')
+            if variant=='nfc':return unicodedata.normalize('NFC',value)
+            return value
+        if isinstance(value,list):return [transform(v) for v in value]
+        if isinstance(value,dict):return {k:transform(v) for k,v in value.items()}
+        return value
+    return [transform(runner.prompt_record(r)) for r in records]
+
+def request_payload(records,prompt,temperature,stream,input_variant='original'):
     return {'model':MODEL,'messages':[{'role':'system','content':prompt},
       {'role':'user','content':'Code the following batch. Return only the JSON output object.\n\n'+
-       json.dumps([runner.prompt_record(r) for r in records],ensure_ascii=False,indent=2)}],
+       json.dumps(normalize_records(records,input_variant),ensure_ascii=False,indent=2)}],
       'stream':stream,'format':runner.build_output_schema([r['record_id'] for r in records],'bloom_v5'),
       'options':{'temperature':temperature,'seed':20261009,'num_ctx':32768,'num_predict':8000}}
 
@@ -103,6 +119,7 @@ def main():
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--cells',nargs='+',choices=[r[0] for r in CELLS])
     parser.add_argument('--timeout',type=int,default=1200)
+    parser.add_argument('--input-variant',choices=INPUT_VARIANTS,default='original')
     args=parser.parse_args()
     if args.timeout<=0:parser.error('timeout must be positive')
     frozen=verify()
@@ -114,7 +131,8 @@ def main():
     args.output.mkdir(parents=True,exist_ok=False)
     settings={k:os.environ.get(k) for k in ['CUDA_VISIBLE_DEVICES','OLLAMA_MODELS','OLLAMA_FLASH_ATTENTION','OLLAMA_NUM_PARALLEL','OLLAMA_KV_CACHE_TYPE']}
     manifest={'purpose':'Infrastructure diagnostic only; not validation predictions or accuracy evaluation',
-              'record_ids':[r['record_id'] for r in rows],'settings':settings,
+              'record_ids':[r['record_id'] for r in rows],'settings':settings,'input_variant':args.input_variant,
+              'normalization_scope':'Allowlisted input record string values only; system prompt and source files unchanged',
               'freeze_sha256':hashlib.sha256((BASE/'v5/dev_check_1_freeze.json').read_bytes()).hexdigest(),
               'script_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
               'design':'Two temperatures (0,0.4), two transports, two repeats; same seed/prompt/schema/batch/context/budget; fresh server per cell.'}
@@ -142,7 +160,7 @@ def main():
                     subprocess.run([sys.executable,str(BASE/'scripts/capture_coding_runtime.py'),
                         '--model',MODEL,'--ollama-url',f'http://127.0.0.1:{port}/api/chat',
                         '--output',str(directory/'runtime.json')],env=env,check=True)
-                    result=run_request(f'http://127.0.0.1:{port}/api/chat',request_payload(rows,prompt,temp,stream),directory,args.timeout)
+                    result=run_request(f'http://127.0.0.1:{port}/api/chat',request_payload(rows,prompt,temp,stream,args.input_variant),directory,args.timeout)
                 finally:
                     if server.poll() is None:
                         os.killpg(server.pid,signal.SIGTERM)
@@ -151,7 +169,7 @@ def main():
                             os.killpg(server.pid,signal.SIGKILL);server.wait()
         except Exception as error:
             result={'outcome':'setup_error','exception_type':type(error).__name__,'error':str(error)}
-        result.update(cell=name,temperature=temp,stream=stream)
+        result.update(cell=name,temperature=temp,stream=stream,input_variant=args.input_variant)
         log_text=(directory/'ollama-serve.log').read_text(errors='replace')
         result['parser_error_count']=log_text.count('unparsed Content-only output')
         (directory/'result.json').write_text(json.dumps(result,indent=2)+'\n')

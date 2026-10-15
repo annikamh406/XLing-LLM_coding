@@ -2,6 +2,35 @@
 
 ## Hebrew parser diagnostic (2026-10-15)
 
+The byte-level follow-up located the repeated failure while reproducing
+`ʔōḳel`: the `o` is followed by U+0304 COMBINING MACRON (valid UTF-8
+`CC 84`). Temperature-zero logs instead end with malformed `CC 34`;
+temperature-0.4 logs contain `CC CC 84` at the same location. The input
+files are valid Unicode. This identifies the failure location but does not
+prove that the character is universally unsupported; earlier macrons are
+generated successfully in the same response.
+
+The next isolated test compares original input, composing only `o` + macron
+into U+014D (`ō`), and full NFC normalization of the allowlisted input strings.
+Both transformations preserve canonical Unicode equivalence and accents;
+neither changes the system prompt, original source files or production runs.
+NFC can also compose `ī` into `ī` and `ḳ` into `ḳ`. Model tokenization may
+change despite canonical equivalence, so this is a diagnostic rather than
+an automatic validation preprocessing change.
+
+```bash
+git pull --ff-only
+DRY_RUN=1 bash scripts/submit_qwen_hebrew_normalization.sh
+bash scripts/submit_qwen_hebrew_normalization.sh
+```
+
+This submits three two-hour, one-L40S jobs, one per representation, each
+running two buffered temperature-zero repeats with fresh servers. Download
+all three `job_JOBID` folders; their manifests identify the input variant.
+The existing validation and recovery outputs stay untouched. If normalization
+works, verify it on previously used development records and record a
+preprocessing amendment before applying it to validation.
+
 `scripts/submit_qwen_hebrew_diagnostic.sh` submits one six-hour, one-L40S job
 with eight isolated requests: temperature 0 versus 0.4, buffered versus
 streaming HTTP responses, two repeats per combination. Each request starts a
