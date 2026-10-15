@@ -1,5 +1,44 @@
 # XLing LLM Coding
 
+## Hebrew NFC development-sample test (2026-10-15)
+
+`scripts/submit_hebrew_nfc_dev.sh` submits one L40S job for all 250 records
+of the previously used `splits/hebrew/dev_train_promptpair_v5.jsonl` sample.
+It applies NFC to allowlisted input-record strings, leaving the source data
+and full English-example system prompt unchanged. Settings match the current
+Qwen diagnostic: Ollama 0.32.14 and the pinned weight blob, batch 5,
+temperature zero, seed 20261009 plus batch position, context 32,768,
+generation cap 8,000, flash attention off and f16 KV cache.
+
+```bash
+git pull --ff-only
+DRY_RUN=1 bash scripts/submit_hebrew_nfc_dev.sh
+bash scripts/submit_hebrew_nfc_dev.sh
+```
+
+The job requests one GPU, four CPUs, 48 GB system RAM and 24 hours of headroom
+(override scheduling only with `WALLTIME`). It exits as soon as the sample
+finishes. Source and implementation hashes are in `v5/hebrew_nfc_dev_freeze.json`.
+Validation checkpoints, exhausted Hebrew recovery attempts and lockbox data
+are not touched. This tests NFC reliability; it is not a validation rerun.
+
+There is exactly one request per batch and no retries or correction feedback.
+All 50 batches are tested even if some fail, so failures are counted rather
+than hidden by early stopping or sampled recovery. Every batch retains its
+request bytes, raw response, events, timing and outcome. If interrupted, the
+same launcher reuses recorded outcomes and tests remaining batches. An
+interrupted request is retained as an explicit failure rather than silently
+being counted as a fresh first attempt.
+
+Download `v5/results/hebrew_nfc_dev/`, including logs and batch directories.
+Its `status.json` reports tested/successful batches, successful records,
+the full failure list and `complete`. Only a 250/250 complete run publishes
+final prediction/raw-response files. The Slurm job exits unsuccessfully if
+any batch fails, while retaining all successful batches and diagnostic evidence.
+Compare failure frequency with the earlier Hebrew development runs before
+deciding whether to adopt NFC for validation; aggregate label comparisons
+can follow when outputs exist.
+
 ## Hebrew parser diagnostic (2026-10-15)
 
 The byte-level follow-up located the repeated failure while reproducing
