@@ -21,11 +21,16 @@
   "durability": "Record attempt reservation before inference. Interrupted attempt consumes its slot. Persist successful response before publishing checkpoint; reuse it if publication was interrupted. Exhaustion stops condition as incomplete across resubmissions.",
   "reporting": "Mark recovered batches and record IDs; report recovery frequency and completion alongside IRR. Full failed responses and every attempt are stored under results/dev_check_1/recovery/. Original failure files remain untouched.",
   "files_sha256": {
-    "scripts/run_v5_validation_recovery.py": "a9fc590fb1c866bc7fd1aad45486b1b245d0eee379181d119a9da721524daef4",
+    "scripts/run_v5_validation_recovery.py": "8e51d2729b67e1dfe6245a9573083a254f32756897adb7e3a7b6a19a9090bbf0",
     "scripts/python_v5_recovery.sh": "9c957e8b85b7949f9d28dde1c393e49131f900c96e11d3ce8746b69a4132ba67",
     "scripts/check_v5_recovery_freeze.py": "c9f66219204f8112575071dfa3f2cc8dc96aeb661de808d30ccf48b243a07643",
     "scripts/sbatch_v5_recovery.sh": "efc2f8b72d2555392c54bce0983b576f10f49fb788ee072071cfd93e32b59891",
     "scripts/submit_v5_validation_resume.sh": "4a111a6071405ccea6cafb1ccd0247a90af37234c73478ce6db04474cb8fcadd",
-    "scripts/check_v5_recovered_results.py": "74558dcad5556bec76d4923642686be9a23f8cf48a49794f7c833fc27a239a9a"
+    "scripts/check_v5_recovered_results.py": "74558dcad5556bec76d4923642686be9a23f8cf48a49794f7c833fc27a239a9a",
+    "scripts/validation_runtime_compat.py": "384fdbe7817385605970cfc487ac7d5272413ffb15b03b3174c8493932757c46"
+  },
+  "parameter_order_fix": {
+    "date": "2026-10-15",
+    "scope": "Prove identical unique parameter values and unchanged other runtime fields, then express runtime parameter metadata in the original checkpoint order. Retain observed text/hash and original capture; never modify checkpoints or inference settings."
   }
 }

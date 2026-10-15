@@ -2,10 +2,12 @@
 """Bounded recovery around the unchanged frozen runner; preserve checkpoint identity."""
 import hashlib
 import json
+import os
 import sys
 from pathlib import Path
 import run_bloom_coding as runner
 from check_v5_recovery_freeze import check as verify
+from validation_runtime_compat import compatible_runtime
 
 POLICY = 'validation-recovery-v1'
 
@@ -104,6 +106,9 @@ def main():
         or args.temperature != 0 or args.seed != 20261009 or args.max_retries != 0
         or args.num_predict != 8000 or args.timeout != 1200 or not args.resume or args.limit is not None):
         raise SystemExit('Recovery requires the original full Qwen validation configuration')
+    runtime_path = os.environ.get('CODING_RUNTIME_PATH')
+    if runtime_path:
+        os.environ['CODING_RUNTIME_PATH'] = str(compatible_runtime(args,runtime_path))
     runner.ollama_chat = Recovery(args,runner.ollama_chat)
     atomic, write = runner.atomic_write, runner.write_jsonl
     def atomic_checkpoint(path,text):

@@ -5,6 +5,19 @@
 Recovery amendment (2026-10-14): retain all successful batches and resume only
 unfinished conditions with the separate launcher below. Its default walltime
 is four days; the original launcher and runner remain frozen and unchanged.
+The October 15 parameter-order fix accepts only identical, uniquely named
+default parameter values in a different order. It retains the unmodified
+runtime capture and both text/hash representations in derived runtime metadata;
+checkpoints and inference settings stay untouched. Actual value, model,
+template, version or GPU-model changes are still rejected.
+To resume just the three affected Qwen conditions:
+
+```bash
+git pull --ff-only
+LANGUAGES="english german spanish" MODELS=qwen3.6:35b-a3b \
+  bash scripts/submit_v5_validation_resume.sh
+```
+
 The new launcher skips completed conditions and keeps the same output prefixes
 and checkpoint provenance. Gemma resumes unchanged; Qwen adds bounded recovery
 only when needed, including for future failures in its resumed German/Spanish
