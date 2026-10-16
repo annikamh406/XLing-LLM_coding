@@ -1,5 +1,63 @@
 # XLing LLM Coding
 
+## Hebrew NFC validation amendment (2026-10-16)
+
+The full-NFC development run completed 250/250 records, 50/50 batches on the
+first attempt, with zero retries and zero parser errors. Its aggregate status
+hash is recorded in `v5/dev_check_1_hebrew_nfc_amendment.json`. On that basis,
+advance NFC preprocessing to **Qwen Hebrew only** on the full 1,199-record
+`dev_check_1` split (240 batches, including a final four-record batch).
+
+NFC applies only to the allowlisted record strings sent to Qwen. Source
+transcripts, human references and the full English-example system prompt stay
+unchanged. Model weights, Ollama 0.32.14, L40S hardware, batch 5, temperature
+zero, seed 20261009 plus batch position, context 32,768 and generation cap
+8,000 remain fixed. Bounded deterministic recovery remains available under
+the existing amendment; there are no sampled retries. This is a documented
+technical preprocessing change after the original validation attempt failed,
+not an assertion that the original configuration completed successfully.
+
+```bash
+git pull --ff-only
+DRY_RUN=1 bash scripts/submit_hebrew_nfc_validation.sh
+bash scripts/submit_hebrew_nfc_validation.sh
+```
+
+The launcher submits one regular-condo L40S job with a four-day walltime
+(override scheduling only with `WALLTIME`). Outputs, checkpoints and recovery
+audits go to `v5/results/dev_check_1_hebrew_nfc/`, with the distinct prompt/run
+tag `p005v1nfc-he-full-b5-t0-s20261009`. The old failed Hebrew configuration
+and its exhausted recovery ledger remain unchanged; nothing is imported from
+the five-record diagnostic or the development sample. The new job can resume
+its own checkpoints using the same launcher. Other language/model jobs are
+unaffected. Completed batches record the NFC rule, normalized-input hash and
+preprocessing amendment hash, including after recovery.
+
+Download the entire new output directory and logs. For the combined ten-run
+validation status, explicitly selecting NFC for Hebrew Qwen:
+
+```bash
+python3 scripts/check_hebrew_nfc_validation.py
+```
+
+`dev_check_1_hebrew_nfc/combined_status.json` counts the NFC Hebrew condition
+once, instead of its archived unnormalized attempt, and marks the mixed
+preprocessing configurations explicitly. It also checks original-language
+outputs through the existing recovery checker. It remains incomplete while
+any of the other nine conditions is unfinished.
+
+Render the completed Hebrew NFC condition with the original frozen IRR
+template, references, denominators and label-collapsing rules:
+
+```bash
+Rscript scripts/render_hebrew_nfc_validation.R
+```
+
+Review aggregate LLM-human versus human-human reliability before inspecting
+individual validation records. Include completion/recovery frequencies and
+the Hebrew-only NFC amendment in the eventual comparison. Neither
+`dev_check_2` nor the lockbox is used by this launcher.
+
 ## Hebrew NFC development-sample test (2026-10-15)
 
 `scripts/submit_hebrew_nfc_dev.sh` submits one L40S job for all 250 records

@@ -1,0 +1,50 @@
+{
+  "date": "2026-10-16",
+  "policy": "hebrew-nfc-validation-v1",
+  "scope": "Qwen Hebrew dev_check_1 only. Canonical NFC on allowlisted model-input record strings; original source files, system prompt and labels unchanged.",
+  "input": "splits/hebrew/dev_check_1.jsonl",
+  "human_reference": "splits/hebrew/dev_check_1_human_reference.jsonl",
+  "prompt": "v5/bloom_v5_hebrew_prompt_english_examples.md",
+  "records": 1199,
+  "batches": 240,
+  "results_dir": "v5/results/dev_check_1_hebrew_nfc",
+  "prompt_version": "p005v1nfc-he-full-b5-t0-s20261009",
+  "supersedes": "The failed unnormalized Hebrew Qwen configuration, retained unchanged under v5/results/dev_check_1/. No old predictions or failed recovery attempts are imported or reset.",
+  "evidence": {
+    "development_sample": "splits/hebrew/dev_train_promptpair_v5.jsonl",
+    "records": 250,
+    "batches": 50,
+    "first_attempt_successful_batches": 50,
+    "retries": 0,
+    "parser_errors": 0,
+    "status_sha256": "25efc747594c6b74e84eef97cd4f75139a68ef62dd173f65c5a071d38be03579"
+  },
+  "inference": {
+    "model": "qwen3.6:35b-a3b",
+    "ollama_version": "0.32.14",
+    "gpu": "NVIDIA L40S",
+    "batch_size": 5,
+    "temperature": 0,
+    "seed": 20261009,
+    "num_ctx": 32768,
+    "num_predict": 8000,
+    "timeout": 1200
+  },
+  "recovery": "Existing validation-recovery-v1: one unchanged retry then one deterministic format or budget repair, full audit, stop on exhaustion. No sampled decoding.",
+  "reporting": "Mark Hebrew Qwen as NFC-amended; evaluate it against the original human reference with the frozen IRR scoring rules. Report completion and recovery counts. Other validation configurations unchanged.",
+  "files_sha256": {
+    "scripts/run_hebrew_nfc_validation.py": "fad7955be4da3f96285e53bcbf8b6c2791525ec9c695c261324033da2eee6211",
+    "scripts/python_hebrew_nfc_validation.sh": "470d01d3b38ae044320c7139c9ec04b7c4c9891c58f6326f8a4ef95174f88a80",
+    "scripts/sbatch_hebrew_nfc_validation.sh": "6be1bc21beea3c34f2303c1e5d124231fe12002045395d6ec8a3f1b860b51dc1",
+    "scripts/submit_hebrew_nfc_validation.sh": "aada6be50920e239bcbad99e81eaae2c15f4dcc9253665d2ae008ae86a6173f3",
+    "scripts/check_hebrew_nfc_validation.py": "72f06c1267987cdad02b225532ef911dc5a33242428b57a79675f8fde20b1a16",
+    "scripts/render_hebrew_nfc_validation.R": "e381c2a14ebaef2f01c1f9f4e1b5bd9dcbfa33f49ae2514c173c8a83c06e0cfe",
+    "v5/dev_check_1_freeze.json": "8e3f921bed7ccccd22f2689c05f0f4dc8631e04b4641445c4e0f87e52f59812e",
+    "v5/dev_check_1_recovery_amendment.json": "4967faf65201524cb4c4b11d347167abb46374cd739f2d47eb67af2c77071e01",
+    "v5/hebrew_nfc_dev_freeze.json": "294c8c287593d252aba349d97a9e8182dc6fb280c424b2e2e3c995f636a64f2a",
+    "splits/hebrew/dev_check_1.jsonl": "5f7bf3f3456f314abaf0e24dcdbeda23dfc52b72cc4d7e66517de887cf42b1df",
+    "splits/hebrew/dev_check_1_human_reference.jsonl": "fd5f94b61312a2b298c6dfd08d7e90bf3497ec0f564d269b71a1ad6c14966776",
+    "v5/bloom_v5_hebrew_prompt_english_examples.md": "23da78be84143031d799093d6ecdb044ca843f51418c5f2b0c409706d3f9e19e",
+    "scripts/llm_human_irr_report.Rmd": "de24725648f9196e01ca392b280d5de9ddf2abffed61e59699905b32d9c852d7"
+  }
+}
