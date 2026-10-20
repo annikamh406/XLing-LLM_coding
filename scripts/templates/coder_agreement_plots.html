@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Human and model agreement plots</title>
+<style>
+body{font:16px system-ui;max-width:1200px;margin:28px auto;padding:0 20px;color:#222;line-height:1.5}h1{font-size:26px}h2{font-size:21px;margin-top:32px}a{color:#075b99}.legend{display:flex;gap:20px;flex-wrap:wrap}.legend span{display:flex;align-items:center;gap:6px}.legend svg{width:18px;height:18px}.chart svg{display:block;width:100%;overflow:visible}.chart text{fill:#333;font:13px system-ui}.chart .language{font-weight:600}.hit{cursor:help;outline:none}.hit:focus .mark{stroke:#222;stroke-width:2}.tooltip{position:fixed;z-index:10;pointer-events:none;background:#fff;color:#222;border:1px solid #aaa;border-radius:4px;box-shadow:0 2px 10px #0002;padding:10px 12px;max-width:310px;font-size:14px;white-space:pre-line;line-height:1.5}.tooltip[hidden]{display:none}
+</style>
+<h1>Human and model agreement plots</h1>
+<p>Hover over, focus, or tap a dot to see percent agreement, the human baseline, their difference, and the shared sample size. Every comparison within a human pair uses identical records. Repetition rows remain excluded.</p>
+<p>Blank attribution belongs to the sheet’s main coder; explicit names identify alternates, with Laurize merged into LM (the same person). Relative plots subtract human–human agreement: zero means equal agreement. Higher agreement does not establish which coder is correct. Small samples, especially n=5 or n=7, are unstable.</p>
+<p><a href="#all">All individual pairs</a> · <a href="report.html">Detailed tables and attribution policy</a></p>
+<div class="legend" aria-label="Plot legend">
+<span><svg aria-hidden="true"><circle cx="9" cy="9" r="5" fill="#0072B2"/></svg>Gemma</span>
+<span><svg aria-hidden="true"><rect x="4" y="4" width="10" height="10" fill="#D55E00"/></svg>Qwen</span>
+<span><svg aria-hidden="true"><path d="M9 3L15 9L9 15L3 9Z" fill="#333"/></svg>Human–human baseline</span>
+</div>
+<main id="plots"></main>
+<p>Rows for different pairs can represent different item difficulty and label distributions. Points are descriptive; no independent-token significance claims or uncertainty intervals are shown.</p>
+<div class="tooltip" id="tooltip" role="tooltip" hidden></div>
+<script>
+const data = __PLOT_DATA__;
+const definitions=[
+ ['absolute_main_pairs','Main coders: absolute agreement',false,true],
+ ['relative_main_pairs','Main coders: difference from human agreement',true,true],
+ ['relative_all_pairs','All individual pairs: difference from human agreement',true,false],
+ ['absolute_all_pairs','All individual pairs: absolute agreement',false,false]
+];
+const ns='http://www.w3.org/2000/svg';
+const tooltip=document.getElementById('tooltip');
+function svgEl(parent,name,attrs={},text){const e=document.createElementNS(ns,name);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);if(text!==undefined)e.textContent=text;parent.append(e);return e;}
+function pct(v){return v.toFixed(1)+'%';}
+function signed(v){return (v>0?'+':'')+v.toFixed(1);}
+function showTooltip(event,text,element){
+ tooltip.textContent=text;tooltip.hidden=false;
+ const box=element.getBoundingClientRect();
+ let x=Number.isFinite(event.clientX)&&event.type!=='focus'?event.clientX:box.x+box.width/2;
+ let y=Number.isFinite(event.clientY)&&event.type!=='focus'?event.clientY:box.y+box.height/2;
+ tooltip.style.left=Math.max(8,Math.min(x+14,innerWidth-tooltip.offsetWidth-8))+'px';
+ tooltip.style.top=Math.max(8,Math.min(y+14,innerHeight-tooltip.offsetHeight-8))+'px';
+}
+function mark(svg,x,y,kind,color,text){
+ const g=svgEl(svg,'g',{'class':'hit',tabindex:0,role:'img','aria-label':text});
+ svgEl(g,'circle',{cx:x,cy:y,r:12,fill:'transparent'});
+ if(kind==='square')svgEl(g,'rect',{x:x-5,y:y-5,width:10,height:10,fill:color,'class':'mark'});
+ else if(kind==='diamond')svgEl(g,'path',{d:`M${x} ${y-6}L${x+6} ${y}L${x} ${y+6}L${x-6} ${y}Z`,fill:color,'class':'mark'});
+ else svgEl(g,'circle',{cx:x,cy:y,r:5,fill:color,'class':'mark'});
+ for(const type of ['pointerenter','pointermove','focus','click'])g.addEventListener(type,e=>showTooltip(e,text,g));
+ for(const type of ['pointerleave','blur'])g.addEventListener(type,()=>tooltip.hidden=true);
+}
+function draw(container,rows,relative){
+ container.replaceChildren();const w=container.clientWidth;const narrow=w<650;
+ const left=narrow?30:Math.min(310,w*.34),right=24,top=36,rowHeight=narrow?86:52;
+ const rowIds=[...new Set(rows.map(r=>r.row_id))];
+ let y=top;let language='';const positions=new Map(),groups=[];
+ for(const id of rowIds){const r=rows.find(d=>d.row_id===id);if(r.language!==language){y+=30;groups.push({label:r.language,y:y-12});language=r.language;}positions.set(id,y+(narrow?26:0));y+=rowHeight;}
+ const h=y+62;const svg=svgEl(container,'svg',{viewBox:`0 0 ${w} ${h}`,width:w,height:h,role:'img','aria-label':relative?'Model agreement minus human agreement, in percentage points':'Model and human percent agreement'});
+ const values=rows.flatMap(r=>relative?[0,r.delta]:[r.baseline,r.agreement]);
+ const min=Math.min(...values),max=Math.max(...values),pad=Math.max((max-min)*.12,2);
+ const lo=relative?Math.floor((min-pad)/5)*5:Math.max(0,Math.floor((min-pad)/5)*5);
+ const hi=relative?Math.ceil((max+pad)/5)*5:Math.min(100,Math.ceil((max+pad)/5)*5);
+ const x=v=>left+(v-lo)/(hi-lo)*(w-left-right);
+ const ticks=narrow?3:6;for(let i=0;i<=ticks;i++){const v=lo+(hi-lo)*i/ticks,xx=x(v);svgEl(svg,'line',{x1:xx,x2:xx,y1:top+5,y2:y-15,stroke:'#ddd','stroke-width':.6});svgEl(svg,'text',{x:xx,y:y+9,'text-anchor':'middle'},relative?(v>0?'+':'')+v.toFixed(0):v.toFixed(0)+'%');}
+ if(relative)svgEl(svg,'line',{x1:x(0),x2:x(0),y1:top+5,y2:y-15,stroke:'#555','stroke-width':1.3});
+ for(const g of groups)svgEl(svg,'text',{x:narrow?0:left,y:g.y,'class':'language'},g.label);
+ for(const id of rowIds){const pair=rows.filter(r=>r.row_id===id),r=pair[0],yy=positions.get(id);
+  svgEl(svg,'line',{x1:left,x2:w-right,y1:yy,y2:yy,stroke:'#eee'});
+  svgEl(svg,'text',{x:narrow?0:left-12,y:narrow?yy-24:yy+4,'text-anchor':narrow?'start':'end'},r.row_label);
+  if(!relative)mark(svg,x(r.baseline),yy,'diamond','#333',`${r.target}–${r.other}\nHuman–human agreement: ${pct(r.baseline)}\nShared rows: ${r.n.toLocaleString()}`);
+  for(const d of pair){const py=yy+(d.model==='Gemma'?-10:10);const value=relative?d.delta:d.agreement;
+   if(relative)svgEl(svg,'line',{x1:x(0),x2:x(value),y1:py,y2:py,stroke:'#bbb','stroke-width':.8});
+   mark(svg,x(value),py,d.model==='Gemma'?'circle':'square',d.model==='Gemma'?'#0072B2':'#D55E00',`${d.model} ↔ ${d.target}\nModel–human agreement: ${pct(d.agreement)}\nHuman baseline (${d.target}–${d.other}): ${pct(d.baseline)}\nDifference: ${signed(d.delta)} percentage points\nShared rows: ${d.n.toLocaleString()}`);
+  }
+ }
+ svgEl(svg,'text',{x:(left+w-right)/2,y:h-12,'text-anchor':'middle'},relative?'Difference from human agreement (percentage points)':'Pairwise agreement (%)');
+}
+for(const [id,title,relative,mainOnly] of definitions){
+ const section=document.createElement('section');if(id==='relative_all_pairs')section.id='all';
+ const heading=document.createElement('h2');heading.textContent=title;section.append(heading);
+ const links=document.createElement('p');for(const ext of ['pdf','png']){const a=document.createElement('a');a.href=id+'.'+ext;a.textContent=ext.toUpperCase();links.append(a,document.createTextNode('  '));}section.append(links);
+ const chart=document.createElement('div');chart.className='chart';section.append(chart);document.getElementById('plots').append(section);
+ const rows=data.filter(r=>!mainOnly||r.main_pair);new ResizeObserver(()=>{tooltip.hidden=true;draw(chart,rows,relative);}).observe(chart);
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')tooltip.hidden=true;});
+</script>
+</html>

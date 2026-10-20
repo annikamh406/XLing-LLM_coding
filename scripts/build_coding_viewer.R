@@ -162,11 +162,15 @@ build_run <- function(audit_path, version) {
   schema_version <- ""
   prompt_version <- ""
   run_date <- ""
+  prompt_path <- ""
+  input_normalization <- ""
   if (!is.null(best_raw) && best_overlap >= 0.5) {
     first <- best_raw[[1]]
     model <- chr1(first$model)
     schema_version <- chr1(first$schema_version)
     prompt_version <- chr1(first$prompt_version)
+    prompt_path <- chr1(first$prompt_path)
+    input_normalization <- chr1(first$input_normalization)
     run_date <- substr(chr1(first$raw_response$created_at), 1, 10)
     for (b in best_raw) {
       ids <- b$record_ids
@@ -296,12 +300,15 @@ build_run <- function(audit_path, version) {
       model = model,
       schema_version = schema_version,
       prompt_version = prompt_version,
+      prompt_path = prompt_path,
+      input_normalization = input_normalization,
       run_date = run_date,
       context_window = context_window,
       masking = if (masked) "masked" else "unmasked",
       n_rows = nrow(rows),
       audit_csv = basename(audit_path),
-      attempt = if (grepl("multilingual_production_pair_scavenger", audit_path)) "scavenger" else if (grepl("multilingual_production_pair", audit_path)) "condo / original" else ""
+      results_subdir = sub(paste0(llm_dir, "/", version, "/results/?"), "", results_dir, fixed = FALSE),
+      attempt = if (grepl("dev_train_current", audit_path)) "full dev_train / validation settings" else if (grepl("hebrew_nfc_dev", audit_path)) "NFC dev sample" else if (grepl("gemma_gpu_comparison_condo", audit_path)) "L40S repeat 2 / 40-row sample" else if (grepl("prompt_experiments", audit_path)) "class-enriched dev sample" else if (grepl("multilingual_production_pair_scavenger", audit_path)) "scavenger" else if (grepl("multilingual_production_pair", audit_path)) "condo / original" else ""
     ),
     rows = rows_list,
     thinking = thinking_batches
@@ -314,7 +321,11 @@ runs <- list()
 for (vdir in version_dirs[order(as.integer(sub("^v", "", basename(version_dirs))))]) {
   audit_dirs <- c(file.path(vdir, "results"),
                   file.path(vdir, "results", "multilingual_production_pair"),
-                  file.path(vdir, "results", "multilingual_production_pair_scavenger"))
+                  file.path(vdir, "results", "multilingual_production_pair_scavenger"),
+                  file.path(vdir, "results", "gemma_gpu_comparison_condo"),
+                  file.path(vdir, "results", "hebrew_nfc_dev"),
+                  file.path(vdir, "results", "dev_train_current"),
+                  file.path(vdir, "results", "prompt_experiments"))
   audits <- unlist(lapply(audit_dirs[dir.exists(audit_dirs)], function(d)
     list.files(d, pattern = "llm-human-audit.*\\.csv$", full.names = TRUE)))
   for (audit in sort(audits)) {
@@ -341,6 +352,31 @@ run_order <- order(
   vapply(runs, function(r) r$meta$n_rows, numeric(1))
 )
 runs <- runs[run_order]
+
+# Pin one latest dev_train subset per finalist/language using the validation
+# prompt paths and the selected full-prompt batch sizes. This is a navigation
+# aid, not a claim that these historical runs share every runtime setting.
+freeze <- jsonlite::fromJSON(file.path(llm_dir, "v5", "dev_check_1_freeze.json"), simplifyVector = FALSE)
+for (i in seq_along(runs)) {
+  m <- runs[[i]]$meta
+  lang <- tolower(m$language)
+  expected_prompt <- chr1(freeze$languages[[lang]]$prompt)
+  selected_batch <- (m$model == "gemma4:31b" && grepl("-full-b1-", m$prompt_version)) ||
+    (m$model == "qwen3.6:35b-a3b" && grepl("-full-b5-", m$prompt_version))
+  hebrew_ok <- !(lang == "hebrew" && m$model == "qwen3.6:35b-a3b") || grepl("NFC", m$input_normalization, fixed = TRUE)
+  runs[[i]]$meta$current_dev_train <- identical(m$version, "v5") &&
+    startsWith(m$split, "dev_train") && nzchar(expected_prompt) &&
+    identical(m$prompt_path, expected_prompt) && selected_batch && hebrew_ok &&
+    !grepl("qsample", m$prompt_version)
+  runs[[i]]$meta$latest_current_dev_train <- FALSE
+}
+candidate_ids <- which(vapply(runs, function(r) r$meta$current_dev_train, logical(1)))
+candidate_groups <- split(candidate_ids, vapply(runs[candidate_ids], function(r) paste(r$meta$language, r$meta$model), character(1)))
+for (ids in candidate_groups) {
+  dates <- vapply(runs[ids], function(r) r$meta$run_date, character(1))
+  chosen <- ids[order(dates, ids, decreasing = TRUE)[1]]
+  runs[[chosen]]$meta$latest_current_dev_train <- TRUE
+}
 
 # Prompt experiments are a deliberately class-enriched English diagnostic, so
 # they belong in their own viewer tab rather than in the population-oriented
@@ -1404,6 +1440,7 @@ html <- paste0(
       const m = run.meta;
       const cond = exampleCondition(m);
       const bits = ["[" + maskingCondition(m).short + "]", m.language || "?", m.version];
+      if (m.latest_current_dev_train) bits.unshift("Latest dev_train / current prompt");
       if (m.model) bits.push(m.model);
       if (m.attempt) bits.push(m.attempt);
       bits.push(m.split, cond.label);
@@ -1646,6 +1683,7 @@ html <- paste0(
 
     function loadRun(idx) {
       state.runIdx = idx;
+      $("runSelect").value = String(idx);
       const run = payload.runs[idx];
       rows = run.rows;
       meta = run.meta;
@@ -1720,7 +1758,8 @@ html <- paste0(
     function renderHeader() {
       $("pageSub").textContent =
         `Bloom coding pilot: each run codes child negation tokens with the LLM as a third independent coder. ` +
-        `${payload.runs.length} scored run${payload.runs.length === 1 ? "" : "s"} embedded; generated ${payload.generated_on}.`;
+        `${payload.runs.length} scored run${payload.runs.length === 1 ? "" : "s"} embedded; generated ${payload.generated_on}.` +
+        (meta.latest_current_dev_train ? (meta.split === "dev_train" && meta.results_subdir === "dev_train_current" ? " Selected: full dev_train baseline at the validation settings." : " Selected: latest available dev_train subset with the current prompt and selected batch size; historical runtime settings may differ from validation.") : "");
       const masking = maskingCondition(meta);
       $("maskingBadge").className = `masking-badge ${masking.key}`;
       $("maskingBadge").textContent = masking.label;
@@ -1825,11 +1864,12 @@ html <- paste0(
     function bindControls() {
       const runGroups = {};
       payload.runs.forEach((run, i) => {
-        const lang = run.meta.language || "Unknown";
+        const lang = run.meta.latest_current_dev_train ? "Latest dev_train — current prompt" : run.meta.language || "Unknown";
         (runGroups[lang] = runGroups[lang] || []).push(
           `<option value="${i}">${esc(runLabel(run))}</option>`);
       });
-      $("runSelect").innerHTML = Object.entries(runGroups)
+      $("runSelect").innerHTML = Object.entries(runGroups).sort(([a], [b]) =>
+        a === "Latest dev_train — current prompt" ? -1 : b === "Latest dev_train — current prompt" ? 1 : a.localeCompare(b))
         .map(([lang, opts]) => `<optgroup label="${esc(lang)}">${opts.join("")}</optgroup>`).join("");
       $("runSelect").addEventListener("change", () => loadRun(Number($("runSelect").value)));
 
@@ -2386,7 +2426,7 @@ html <- paste0(
         `<b>Inspected</b> rows (per <span style="font-family:var(--mono)">splits/english/inspected_rows.txt</span>) are development data whose content informed prompt or policy edits; ` +
         `headline metrics use the clean subset and the inspected subset is a rule-compliance check only. ` +
         `These match the human&ndash;human IRR report. Small runs are smoke tests; treat their &kappa; values as descriptive. ` +
-        `Current run data comes verbatim from <span style="font-family:var(--mono)">${esc(meta.version)}/results/${esc(meta.audit_csv)}</span>.`;
+        `Current run data comes verbatim from <span style="font-family:var(--mono)">${esc(meta.version)}/results/${meta.results_subdir ? esc(meta.results_subdir) + "/" : ""}${esc(meta.audit_csv)}</span>.`;
     }
 
     // ---- Trends tab ----
@@ -3188,7 +3228,8 @@ html <- paste0(
     });
 
     bindControls();
-    loadRun(0);
+    const initialRun = payload.runs.findIndex(r => r.meta.latest_current_dev_train && r.meta.language === "English" && r.meta.model === "gemma4:31b");
+    loadRun(initialRun >= 0 ? initialRun : 0);
   </script>
 </body>
 </html>')

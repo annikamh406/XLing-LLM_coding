@@ -1,0 +1,106 @@
+{
+  "date": "2026-10-20",
+  "purpose": "Full dev_train baseline with unchanged current prompts and final validation inference settings before investigating Denial/Rejection prompt revisions.",
+  "split": "dev_train",
+  "results_dir": "v5/results/dev_train_current",
+  "ollama_version": "0.32.14",
+  "models": {
+    "gemma4:31b": {
+      "batch_size": 1,
+      "weights_blob_sha256": "280af6832eca23cb322c4dcc65edfea98a21b8f8ab07dc7553bd6f7e6e7a3313"
+    },
+    "qwen3.6:35b-a3b": {
+      "batch_size": 5,
+      "weights_blob_sha256": "f5ee307a2982106a6eb82b62b2c00b575c9072145a759ae4660378acda8dcf2d"
+    }
+  },
+  "decoding_options": {
+    "temperature": 0.0,
+    "seed": 20261009,
+    "top_p": null,
+    "top_k": null,
+    "min_p": null,
+    "num_ctx": 32768,
+    "num_predict": 8000
+  },
+  "timeout": 1200,
+  "normalization": "NFC on allowlisted input strings for Hebrew Qwen only; all original source text and all system prompts unchanged.",
+  "recovery": "Reuse validation-recovery-v1 for Qwen only: original attempt, identical deterministic retry, then one bounded format/budget repair. Temperature and batch seed remain fixed; persist all attempts. Gemma retains validation max_retries=0.",
+  "checkpointing": "Batch checkpoints, resume only with matching source/prompt/runtime provenance; retain original output namespaces.",
+  "resources": {
+    "partition": "l40s-gcondo",
+    "qos": "copsy-l40s-gcondo",
+    "constraint": "l40s",
+    "gpus": 1,
+    "cpus": 4,
+    "memory": "48g",
+    "default_walltime": "4-00:00:00"
+  },
+  "reference_freezes_sha256": {
+    "v5/dev_check_1_freeze.json": "8e3f921bed7ccccd22f2689c05f0f4dc8631e04b4641445c4e0f87e52f59812e",
+    "v5/dev_check_1_recovery_amendment.json": "4967faf65201524cb4c4b11d347167abb46374cd739f2d47eb67af2c77071e01",
+    "v5/dev_check_1_hebrew_nfc_amendment.json": "293f43951b04fa2c996449c3724bd3d680e968383b510b60095a5d342f0dff19"
+  },
+  "languages": {
+    "english": {
+      "code": "en",
+      "input": "splits/english/dev_train.jsonl",
+      "human_reference": "splits/english/dev_train_human_reference.jsonl",
+      "prompt": "v5/bloom_v5_english_prompt.md",
+      "records": 1521
+    },
+    "german": {
+      "code": "de",
+      "input": "splits/german/dev_train.jsonl",
+      "human_reference": "splits/german/dev_train_human_reference.jsonl",
+      "prompt": "v5/bloom_v5_german_prompt_english_examples.md",
+      "records": 1502
+    },
+    "hebrew": {
+      "code": "he",
+      "input": "splits/hebrew/dev_train.jsonl",
+      "human_reference": "splits/hebrew/dev_train_human_reference.jsonl",
+      "prompt": "v5/bloom_v5_hebrew_prompt_english_examples.md",
+      "records": 963
+    },
+    "spanish": {
+      "code": "es",
+      "input": "splits/spanish/dev_train.jsonl",
+      "human_reference": "splits/spanish/dev_train_human_reference.jsonl",
+      "prompt": "v5/bloom_v5_spanish_prompt_english_examples.md",
+      "records": 1478
+    },
+    "tagalog": {
+      "code": "tl",
+      "input": "splits/tagalog/dev_train.jsonl",
+      "human_reference": "splits/tagalog/dev_train_human_reference.jsonl",
+      "prompt": "v5/bloom_v5_tagalog_prompt_english_examples.md",
+      "records": 323
+    }
+  },
+  "files_sha256": {
+    "scripts/check_v5_dev_train_current.py": "73fe20ce608f2f7bfd17e1c83b7d40486b366f9e7652ef1e3e568e21f992eafe",
+    "scripts/run_v5_dev_train_current.py": "7e2fdd98b4224e13f75a20748c6c99ef2c96460802ce690f7d165d9231e570ee",
+    "scripts/python_v5_dev_train_current.sh": "59bbc514262251d1b91d7b9c9155e426bdc1d5107e7371f90ab91d89ec1df374",
+    "scripts/sbatch_v5_dev_train_current.sh": "fe961486ed8b0cacb9aab1674e4382cc5beb494387013323176c7e9451162170",
+    "scripts/submit_v5_dev_train_current.sh": "953da7c87f1c22101d075d8f9aa99d0b8ba8c4c33413840b0cda9db78712c42e",
+    "splits/english/dev_train.jsonl": "1aff20181c71677dbb1bbced5641757f852d1a3272fa247351082f9c2d99e80e",
+    "splits/english/dev_train_human_reference.jsonl": "e9f3b64036087a20c0a3b2bec7ad65bbd951ba6888d89074567e3de205602cb8",
+    "v5/bloom_v5_english_prompt.md": "90e25c44663ed4e9c6fc315faab5149015e8dc80257254f1a6072442868f7409",
+    "splits/german/dev_train.jsonl": "f8606f721327aa3fb566eb380471c4cb547a92e7ba8c80008cdf7345e554060b",
+    "splits/german/dev_train_human_reference.jsonl": "6d47f90cb85eebaf33ba669053dd52e9eb0389e38348c1881d3e764ebb3a4168",
+    "v5/bloom_v5_german_prompt_english_examples.md": "d02a985631cb2f74536c9d8d005854dbf53aaa4743dad08f555a19e0bf245977",
+    "splits/hebrew/dev_train.jsonl": "85b016de21c76bb8cf5b402617e6192519eb1018c6c633db686a360ad2c2d9e2",
+    "splits/hebrew/dev_train_human_reference.jsonl": "4454311be80c34cfdf77a6d80a291d059e7b7173cb7b2f448efe005b28979112",
+    "v5/bloom_v5_hebrew_prompt_english_examples.md": "23da78be84143031d799093d6ecdb044ca843f51418c5f2b0c409706d3f9e19e",
+    "splits/spanish/dev_train.jsonl": "def97c9d228c22e618a6db1faaea8cfa462347dedc677e3ccc5472309b5b6889",
+    "splits/spanish/dev_train_human_reference.jsonl": "f4d9054a59519c5feb44d341ca815baa4f6ca0702f540def23492d0095bd2fe5",
+    "v5/bloom_v5_spanish_prompt_english_examples.md": "5c84ec2df39e71aff66541cb4776860bc46db6539df54e97a64c546090ea1419",
+    "splits/tagalog/dev_train.jsonl": "ef7e08759731e8961df0b4f074b1827c933eb72df35b7944fc6bb4cb839d0d01",
+    "splits/tagalog/dev_train_human_reference.jsonl": "a4fef824702f4a9f143812e4f35b1a5ac6b106ec3ed0af20601421c39ee31b83",
+    "v5/bloom_v5_tagalog_prompt_english_examples.md": "fcc0a9b0ea58781c179607e5da985f9e3f490f32ea04d2dfd7933caffadedf6d",
+    "v5/dev_check_1_freeze.json": "8e3f921bed7ccccd22f2689c05f0f4dc8631e04b4641445c4e0f87e52f59812e",
+    "v5/dev_check_1_recovery_amendment.json": "4967faf65201524cb4c4b11d347167abb46374cd739f2d47eb67af2c77071e01",
+    "v5/dev_check_1_hebrew_nfc_amendment.json": "293f43951b04fa2c996449c3724bd3d680e968383b510b60095a5d342f0dff19"
+  }
+}

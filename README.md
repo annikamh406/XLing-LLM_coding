@@ -1,5 +1,119 @@
 # XLing LLM Coding
 
+## Full dev_train baseline at validation settings (2026-10-20)
+
+On Oscar, after pulling:
+
+```bash
+git pull
+bash scripts/submit_v5_dev_train_current.sh
+```
+
+This submits ten L40S condo jobs (Gemma and Qwen in all five languages), with
+5,787 full dev_train records per model. The prompts are unchanged. Gemma uses
+batch size 1; Qwen uses batch size 5, with NFC on Hebrew Qwen input strings
+only. Both use temperature 0, seed 20261009, 32,768 context tokens, 8,000
+generation tokens, the frozen model weights and Ollama 0.32.14. Qwen retains
+the validated bounded deterministic recovery policy; Gemma has no retries.
+Sources and historical outputs remain unchanged. The independent freeze is
+`v5/dev_train_current_freeze.json`; outputs/checkpoints/recovery logs are under
+`v5/results/dev_train_current/`. No check or lockbox inference is submitted.
+
+Each job requests one L40S, 4 CPUs, 48 GB RAM and four days, with batch-level
+checkpoint resume, requeue enabled and a termination warning. If a job times
+out, resubmit its language/model to resume validated batches. An exhausted
+Qwen recovery budget remains an explicit failure and is not reset by requeue.
+Use `LANGUAGES`, `MODELS`, `WALLTIME` or optional `CONDO_ACCOUNT` for routing;
+inference settings and full-split coverage are checked against the freeze.
+
+```bash
+DRY_RUN=1 bash scripts/submit_v5_dev_train_current.sh
+LANGUAGES=hebrew MODELS=qwen3.6:35b-a3b bash scripts/submit_v5_dev_train_current.sh
+```
+
+The launcher always resumes this separate baseline namespace; it never uses
+old development predictions as checkpoints. Successful jobs can be resubmitted
+without repeating inference, although they still briefly acquire a GPU slot.
+
+## Current-prompt dev_train runs in the coding viewer
+
+Run `Rscript scripts/render_current_dev_train_viewer.R`, then
+`Rscript scripts/build_coding_viewer.R` to refresh `coding_viewer.html`.
+The viewer includes the latest Gemma L40S repeat-2 samples (40 rows per
+language), the Hebrew Qwen NFC development sample (250 rows), and the selected
+English full-prompt experiments in the row explorer. Existing multilingual
+production-pair samples remain available. The dropdown pins one latest
+available current-prompt dev_train subset per finalist and language at the
+top, and initially selects English Gemma. These are historical development
+subsets; matching prompt and batch size does not imply identical validation
+runtime settings. Frozen inference and scoring files remain unchanged.
+
+## Validation pairwise analysis excluding repetitions (2026-10-20)
+
+The user-approved current analysis excludes a record from **all** coder pairs
+if either human explicitly marked repetition Yes. A model's repetition flag
+does not determine its own evaluation denominator. Blank/missing repetition
+flags are not affirmative exclusion judgments; unmarked repetitions cannot be
+identified by this rule. This removes 779 of the 7,220 validation records.
+Original sources, predictions, runtime freezes and prior all-token reports
+remain archived unchanged.
+
+```bash
+python3 scripts/summarize_v5_nonrepetition.py
+```
+
+Outputs are `v5/results/dev_check_1_nonrepetition/report.html` and `report.json`.
+The main table compares all six pairs among the two human coding columns,
+Gemma and Qwen on exactly the same nonrepetition rows with both human labels.
+It includes agreement, Cohen's kappa and common sample sizes. Expanded tables
+also show each pair on all of its available labeled rows, relative differences
+from the human-human baseline, and the two Tagalog corpora separately.
+
+Human labels are identified by workbook sheets (English EB/WP, German PZ/MP,
+Hebrew LL/YS, Spanish AP/JEC, Tagalog HJ/LM); some rows list alternate coders.
+For the individual-coder breakdown, run
+`python3 scripts/summarize_v5_individual_coders.py`. Outputs are
+`v5/results/dev_check_1_individual_coders/report.html` and `report.json`.
+Per the user-confirmed convention, blank row-level `coded_by_raw` values
+belong to the main coder associated with the sheet (e.g. EB). Explicit names
+identify alternate coders and are normalized for case and whitespace within
+each language. Main coders retain sheet initials as their identifiers. The user-confirmed
+alias Laurize = LM is merged into the Tagalog LM group. The report shows model agreement on all available labeled
+rows, comparisons against the other human on identical overlapping records,
+actual human pairs, attribution counts, and Tagalog corpus breakdowns. Each
+comparison includes its sample size; individual subsets differ and must not be
+read as coder accuracy rankings. JSON includes the row-level attribution audit.
+
+Run `Rscript scripts/plot_v5_coder_agreement.R` after generating the individual
+coder report to create `plots.html`, PNG/PDF plots and `plot_data.json` in the
+same results folder. Absolute plots show the human-pair baseline and each
+model’s agreement with each human; relative plots subtract that baseline in
+percentage points. All points within a pair use identical shared records.
+Plots include main-coder overviews and all individual human pairs.
+
+Nonpossession stays collapsed into Nonexistence, Excluded/Uncoded remain
+explicit, and missing Bloom labels stay missing. Hebrew Qwen uses the NFC
+configuration. Inclusion/exclusion IDs, source hashes and the analysis policy
+are recorded in the JSON. The initial calculation was independently verified
+in R for all 60 pairwise metric sets and every language's exclusion count.
+This updates the analysis denominator after the initial report; it does not
+change the inference pipeline or retrospectively overwrite the frozen scorer.
+
+## Directional agreement with human consensus (2026-10-20)
+
+Run `python3 scripts/summarize_v5_consensus_details.py`, then
+`Rscript scripts/plot_v5_consensus_details.R` to generate
+`v5/results/dev_check_1_consensus_details/report.html`, JSON audits and PNG/PDF
+confusion matrices. Both human labels must be available and equal after the
+existing label collapse; human-union repetition exclusions remain in effect.
+Matrices use human-consensus rows and model-output columns, show counts and
+row percentages, and provide hover details for both row and column percentages.
+The report lists every directional mismatch and agreement conditional on each
+model output, with Tagalog corpus details. Human disagreements are omitted,
+not resolved into a consensus. This is a descriptive subset, not adjudicated
+gold. The R script independently checks all 250 main confusion cells and their
+denominators against the record audit. No new inference or held-out evaluation.
+
 ## Hebrew NFC validation amendment (2026-10-16)
 
 The full-NFC development run completed 250/250 records, 50/50 batches on the
