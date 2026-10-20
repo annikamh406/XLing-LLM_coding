@@ -35,6 +35,41 @@ The launcher always resumes this separate baseline namespace; it never uses
 old development predictions as checkpoints. Successful jobs can be resubmitted
 without repeating inference, although they still briefly acquire a GPU slot.
 
+### Condo priority with scavenger helpers
+
+To use both queues with **condo always taking priority**, use this launcher
+instead of submitting additional copies through the original launcher:
+
+```bash
+git pull
+python3 scripts/submit_v5_dev_train_dual.py --replace-pending-condo
+```
+
+For each unfinished condition, this submits a coordinated condo job and a
+paired L40S scavenger helper. Scavenger works only while that exact condo job
+is pending. When condo starts, scavenger stops its worker and releases the
+condition lock; condo waits for that release before loading Ollama and resumes
+the latest validated batch checkpoint. If condo starts first, scavenger exits
+before model startup. Condo failures do not trigger a fallback to scavenger.
+Both routes share the original full-training output namespace and unchanged
+inference/recovery/NFC settings. Completed conditions are checked and skipped
+before submission. Coordination events are saved under
+`v5/results/dev_train_current/coordination/`.
+
+The original submitted workers cannot wait for this new handoff. The explicit
+`--replace-pending-condo` option cancels only selected pending `v5-train-*` jobs
+and replaces them, losing their old queue position. Any original condo job that
+has already started is left alone, with no new helper or duplicate submitted
+for that condition. A second check protects jobs that start during cancellation.
+Existing coordinated jobs block duplicate submissions. Use `--dry-run` to
+preview the routing and replacement; `LANGUAGES` and `MODELS` can limit scope.
+
+Scavenger requests `--account=gpu-scavenger --partition=gpu-scavenger`, remains
+restricted to L40S, and has requeue/checkpoint support. Each takeover may discard
+the current unfinished batch; an interrupted Qwen attempt consumes its existing
+bounded recovery slot. The unchanged training freeze is anchored by the separate
+`v5/dev_train_coordination.json` scheduling amendment.
+
 ## Current-prompt dev_train runs in the coding viewer
 
 Run `Rscript scripts/render_current_dev_train_viewer.R`, then

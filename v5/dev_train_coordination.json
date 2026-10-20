@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-20",
+  "policy": "condo-priority-scavenger-v1",
+  "training_freeze_sha256": "a50cf4e0c22ae8681acd4cc6bbf434d4ddd2b64a03986d25fd1dc2a0077d1365",
+  "priority": "Condo waits for exclusive condition ownership before loading Ollama. Scavenger only works while its exact paired condo job is PENDING; yields when condo starts (including configuring) and exits if condo finishes. Running legacy condo jobs are left alone, with no scavenger helper.",
+  "checkpointing": "Shared original output namespace. Stop the entire scavenger worker before releasing its coordination lock. Resume from validated completed batches using the unchanged frozen runner. An interrupted Qwen request consumes its existing bounded recovery slot; no reset or sampled repair.",
+  "failure_handling": "Scavenger stops conservatively if Slurm cannot establish the condo state. Condo does not fall back to scavenger after starting. Existing inference/runtime/NFC settings and all original freezes remain unchanged.",
+  "files_sha256": {
+    "scripts/coordinate_v5_dev_train.py": "f8d543803dc6c1d5560bf9666998383a401b1b36cfe2457495f9f6a397d6e879",
+    "scripts/submit_v5_dev_train_dual.py": "8d3a8ac58d88fff6f525f397a589e43e707526dde8ba314a48f91c4df079b9fd",
+    "scripts/sbatch_v5_dev_train_coordinated.sh": "6ef02cbf41339b66a51acd81b806dcf3add143704b8465f9b6f6d97f6c040131"
+  }
+}

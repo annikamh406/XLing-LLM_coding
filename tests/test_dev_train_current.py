@@ -15,6 +15,7 @@ sys.path.insert(0,str(BASE/'scripts'))
 import run_bloom_coding as runner
 import run_v5_dev_train_current as current
 import check_v5_dev_train_current as checker
+import coordinate_v5_dev_train as coordinator
 
 
 def payload(records):
@@ -98,6 +99,17 @@ class CurrentTrainingTests(unittest.TestCase):
                 self.assertTrue(all(r['attempt_count']==1 for r in raw))
             if language=='hebrew' and model.startswith('qwen'):
                 self.assertTrue(all('normalized_input_sha256' in r for r in raw))
+            # Early completion checks must accept only exact baseline provenance.
+            (root/'scripts').mkdir()
+            (root/'scripts/run_bloom_coding.py').write_bytes(Path(runner.__file__).read_bytes())
+            with patch.object(coordinator,'BASE',root):
+                self.assertTrue(coordinator.complete(language,model,frozen))
+                checkpoint=next((root/'results').glob('*_checkpoint.json'))
+                state=json.loads(checkpoint.read_text())
+                state['provenance']['decoding_options']['seed']=1
+                checkpoint.write_text(json.dumps(state))
+                with self.assertRaisesRegex(ValueError,'provenance differs'):
+                    coordinator.complete(language,model,frozen)
 
     def test_hebrew_qwen_nfc_and_resume(self):self.exercise('hebrew','qwen3.6:35b-a3b',5)
     def test_gemma_unchanged_singletons_and_resume(self):self.exercise('english','gemma4:31b',1)
