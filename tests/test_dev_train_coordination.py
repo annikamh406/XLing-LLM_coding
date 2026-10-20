@@ -12,6 +12,7 @@ from unittest.mock import patch
 BASE=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(BASE/'scripts'))
 import coordinate_v5_dev_train as coordinator
+import submit_v5_dev_train_dual as submitter
 
 
 class CoordinationTests(unittest.TestCase):
@@ -84,7 +85,8 @@ raise SystemExit(c.run_condition(role,'english','gemma4:31b','123',[sys.executab
 import json,os,sys
 from pathlib import Path
 root=Path(os.environ['FAKE_ROOT']);command=Path(sys.argv[0]).name
-if command=='squeue':
+if command=='scontrol':print('PartitionName=gpu-scavenger MaxTime=12:00:00')
+elif command=='squeue':
  for j in json.loads((root/'queue.json').read_text()):print(j['id']+'|'+j['name']+'|'+j['state'])
 else:
  with (root/'calls.jsonl').open('a') as f:f.write(json.dumps({'command':command,'args':sys.argv[1:],'paired':os.environ.get('PAIRED_CONDO_JOB_ID'),'split':os.environ.get('SPLIT')})+'\\n')
@@ -94,7 +96,7 @@ else:
   else:(root/'queue.json').write_text('[]')
  if command=='sbatch':print(10000+sum(1 for line in (root/'calls.jsonl').open()))
 '''.replace('PYTHON',sys.executable)
-        for command in ['squeue','sbatch','scancel']:
+        for command in ['squeue','sbatch','scancel','scontrol']:
             p=root/command;p.write_text(program);p.chmod(0o755)
         return log,{**os.environ,'PATH':str(root)+os.pathsep+os.environ['PATH'],'FAKE_ROOT':str(root),
                     'LANGUAGES':'english','MODELS':'gemma4:31b','DRY_RUN':'','SPLIT':'test_lockbox','LIMIT':'10'}
@@ -108,8 +110,19 @@ else:
             self.assertEqual([c['command'] for c in calls],['scancel','sbatch','sbatch'])
             self.assertEqual(calls[0]['args'],['--state=PENDING','7680704'])
             self.assertEqual(calls[2]['paired'],'10002')
+            self.assertIn('--time=4-00:00:00',calls[1]['args']);self.assertIn('--time=12:00:00',calls[2]['args'])
             self.assertIn('--partition=l40s-gcondo',calls[1]['args']);self.assertIn('--account=gpu-scavenger',calls[2]['args'])
             self.assertTrue(all(c['split']=='dev_train' and '--constraint=l40s' in c['args'] for c in calls[1:]))
+
+    def test_scavenger_partition_limit_and_shorter_override(self):
+        result=subprocess.CompletedProcess([],0,'PartitionName=gpu-scavenger MaxTime=1-00:00:00','')
+        with patch.dict(os.environ,{'WALLTIME':'4-00:00:00','CONDO_WALLTIME':'4-00:00:00','SCAVENGER_WALLTIME':'08:00:00'}),patch.object(submitter.subprocess,'run',return_value=result):
+            self.assertEqual(submitter.walltimes()['scavenger'],'08:00:00')
+        with patch.dict(os.environ,{'WALLTIME':'4-00:00:00','CONDO_WALLTIME':'4-00:00:00','SCAVENGER_WALLTIME':'4-00:00:00'}),patch.object(submitter.subprocess,'run',return_value=result):
+            self.assertEqual(submitter.walltimes()['scavenger'],'1-00:00:00')
+        self.assertEqual(submitter.time_seconds('1-00:00:00'),86400)
+        self.assertEqual(submitter.time_seconds('120'),7200)
+        self.assertEqual(submitter.time_seconds('12:00:00'),43200)
 
     def test_job_starting_during_cancel_is_left_alone(self):
         with tempfile.TemporaryDirectory() as directory:

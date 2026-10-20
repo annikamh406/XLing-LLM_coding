@@ -7,7 +7,8 @@
   "failure_handling": "Scavenger stops conservatively if Slurm cannot establish the condo state. Condo does not fall back to scavenger after starting. Existing inference/runtime/NFC settings and all original freezes remain unchanged.",
   "files_sha256": {
     "scripts/coordinate_v5_dev_train.py": "f8d543803dc6c1d5560bf9666998383a401b1b36cfe2457495f9f6a397d6e879",
-    "scripts/submit_v5_dev_train_dual.py": "8d3a8ac58d88fff6f525f397a589e43e707526dde8ba314a48f91c4df079b9fd",
+    "scripts/submit_v5_dev_train_dual.py": "b743b5cb3ea47aeafb33696d009128f38cf41d694846f9baabfdcf82890639e4",
     "scripts/sbatch_v5_dev_train_coordinated.sh": "6ef02cbf41339b66a51acd81b806dcf3add143704b8465f9b6f6d97f6c040131"
-  }
+  },
+  "walltime_policy": "Query gpu-scavenger MaxTime before changing any jobs; cap its requested walltime to that maximum. Condo and scavenger support separate CONDO_WALLTIME and SCAVENGER_WALLTIME values."
 }

@@ -22,12 +22,47 @@ def queue(dry=False):
     return jobs
 
 
-def job_command(route,model,language,frozen,condo_job=None):
+def time_seconds(value):
+    value=value.strip()
+    if value.upper() in {'UNLIMITED','INFINITE'}:return float('inf')
+    if not re.fullmatch(r'(\d+-)?\d+(:\d+){0,2}',value):raise ValueError('Invalid Slurm walltime: '+value)
+    days=0
+    if '-' in value:
+        day_text,value=value.split('-',1);days=int(day_text)
+        parts=[int(x) for x in value.split(':')]
+        seconds=days*86400+sum(v*m for v,m in zip(parts,[3600,60,1]))
+    else:
+        parts=[int(x) for x in value.split(':')]
+        multipliers={1:[60],2:[60,1],3:[3600,60,1]}[len(parts)]
+        seconds=sum(v*m for v,m in zip(parts,multipliers))
+    return seconds if seconds else float('inf')
+
+
+def walltimes(dry=False):
+    condo=os.environ.get('CONDO_WALLTIME',os.environ.get('WALLTIME','4-00:00:00'))
+    requested=os.environ.get('SCAVENGER_WALLTIME',os.environ.get('WALLTIME','4-00:00:00'))
+    time_seconds(condo);requested_seconds=time_seconds(requested)
+    if dry and not shutil.which('scontrol'):
+        if not os.environ.get('SCAVENGER_WALLTIME'):
+            raise ValueError('Local dry run needs SCAVENGER_WALLTIME; live submissions query the partition MaxTime automatically')
+        print('Local dry run: partition maximum not queried; using explicit SCAVENGER_WALLTIME')
+        return {'condo':condo,'scavenger':requested}
+    result=subprocess.run(['scontrol','--oneliner','show','partition','gpu-scavenger'],capture_output=True,text=True,check=True)
+    match=re.search(r'(?:^|\s)MaxTime=(\S+)',result.stdout)
+    if not match:raise ValueError('Cannot determine gpu-scavenger MaxTime; no jobs submitted')
+    maximum=match.group(1);maximum_seconds=time_seconds(maximum)
+    scavenger=maximum if maximum_seconds<requested_seconds else requested
+    print(f'Walltimes: condo={condo}; scavenger={scavenger} (partition maximum {maximum})')
+    return {'condo':condo,'scavenger':scavenger}
+
+
+def job_command(route,model,language,frozen,condo_job=None,walltime=None):
+    if walltime is None:raise ValueError('Resolve route-specific partition time limits before building jobs')
     condition=frozen['languages'][language];short='gemma' if model=='gemma4:31b' else 'qwen'
     output=frozen['results_dir'];logs=output+'/logs';name=f'v5dt-{route}-{short}-{condition["code"]}'
     args=['sbatch','--parsable','--partition='+('gpu-scavenger' if route=='scavenger' else 'l40s-gcondo'),
           '--constraint=l40s','--gres=gpu:1','--ntasks=1','--cpus-per-task=4','--mem=48g',
-          '--time='+os.environ.get('WALLTIME','4-00:00:00'),'--requeue','--signal=B:TERM@60','--open-mode=append',
+          '--time='+walltime,'--requeue','--signal=B:TERM@60','--open-mode=append',
           '--job-name='+name,'--output='+logs+'/sbatch_%x_%j.out','--export=ALL']
     if route=='scavenger':args+=['--account=gpu-scavenger']
     else:
@@ -65,6 +100,7 @@ def main():
     models=os.environ.get('MODELS','gemma4:31b qwen3.6:35b-a3b').split()
     if len(set(languages))!=len(languages) or any(x not in frozen['languages'] for x in languages):p.error('Invalid LANGUAGES')
     if len(set(models))!=len(models) or any(x not in frozen['models'] for x in models):p.error('Invalid MODELS')
+    times=walltimes(dry)  # Preflight before any cancellation or submission.
     jobs=queue(dry);plans=[];cancel=[]
     for language in languages:
         for model in models:
@@ -92,9 +128,9 @@ def main():
             plans=safe
     (BASE/frozen['results_dir']/'logs').mkdir(parents=True,exist_ok=True)
     for number,(language,model) in enumerate(plans):
-        command,env=job_command('condo',model,language,frozen)
+        command,env=job_command('condo',model,language,frozen,walltime=times['condo'])
         condo=launch(command,env,dry,2*number)
-        command,env=job_command('scavenger',model,language,frozen,condo)
+        command,env=job_command('scavenger',model,language,frozen,condo,walltime=times['scavenger'])
         launch(command,env,dry,2*number+1)
     return 0
 

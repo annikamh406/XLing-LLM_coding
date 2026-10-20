@@ -65,7 +65,13 @@ Existing coordinated jobs block duplicate submissions. Use `--dry-run` to
 preview the routing and replacement; `LANGUAGES` and `MODELS` can limit scope.
 
 Scavenger requests `--account=gpu-scavenger --partition=gpu-scavenger`, remains
-restricted to L40S, and has requeue/checkpoint support. Each takeover may discard
+restricted to L40S, and has requeue/checkpoint support. Before cancelling or
+submitting anything, the dual launcher queries the live scavenger partition
+`MaxTime` and caps the scavenger request to it. Condo retains its four-day
+default. `CONDO_WALLTIME` and `SCAVENGER_WALLTIME` set separate requested
+durations; a shared `WALLTIME` remains supported, with scavenger capped to the
+partition maximum. A local dry run without Slurm requires an explicit
+`SCAVENGER_WALLTIME` for the preview. Each takeover may discard
 the current unfinished batch; an interrupted Qwen attempt consumes its existing
 bounded recovery slot. The unchanged training freeze is anchored by the separate
 `v5/dev_train_coordination.json` scheduling amendment.
