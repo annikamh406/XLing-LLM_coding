@@ -35,6 +35,49 @@ The launcher always resumes this separate baseline namespace; it never uses
 old development predictions as checkpoints. Successful jobs can be resubmitted
 without repeating inference, although they still briefly acquire a GPU slot.
 
+### Continue the three Qwen runs interrupted on scavenger (2026-10-26)
+
+The October training round completed all five Gemma conditions and Qwen
+English/German. Qwen Hebrew, Spanish and Tagalog stopped because three
+scheduler-interrupted requests consumed their original recovery slots. Use
+this condo-only continuation, rather than the original launchers:
+
+```bash
+git pull
+bash scripts/submit_v5_dev_train_interruption_resume.sh
+```
+
+It submits only those three Qwen conditions and resumes the same checkpoint
+namespace, retaining the 30 completed Hebrew and 15 completed Tagalog records.
+Spanish resumes before its first batch. It skips any condition already complete.
+Prompts, source records, batch size 5, temperature, seed, runtime requirements
+and Hebrew NFC remain unchanged. All existing training/validation freezes stay
+unchanged; the separate amendment is `v5/dev_train_interruption_recovery.json`.
+
+The amendment recognizes only the three documented legacy interrupted-batch
+ledgers, checked by hash and request fingerprint. It never erases their attempts
+or resets genuine failures. There remain at most three completed response/failure
+attempts per batch, including any genuine legacy failures, with the same bounded
+format/budget repair on the last attempt. Recorded termination signals do not
+consume that budget, but three further condo interruptions stop the batch for
+review. A new unresolved request without a recorded termination signal also
+stops for review. No sampled retry or unlimited retry is introduced.
+
+Original recovery files and logs remain untouched. New ledgers live under
+`v5/results/dev_train_current/recovery_interruption_resume/`; new job and runner
+logs live under `v5/results/dev_train_current/interruption_resume_logs/`.
+New raw responses record model-attempt counts and interruption counts separately.
+
+```bash
+DRY_RUN=1 bash scripts/submit_v5_dev_train_interruption_resume.sh
+python3 scripts/summarize_v5_dev_train_current.py
+```
+
+The summarizer writes `v5/results/dev_train_current_report/report.html` and
+`report.json`, with completion checks, nonrepetition pairwise agreement,
+consensus confusion counts, Denial/Rejection directionality, corpus details
+and source hashes. It excludes incomplete conditions from agreement metrics.
+
 ### Condo priority with scavenger helpers
 
 To use both queues with **condo always taking priority**, use this launcher

@@ -1,5 +1,7 @@
 """Condo wins regardless of start order; use local fake workers, never Slurm."""
 import json
+import io
+from contextlib import redirect_stdout
 import os
 from pathlib import Path
 import subprocess
@@ -104,8 +106,10 @@ else:
     def test_replaces_only_pending_and_pairs_exact_condo_id(self):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);log,env=self.fake_commands(root)
-            result=subprocess.run([sys.executable,'scripts/submit_v5_dev_train_dual.py','--replace-pending-condo'],cwd=BASE,env=env,capture_output=True,text=True)
-            self.assertEqual(result.returncode,0,result.stderr)
+            output=io.StringIO()
+            # Completion is a fixture, not dependent on downloaded real results.
+            with patch.dict(os.environ,env,clear=True),patch.object(submitter,'complete',return_value=False),patch.object(sys,'argv',['submit','--replace-pending-condo']),redirect_stdout(output):
+                self.assertEqual(submitter.main(),0)
             calls=[json.loads(line) for line in log.read_text().splitlines()]
             self.assertEqual([c['command'] for c in calls],['scancel','sbatch','sbatch'])
             self.assertEqual(calls[0]['args'],['--state=PENDING','7680704'])
@@ -127,11 +131,13 @@ else:
     def test_job_starting_during_cancel_is_left_alone(self):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);log,env=self.fake_commands(root);env['RACE_RUNNING']='1'
-            result=subprocess.run([sys.executable,'scripts/submit_v5_dev_train_dual.py','--replace-pending-condo'],cwd=BASE,env=env,capture_output=True,text=True)
-            self.assertEqual(result.returncode,0,result.stderr)
+            output=io.StringIO()
+            # Completion is a fixture, not dependent on downloaded real results.
+            with patch.dict(os.environ,env,clear=True),patch.object(submitter,'complete',return_value=False),patch.object(sys,'argv',['submit','--replace-pending-condo']),redirect_stdout(output):
+                self.assertEqual(submitter.main(),0)
             calls=[json.loads(line) for line in log.read_text().splitlines()]
             self.assertEqual([c['command'] for c in calls],['scancel'])
-            self.assertIn('leaving condition alone',result.stdout)
+            self.assertIn('leaving condition alone',output.getvalue())
 
 
 if __name__=='__main__':unittest.main()

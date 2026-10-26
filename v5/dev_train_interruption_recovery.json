@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-26",
+  "policy": "dev-train-interruption-recovery-v1",
+  "training_freeze_sha256": "a50cf4e0c22ae8681acd4cc6bbf434d4ddd2b64a03986d25fd1dc2a0077d1365",
+  "languages": [
+    "hebrew",
+    "spanish",
+    "tagalog"
+  ],
+  "scope": "Condo-only Qwen continuation with the same source records, prompts, batch size, seed, decoding, weights, NFC and checkpoint identity. Preserve all prior files and successful batches.",
+  "budget": "At most three completed response/failure attempts per batch, including any legacy genuine failures. Original deterministic two attempts then bounded format/budget repair. Authorized legacy scheduler interruptions do not consume this budget. Stop after three additional recorded condo interruptions. A new unresolved started request without a recorded termination signal requires review.",
+  "audit": "Original recovery ledgers and logs remain unchanged. New recovery_interruption_resume ledgers preserve referenced legacy attempts, classification, amendment hash, signal and attempt counts. Model attempts and interruptions reported separately.",
+  "legacy_interrupted_batches": {
+    "v5/results/dev_train_current/recovery/dev_train_qwen3.6_35b-a3b_bloom_v5_p005dt1nfc-he-full-b5-t0-s20261009/batch-7.json": {
+      "sha256": "615fd674cfc79c323dd45f18d76fc54e69edd4edeed70ec9f423a974eea290e0",
+      "fingerprint": "366b6edd0532209fb84a1c825a26520a468c1e682febabf390564a719b358970",
+      "record_ids": [
+        "heb_000068",
+        "heb_000069",
+        "heb_000131",
+        "heb_000132",
+        "heb_000133"
+      ],
+      "evidence": "Three unfinished requests; no saved response/error. Corresponding scavenger Slurm logs record repeated PREEMPTION; condo coordinator/runner logs record inherited RecoveryExhausted."
+    },
+    "v5/results/dev_train_current/recovery/dev_train_qwen3.6_35b-a3b_bloom_v5_p005dt1-tl-full-b5-t0-s20261009/batch-4.json": {
+      "sha256": "0e78bff3a4bfab5cb9ce7116e86d5896a88d14bc57ececdb42fa02d7cd1d3e5c",
+      "fingerprint": "8f9be188ac5d4bef5ad6bd6bf857f4df3e62f70d7646faf9a2f51811a345459f",
+      "record_ids": [
+        "tgn_000095",
+        "tgm_000248",
+        "tgn_000440",
+        "tgm_000480",
+        "tgm_000493"
+      ],
+      "evidence": "Three unfinished requests; no saved response/error. Corresponding scavenger Slurm logs record repeated PREEMPTION; condo coordinator/runner logs record inherited RecoveryExhausted."
+    },
+    "v5/results/dev_train_current/recovery/dev_train_qwen3.6_35b-a3b_bloom_v5_p005dt1-es-full-b5-t0-s20261009/batch-1.json": {
+      "sha256": "e9f03fbddb7cabd57203b7b6bfc4e9daeb0f4035405e90ee88220931c850b019",
+      "fingerprint": "b40526aa06d3dc4077e0a8bf6ed3559151d7f60f392bd323783e18cedb7fd595",
+      "record_ids": [
+        "spa_000001",
+        "spa_000041",
+        "spa_000042",
+        "spa_000043",
+        "spa_000044"
+      ],
+      "evidence": "Three unfinished requests; no saved response/error. Corresponding scavenger Slurm logs record repeated PREEMPTION; condo coordinator/runner logs record inherited RecoveryExhausted."
+    }
+  },
+  "files_sha256": {
+    "scripts/run_v5_dev_train_interruption_resume.py": "dda4fd9e1d16ebba9cf2466c16ae107798130ffef1931fcfa0cafade47a9d5d0",
+    "scripts/python_v5_dev_train_interruption_resume.sh": "22a0ad90c5c7ace925c31615468e5df43b3a56fd78204cdd5fe353797b1159de",
+    "scripts/sbatch_v5_dev_train_interruption_resume.sh": "40903622f6db528b4f9023460cba0c7026c7b1f00babf177066039d46de8f553",
+    "scripts/submit_v5_dev_train_interruption_resume.sh": "65e24c796ccdeb9cbb67fc3c1959dadededa6fcffa56e9b7b26ec093a58a72d8"
+  }
+}
