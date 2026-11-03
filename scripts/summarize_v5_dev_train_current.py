@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Completion audit and nonrepetition agreement for the full dev_train baseline."""
 import collections
+from datetime import datetime
+from zoneinfo import ZoneInfo
 import hashlib
 import itertools
 import json
@@ -42,7 +44,7 @@ def analysis(rows,models):
 
 def calculate():
     frozen=verify();out=BASE/frozen['results_dir']
-    result={'date':'2026-10-26','freeze_sha256':hashlib.sha256(MANIFEST.read_bytes()).hexdigest(),
+    result={'date':datetime.now(ZoneInfo('America/New_York')).date().isoformat(),'freeze_sha256':hashlib.sha256(MANIFEST.read_bytes()).hexdigest(),
       'script_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
       'policy':'Only complete, provenance-verified conditions enter agreement metrics. Exclude a record if either human marked repetition Yes. Missing flags are not affirmative repetition. Collapse Nonpossession into Nonexistence; retain Excluded and Uncoded. Consensus requires both human labels equal. Human columns can include alternates; no adjudicated gold.',
       'languages':{},'source_sha256':{}}
@@ -106,7 +108,10 @@ def calculate():
 
 
 def render(data):
-    s='''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Full dev_train baseline results</title><style>body{font:15px system-ui;max-width:1400px;margin:28px auto;padding:0 20px;color:#222;line-height:1.5}h1{font-size:26px}h2{font-size:21px;margin-top:32px}table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;padding:8px;border-bottom:1px solid #ddd;white-space:nowrap}th{background:#f3f4f5}.scroll{overflow:auto}details{margin:20px 0}summary{cursor:pointer}a{color:#075b99}</style><h1>Full dev_train baseline results</h1><p>October 26, 2026. Current unchanged prompts at the validation settings: Gemma batch 1; Qwen batch 5; NFC on Hebrew Qwen only.</p><p>The first round stopped Qwen Spanish, Hebrew and Tagalog after scheduler preemptions consumed their original recovery slots. The condo-only interruption amendment retains the old audits and counts genuine response failures separately from interruptions. Incomplete conditions are excluded from agreement metrics; current completion is shown below.</p>'''
+    s='''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Full dev_train baseline results</title><style>body{font:15px system-ui;max-width:1400px;margin:28px auto;padding:0 20px;color:#222;line-height:1.5}h1{font-size:26px}h2{font-size:21px;margin-top:32px}table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;padding:8px;border-bottom:1px solid #ddd;white-space:nowrap}th{background:#f3f4f5}.scroll{overflow:auto}details{margin:20px 0}summary{cursor:pointer}a{color:#075b99}</style><h1>Full dev_train baseline results</h1><p>__REPORT_DATE__. Current unchanged prompts at the validation settings: Gemma batch 1; Qwen batch 5; NFC on Hebrew Qwen only.</p><p>The first round stopped Qwen Spanish, Hebrew and Tagalog after scheduler preemptions consumed their original recovery slots. The condo-only interruption amendment retains the old audits and counts genuine response failures separately from interruptions. Incomplete conditions are excluded from agreement metrics; current completion is shown below.</p>'''
+    s=s.replace('__REPORT_DATE__',data['date'])
+    completed=sum(r['complete'] for d in data['languages'].values() for r in d['runs'].values())
+    s+='<p><strong>'+str(completed)+' of 10 conditions complete.</strong></p>'
     s+='<h2>Completion and recovery</h2>'+table(['Language','Model','Status','Saved / expected records','Saved batches','Recovered batches','Model-retried batches','Interruptions in saved batches'],[[lang.title(),model.title(),'Complete' if m['complete'] else 'Incomplete',f'{m["checkpoint_records"]} / {m["expected_records"]}',m['checkpoint_batches'],m['recovered_batches'],m['model_retried_batches'],m['interrupted_requests_in_saved_batches']] for lang,d in data['languages'].items() for model,m in d['runs'].items()])
     s+='<h2>Agreement with human consensus</h2><p>Both humans must agree after label collapse. Repetition exclusion uses either human’s Yes flag. This is a consensus subset, not adjudicated truth.</p>'+table(['Language','Consensus n','Gemma agreement','Qwen agreement'],[[lang.title(),d['consensus_n']]+[pct(d['consensus'].get(model,{}).get('agreement')) for model in ['gemma','qwen']] for lang,d in data['languages'].items()])
     s+='<h2>Denial versus Rejection</h2><p>Read each direction as what the humans agreed on → what the model predicted. Percentages use the corresponding human-consensus class as denominator. Net Denial includes inflows and outflows from all classes.</p>'+table(['Language','Model','Human Rejection → model Denial','% of Rejection','Human Denial → model Rejection','% of Denial','Human Denial share','Model Denial share','Net Denial count'],[[lang.title(),model.title(),c['humans_rejection_model_denial'],pct(c['rejection_to_denial_rate']),c['humans_denial_model_rejection'],pct(c['denial_to_rejection_rate']),pct(c['human_denial_rate']),pct(c['model_denial_rate']),f'{c["net_denial_count"]:+d}'] for lang,d in data['languages'].items() for model,c in d['consensus'].items()])
@@ -126,7 +131,8 @@ def render(data):
         for corpus,c in d['corpora'].items():
             s+='<h3>'+esc(corpus)+f' · {c["matched_n"]} double-labeled; {c["consensus_n"]} consensus</h3>'+table(['Model','Consensus agreement','Rejection → Denial','Denial → Rejection'],[[m.title(),pct(v['agreement']),v['humans_rejection_model_denial'],v['humans_denial_model_rejection']] for m,v in c['consensus'].items()])
         s+='</details>'
-    s+='<h2>Next step</h2><p>Finish any incomplete conditions using the condo-only interruption amendment, preserving successful batches and every original audit. The original launcher cannot resolve an exhausted legacy budget. Infrastructure interruptions and completed model-response failures are recorded separately; both have bounded continuation rules. These scheduling interruptions do not justify changing NFC preprocessing.</p><p>Use the complete dev_train baselines to investigate prompt revisions. No prompt was edited, no examples were inspected for tuning, and no check/lockbox inference or scoring occurred in this report. Source hashes and nonrepetition row audits are in <a href="report.json">report.json</a>. No independent-token significance claims are made.</p></html>'
+    next_step='All ten conditions are complete. Use this full dev_train baseline to investigate prompt revisions, preserving the current baseline for comparisons.' if completed==10 else 'Finish incomplete conditions using the condo-only interruption amendment, preserving all successful batches and original audits. The original launcher cannot resolve exhausted legacy budgets.'
+    s+='<h2>Next step</h2><p>'+next_step+'</p><p>Use the complete dev_train baselines to investigate prompt revisions. No prompt was edited, no examples were inspected for tuning, and no check/lockbox inference or scoring occurred in this report. Source hashes and nonrepetition row audits are in <a href="report.json">report.json</a>. No independent-token significance claims are made.</p></html>'
     return s
 
 

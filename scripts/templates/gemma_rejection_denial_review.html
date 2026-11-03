@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gemma Rejection and Denial review</title>
+<style>
+*{box-sizing:border-box}html,body{height:100%;margin:0}body{font:15px system-ui,sans-serif;color:#222;background:#fff;display:flex;flex-direction:column;padding:16px 22px;gap:12px}header{flex:none}h1{font-size:24px;margin:0 0 7px}h2{font-size:20px;margin:0 0 8px}h3{font-size:16px;margin:20px 0 8px}p{margin:6px 0;line-height:1.5}.note{color:#555;font-size:13px}button,select{font:inherit;color:inherit}button{background:#fff;border:1px solid #bbb;border-radius:4px;padding:7px 11px;cursor:pointer}button:hover{background:#f2f4f5}button[aria-pressed=true]{background:#e5edf3;border-color:#376d94}button:disabled{opacity:.45;cursor:default}button:focus-visible,select:focus-visible{outline:2px solid #0072b2;outline-offset:2px}.languages{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 10px}.toolbar{display:flex;gap:15px;align-items:center;flex-wrap:wrap}.toolbar label{display:flex;gap:8px;align-items:center}.toolbar select{padding:6px;border:1px solid #aaa;border-radius:3px;max-width:100%}.workspace{display:grid;grid-template-columns:360px minmax(0,1fr);flex:1;min-height:0;border-top:1px solid #ddd}.list-pane{display:flex;flex-direction:column;min-height:0;border-right:1px solid #ddd;padding:10px 12px 0 0}.list-head{font-size:13px;color:#555;margin-bottom:8px}.case-list{overflow:auto;min-height:0;flex:1;padding:2px 4px 12px 2px;display:flex;flex-direction:column;gap:6px}.case-button{text-align:left;padding:10px;display:block;width:100%;flex:none;overflow-wrap:anywhere}.case-button[aria-current=true]{border-color:#0072b2;background:#edf4f8}.case-button span{display:block}.case-direction{font-size:12px;margin-bottom:5px}.case-utterance{font-size:15px;font-weight:500;text-align:start;white-space:pre-wrap}.case-meta{font-size:12px;color:#555;margin-top:5px}.detail{overflow:auto;min-width:0;padding:14px 8px 30px 22px}.detail-nav{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:15px}.detail-nav span{color:#555;font-size:13px}.labels{display:flex;gap:12px 25px;flex-wrap:wrap;padding:10px 0;border-top:1px solid #ddd;border-bottom:1px solid #ddd;margin:12px 0}.labels span{display:block}.labels strong{font-size:17px;font-weight:600}.transcript{margin:8px 0}.context-line{display:grid;grid-template-columns:56px 60px minmax(0,1fr);gap:8px;padding:5px 8px;line-height:1.5}.line-num,.speaker{font-size:12px;color:#555}.utterance{white-space:pre-wrap;overflow-wrap:anywhere;text-align:start}.target{background:#fff2c7;border-left:3px solid #ae7900;margin:5px 0;padding-top:10px;padding-bottom:10px}.human-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:20px}.human{min-width:0}.human h3{margin-top:10px}.human p,.explanation{white-space:pre-wrap;overflow-wrap:anywhere}.empty{padding:20px;color:#555}details{margin:14px 0}summary{cursor:pointer}a{color:#075b99}
+@media(max-width:900px){.workspace{grid-template-columns:300px minmax(0,1fr)}body{padding:12px}.detail{padding-left:14px}.context-line{grid-template-columns:42px 45px minmax(0,1fr);gap:5px;padding-left:4px}}
+@media(max-width:680px){html,body{height:auto;min-height:100%}.workspace{display:block}.list-pane{border-right:0;border-bottom:1px solid #ddd;padding-right:0}.case-list{height:280px;max-height:40vh;flex:auto}.detail{overflow:visible;padding:16px 0}.toolbar label{flex-wrap:wrap}.toolbar select{width:100%;font-size:14px}.labels{gap:12px}.context-line{grid-template-columns:34px 42px minmax(0,1fr)}}
+</style>
+<header>
+<h1>Gemma Rejection and Denial review</h1>
+<p class="note">Full dev_train · Gemma batch 1 · Both humans agree · Human-marked repetitions excluded. Human consensus is the reference here, not adjudicated gold.</p>
+<nav id="languages" class="languages" aria-label="Language"></nav>
+<div class="toolbar"><label for="direction">Cases <select id="direction"><option value="all">Both error directions</option><option value="over-denial">Humans: Rejection → Gemma: Denial</option><option value="over-rejection">Humans: Denial → Gemma: Rejection</option></select></label><span id="counts" class="note" aria-live="polite"></span></div>
+</header>
+<main class="workspace">
+<aside class="list-pane"><div class="list-head" id="listHeading"></div><nav id="caseList" class="case-list" aria-label="Review cases"></nav></aside>
+<article class="detail" id="detail" aria-label="Selected case"></article>
+</main>
+<script id="review-data" type="application/json">__REVIEW_DATA__</script>
+<script>
+const data=JSON.parse(document.getElementById('review-data').textContent);
+const languages=Object.keys(data.languages), $=id=>document.getElementById(id);
+let language=languages.includes(location.hash.slice(1))?location.hash.slice(1):languages[0],selected=null,filtered=[];
+function el(tag,text,cls){const node=document.createElement(tag);if(text!==undefined&&text!==null)node.textContent=text;if(cls)node.className=cls;return node;}
+function note(text){return el('p',text,'note');}
+function directionText(r){return 'Humans: '+r.human_consensus+' → Gemma: '+r.gemma_label;}
+function caseButton(r,i){
+ const b=el('button',null,'case-button');b.type='button';b.setAttribute('aria-current',String(r.record_id===selected));b.dataset.recordId=r.record_id;
+ b.append(el('span',directionText(r),'case-direction'));
+ const utterance=el('span',r.target_utterance||'','case-utterance');utterance.dir='auto';b.append(utterance);
+ b.append(el('span',r.record_id+' · '+r.transcript_id+' · line '+r.line,'case-meta'));
+ b.addEventListener('click',()=>selectCase(i));return b;
+}
+function renderList(){
+ const d=data.languages[language],direction=$('direction').value;
+ filtered=d.cases.filter(r=>direction==='all'||r.direction===direction);
+ if(!filtered.some(r=>r.record_id===selected))selected=filtered[0]?.record_id||null;
+ $('caseList').replaceChildren(...filtered.map(caseButton));
+ $('listHeading').textContent=d.label+' · '+filtered.length+' cases · sorted by transcript and line';
+ $('counts').textContent=(d.counts['over-denial']||0)+' Rejection → Denial; '+(d.counts['over-rejection']||0)+' Denial → Rejection';
+ for(const b of $('languages').children)b.setAttribute('aria-pressed',String(b.dataset.language===language));
+ renderDetail();
+}
+function selectCase(i){
+ if(!filtered[i])return;selected=filtered[i].record_id;
+ for(const b of $('caseList').children){b.setAttribute('aria-current',String(b.dataset.recordId===selected));if(b.dataset.recordId===selected)b.scrollIntoView?.({block:'nearest'});}
+ renderDetail();
+}
+function contextLine(line,target=false){
+ const row=el('div',null,'context-line'+(target?' target':''));
+ row.append(el('span',line.line??'','line-num'),el('span',line.speaker||'','speaker'));
+ const utterance=el('span',line.utterance||'','utterance');utterance.dir='auto';row.append(utterance);return row;
+}
+function renderDetail(){
+ const panel=$('detail');panel.replaceChildren();panel.scrollTop=0;
+ const i=filtered.findIndex(r=>r.record_id===selected),r=filtered[i];
+ if(!r){panel.append(el('p','No cases in this selection.','empty'));return;}
+ const nav=el('div',null,'detail-nav');
+ const prev=el('button','Previous'),next=el('button','Next');prev.type=next.type='button';prev.disabled=i===0;next.disabled=i===filtered.length-1;
+ prev.addEventListener('click',()=>selectCase(i-1));next.addEventListener('click',()=>selectCase(i+1));
+ nav.append(prev,next,el('span',(i+1)+' of '+filtered.length+' · '+r.record_id));panel.append(nav);
+ panel.append(el('h2',r.transcript_id));
+ const meta=['Line '+r.line];if(r.corpus)meta.push(r.corpus);if(r.half)meta.push('Half '+r.half);if(r.child_age_raw)meta.push('Age '+r.child_age_raw);panel.append(note(meta.join(' · ')));
+ const labels=el('div',null,'labels');
+ for(const [caption,value] of [['Human consensus',r.human_consensus],['Gemma output',r.gemma_label]]){const block=el('div');block.append(el('span',caption),el('strong',value));labels.append(block);}panel.append(labels);
+ panel.append(note('Target negator: '+r.target_negator+' · Gemma certain: '+(r.gemma_certain||'not recorded')));
+ panel.append(el('h3','Target utterance'),contextLine({line:r.line,speaker:r.speaker,utterance:r.target_utterance},true));
+ panel.append(el('h3','Gemma explanation'));const explanation=el('p',r.gemma_explanation||'No explanation recorded.','explanation');explanation.dir='auto';panel.append(explanation);
+ panel.append(el('h3','Human judgments'));const humans=el('div',null,'human-grid');
+ for(const h of r.human_coders){
+  const block=el('section',null,'human');block.append(el('h3',h.name+' · sheet '+h.sheet));
+  block.append(note('Label: '+h.bloom_label+' · Certain: '+(h.certain||'not recorded')));
+  const comments=el('p',h.comments||'No comment recorded.');comments.dir='auto';block.append(comments);
+  if(h.other_possibility)block.append(note('Other possibility: '+h.other_possibility));
+  if(h.definitely_one_of_two)block.append(note('Definitely one of two: '+h.definitely_one_of_two));
+  if(h.coded_by_raw && h.name==='LM')block.append(note('Recorded coder: '+h.coded_by_raw+' (LM)'));
+  humans.append(block);
+ }panel.append(humans);
+ panel.append(el('h3','Transcript context'));const transcript=el('div',null,'transcript');
+ for(const line of r.context_before||[])transcript.append(contextLine(line));
+ transcript.append(contextLine({line:r.line,speaker:r.speaker,utterance:r.target_utterance},true));
+ for(const line of r.context_after||[])transcript.append(contextLine(line));
+ panel.append(transcript);
+ const source=el('details');source.append(el('summary','Source and selection'));
+ source.append(note('Gemma4:31b · full dev_train · current prompt · batch 1 · temperature 0 · seed 20261009. Selected because both humans agreed and Gemma chose the opposite Rejection/Denial label.'));
+ source.append(note('Prompt: '+data.languages[language].prompt));
+ if(r.source)source.append(note('Original source: '+JSON.stringify(r.source)));
+ panel.append(source);
+}
+for(const key of languages){const b=el('button',data.languages[key].label+' ('+data.languages[key].cases.length+')');b.type='button';b.dataset.language=key;b.addEventListener('click',()=>{language=key;selected=null;history.replaceState(null,'','#'+key);renderList();$('caseList').scrollTop=0;});$('languages').append(b);}
+$('direction').addEventListener('change',()=>{selected=null;renderList();$('caseList').scrollTop=0;});
+$('caseList').addEventListener('keydown',e=>{const i=filtered.findIndex(r=>r.record_id===selected);if(e.key==='ArrowDown'&&i+1<filtered.length){e.preventDefault();selectCase(i+1);}if(e.key==='ArrowUp'&&i>0){e.preventDefault();selectCase(i-1);}});
+window.addEventListener('hashchange',()=>{const key=location.hash.slice(1);if(languages.includes(key)){language=key;selected=null;renderList();}});
+renderList();
+</script>
+</html>
