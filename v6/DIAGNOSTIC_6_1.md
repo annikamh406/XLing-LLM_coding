@@ -115,3 +115,15 @@ treat individual tokens from a shared episode as independent evidence.
 This sample is intentionally optimized for training development. Use it to
 decide whether a full dev_train run is worthwhile, then freeze the selected
 candidate before a separately authorized held-out generalization check.
+
+## Changed-case viewer
+
+Run `python3 scripts/build_v61_changes_viewer.py` to build
+`v6/results/dev_train_diagnostic_6_1/changes_viewer.html`. It compares the
+validated saved predictions without launching inference. The viewer defaults
+to label changes, with separate filters for newly agreeing cases, newly
+disagreeing controls, and certainty-only changes. Filter by language or sample
+group, search by utterance/ID/transcript, and compare the v5 and v6.1 comments
+beside the human reference and highlighted transcript context. Human coding
+notes are available in a disclosure below the transcript. Record-specific
+URL fragments preserve the selected case when opening a saved link.

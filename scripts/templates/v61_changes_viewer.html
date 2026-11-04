@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>V6.1 changed cases</title>
+<style>
+*{box-sizing:border-box}body{margin:0;color:#20262c;background:#fff;font:15px/1.5 system-ui,sans-serif}button,input,select{font:inherit;color:inherit}button,select,input{border:1px solid #cbd1d7;border-radius:5px;background:#fff;padding:7px 10px}button{cursor:pointer}button:hover{background:#f3f6f8}button:disabled{opacity:.4;cursor:default}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #176c9c;outline-offset:2px}header{padding:16px 22px 12px;border-bottom:1px solid #dce1e5}h1{font-size:22px;margin:0 0 3px}h2{font-size:17px;margin:0}p{margin:5px 0}.muted{color:#5b6570;font-size:13px}.topline,.filters,.counts,.navigation,.context-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.topline{justify-content:space-between}.counts{margin:13px 0 10px;gap:7px}.counts button{font-size:13px;padding:7px 11px}.counts b{font-size:16px;margin-right:5px}.counts button[aria-pressed=true]{border-color:#176c9c;background:#edf5fa;box-shadow:inset 0 0 0 1px #176c9c}.filters label{font-size:13px;display:flex;align-items:center;gap:7px}.filters input{width:270px}.workspace{display:grid;grid-template-columns:315px minmax(0,1fr);height:calc(100dvh - 192px);min-height:400px}.sidebar{display:flex;flex-direction:column;border-right:1px solid #dce1e5;min-height:0}.list-heading{padding:10px 15px;border-bottom:1px solid #e5e8eb}.case-list{overflow:auto;min-height:0;padding:8px;display:flex;flex-direction:column;gap:6px}.case{padding:10px 12px;text-align:left;width:100%;flex-shrink:0;white-space:normal}.case[aria-current=true]{border-color:#176c9c;background:#eef6fb;box-shadow:inset 3px 0 #176c9c}.case-meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#5b6570}.case-text{display:block;margin:6px 0;font-size:14px;overflow-wrap:anywhere}.transition{font-size:12px}.repair{color:#216245}.control_disagreement{color:#8c4b14}.certainty_only{color:#5c567b}.detail{overflow:auto;min-width:0;padding:14px 24px 30px}.navigation{justify-content:space-between;margin-bottom:12px}.nav-buttons{display:flex;align-items:center;gap:8px}.outcome{font-size:13px;font-weight:600}.target{padding:12px 14px;margin:12px 0;background:#fff5cf;border-left:3px solid #a17c0a;font-size:18px;white-space:pre-wrap;overflow-wrap:anywhere}.comparison{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;margin:12px 0}.version{border:1px solid #dce1e5;border-radius:6px;padding:12px 14px;min-width:0}.version-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.version h3{font-size:14px;margin:0;color:#505b65}.code{font-size:19px;font-weight:650;margin:5px 0}.explanation{white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px;margin-top:9px}.reference{padding:7px 0;font-size:14px}.reference strong{font-weight:650}.context-head{justify-content:space-between;margin:18px 0 8px}.context-box{border:1px solid #dce1e5;border-radius:6px;max-height:480px;overflow:auto;padding:8px 0}.turn{display:grid;grid-template-columns:60px 64px minmax(0,1fr);gap:9px;padding:5px 12px;line-height:1.5}.turn .line,.turn .speaker{color:#69737d;font-size:12px;padding-top:3px}.turn .utterance{white-space:pre-wrap;overflow-wrap:anywhere}.turn.target-turn{background:#fff5cf;border-left:3px solid #a17c0a;padding-left:9px;font-weight:550}.human-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.human-grid h3{font-size:14px;margin:8px 0}.human-grid p{white-space:pre-wrap}details{margin-top:15px}summary{cursor:pointer;font-size:13px;color:#505b65}.empty{padding:30px;color:#5b6570}a{color:#176c9c}.small-button{font-size:13px;padding:5px 9px}kbd{font:12px system-ui;border:1px solid #dce1e5;border-radius:3px;padding:0 4px}.legend{margin-top:12px;font-size:12px;color:#69737d}
+@media(min-width:1500px){.workspace{grid-template-columns:360px 1fr}.detail{padding-right:40px}}@media(max-width:850px){header{padding:12px}.workspace{grid-template-columns:250px minmax(0,1fr);height:calc(100dvh - 220px)}.detail{padding:12px}.comparison{grid-template-columns:1fr}.turn{grid-template-columns:44px 48px minmax(0,1fr);gap:5px}.filters input{width:200px}}@media(max-width:620px){.workspace{display:block;height:auto}.sidebar{border-right:0;border-bottom:1px solid #dce1e5}.case-list{max-height:240px}.detail{overflow:visible}.context-box{max-height:430px}.human-grid{grid-template-columns:1fr}.counts button{padding:5px 7px}.filters input{width:190px}}
+</style>
+<header>
+<div class="topline"><div><h1>V6.1 changed cases</h1><p class="muted">Gemma · Training diagnostic · One target per request · V5 → V6.1</p></div><a href="report/report.html" class="muted">Summary report</a></div>
+<nav id="counts" class="counts" aria-label="Change type"></nav>
+<div class="filters">
+<label>Language <select id="language"><option value="all">All languages</option></select></label>
+<label>Sample <select id="group"><option value="all">All groups</option><option value="targeted">Targeted errors</option><option value="relevant_control">Relevant controls</option><option value="broad_control">Broader controls</option></select></label>
+<label>Find <input id="search" type="search" placeholder="Utterance, record ID, or transcript" aria-label="Search cases"></label>
+<button id="reset" class="small-button">Reset filters</button>
+</div>
+</header>
+<main class="workspace"><aside class="sidebar"><div id="listHeading" class="list-heading muted" aria-live="polite"></div><nav id="caseList" class="case-list" aria-label="Changed records"></nav></aside><article id="detail" class="detail" aria-label="Selected record"></article></main>
+<script id="viewer-data" type="application/json">__VIEWER_DATA__</script>
+<script>
+const data=JSON.parse(document.getElementById('viewer-data').textContent),$=id=>document.getElementById(id);
+const title=s=>s? s[0].toUpperCase()+s.slice(1):'—';
+const groups={targeted:'Targeted error',relevant_control:'Relevant control',broad_control:'Broader control'};
+const outcomes={repair:'Now agrees with humans',control_disagreement:'Now disagrees with humans',certainty_only:'Certainty changed; label unchanged'};
+const types=[['labels','Label changes',r=>r.label_changed],['repair','Now agrees',r=>r.kind==='repair'],['control_disagreement','Now disagrees',r=>r.kind==='control_disagreement'],['certainty_only','Certainty only',r=>r.kind==='certainty_only'],['all','All changes',()=>true]];
+let type='labels',selected=null,filtered=[],fullContext=false;
+function el(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;}
+function muted(text){return el('p',text,'muted');}
+function updateHash(r){history.replaceState(null,'','#'+r.record_id);}
+function render(){
+ const lang=$('language').value,group=$('group').value,q=$('search').value.trim().toLocaleLowerCase();
+ const scoped=data.rows.filter(r=>(lang==='all'||r.language===lang)&&(group==='all'||r.group===group)&&(!q||[r.record_id,r.target_utterance,r.transcript_id].join(' ').toLocaleLowerCase().includes(q)));
+ $('counts').replaceChildren(...types.map(([key,label,fn])=>{const b=el('button');b.type='button';b.dataset.type=key;b.setAttribute('aria-pressed',String(type===key));b.append(el('b',String(scoped.filter(fn).length)),document.createTextNode(label));b.addEventListener('click',()=>{type=key;render();});return b;}));
+ filtered=scoped.filter(types.find(t=>t[0]===type)[2]);
+ if(!filtered.some(r=>r.record_id===selected))selected=filtered[0]?.record_id||null;
+ $('listHeading').textContent=filtered.length+' records · '+types.find(t=>t[0]===type)[1].toLowerCase();
+ $('caseList').replaceChildren(...filtered.map(r=>{const b=el('button',undefined,'case');b.type='button';b.dataset.id=r.record_id;b.setAttribute('aria-current',String(r.record_id===selected));const meta=el('span',undefined,'case-meta');meta.append(el('span',title(r.language)),el('span',r.record_id));b.append(meta);const text=el('span',r.target_utterance,'case-text');text.dir='auto';b.append(text,el('span',r.label_changed?title(r.v5_label)+' → '+title(r.v61_label):'Certainty: '+r.v5_certain+' → '+r.v61_certain,'transition '+r.kind));b.addEventListener('click',()=>select(r.record_id));return b;}));
+ renderDetail();
+}
+function select(id){selected=id;for(const b of $('caseList').children)b.setAttribute('aria-current',String(b.dataset.id===id));const b=[...$('caseList').children].find(b=>b.dataset.id===id);b?.scrollIntoView({block:'nearest'});renderDetail();}
+function turn(x,target=false){const n=el('div',undefined,'turn'+(target?' target-turn':''));n.append(el('span',String(x.line??''),'line'),el('span',x.speaker||'','speaker'));const u=el('span',x.utterance||'','utterance');u.dir='auto';n.append(u);return n;}
+function renderContext(r,box){
+ box.replaceChildren();const before=r.context_before||[],after=r.context_after||[];
+ for(const x of fullContext?before:before.slice(-6))box.append(turn(x));
+ const target=turn({line:r.line,speaker:r.speaker,utterance:r.target_utterance},true);box.append(target);
+ for(const x of fullContext?after:after.slice(0,6))box.append(turn(x));
+ requestAnimationFrame(()=>{box.scrollTop=Math.max(0,target.offsetTop-box.offsetTop-box.clientHeight*.4);});
+}
+function renderDetail(){
+ const panel=$('detail'),i=filtered.findIndex(r=>r.record_id===selected),r=filtered[i];panel.replaceChildren();panel.scrollTop=0;
+ if(!r){panel.append(el('p','No records match these filters. Try another change type or reset the filters.','empty'));return;}
+ updateHash(r);
+ const nav=el('div',undefined,'navigation'),buttons=el('div',undefined,'nav-buttons');
+ const prev=el('button','← Previous'),next=el('button','Next →');prev.type=next.type='button';prev.disabled=i===0;next.disabled=i===filtered.length-1;
+ prev.onclick=()=>select(filtered[i-1].record_id);next.onclick=()=>select(filtered[i+1].record_id);buttons.append(prev,next,el('span',(i+1)+' / '+filtered.length,'muted'));
+ nav.append(buttons,el('span',outcomes[r.kind],'outcome '+r.kind));panel.append(nav);
+ panel.append(el('h2',title(r.language)+' · '+r.record_id),muted(groups[r.group]+' · '+r.transcript_id+' · line '+r.line));
+ const target=el('div',r.target_utterance,'target');target.dir='auto';panel.append(target);
+ panel.append(muted('Indexed negator: '+r.target_negator+' · Token '+r.negator_index+' of '+r.negator_count));
+ const reference=el('p',undefined,'reference');reference.append(document.createTextNode('Human consensus: '),el('strong',title(r.human_consensus)),document.createTextNode(' · Reference agreement, not adjudicated gold.'));panel.append(reference);
+ const comparison=el('div',undefined,'comparison');
+ for(const [key,caption] of [['v5','V5 baseline'],['v61','V6.1']]){const section=el('section',undefined,'version');const head=el('div',undefined,'version-head');head.append(el('h3',caption),el('span','Certain: '+r[key+'_certain'],'muted'));section.append(head,el('div',title(r[key+'_label']),'code'));const explanation=el('p',r[key+'_comments']||'No explanation recorded.','explanation');explanation.dir='auto';section.append(explanation);comparison.append(section);}panel.append(comparison);
+ const contextHead=el('div',undefined,'context-head'),toggle=el('button',fullContext?'Show nearby turns':'Show full supplied context','small-button');toggle.type='button';toggle.setAttribute('aria-pressed',String(fullContext));
+ const box=el('div',undefined,'context-box');box.setAttribute('aria-label','Transcript context');box.tabIndex=0;
+ toggle.onclick=()=>{fullContext=!fullContext;toggle.textContent=fullContext?'Show nearby turns':'Show full supplied context';toggle.setAttribute('aria-pressed',String(fullContext));renderContext(r,box);};
+ contextHead.append(el('h2','Transcript context'),toggle);panel.append(contextHead,box);renderContext(r,box);
+ const humanDetails=el('details');humanDetails.append(el('summary','Human coding and comments'));const humans=el('div',undefined,'human-grid');
+ for(const h of r.humans){const section=el('section');section.append(el('h3',h.coded_by||h.sheet||'Human coder'),muted('Recorded label: '+(h.label||'—')+' · Certain: '+(h.certain||'not recorded')),el('p',h.comments||'No comment recorded.'));if(h.alternative)section.append(muted('Alternative: '+h.alternative));humans.append(section);}humanDetails.append(humans,muted('For scoring, Nonpossession is collapsed into Nonexistence. Human-marked repetitions were excluded.'));panel.append(humanDetails);
+ const provenance=el('details');provenance.append(el('summary','Selection and run details'),muted(r.selection_reason),muted('Gemma4:31b · batch 1 · temperature 0 · original per-record seed '+r.original_seed+' · same frozen runtime settings. Selected from dev_train.'));panel.append(provenance);
+ panel.append(el('p','← / → moves between cases when you are not using a text field or transcript scroll area.','legend'));
+}
+for(const lang of [...new Set(data.rows.map(r=>r.language))]){const option=el('option',title(lang));option.value=lang;$('language').append(option);}
+for(const id of ['language','group'])$(id).addEventListener('change',render);
+$('search').addEventListener('input',render);
+$('reset').onclick=()=>{$('language').value='all';$('group').value='all';$('search').value='';type='labels';selected=null;render();};
+document.addEventListener('keydown',e=>{if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)||e.target.closest('.context-box')||e.altKey||e.ctrlKey||e.metaKey)return;const i=filtered.findIndex(r=>r.record_id===selected);if(e.key==='ArrowRight'&&i+1<filtered.length){e.preventDefault();select(filtered[i+1].record_id);}if(e.key==='ArrowLeft'&&i>0){e.preventDefault();select(filtered[i-1].record_id);}});
+const initial=data.rows.find(r=>r.record_id===location.hash.slice(1));if(initial){selected=initial.record_id;if(!initial.label_changed)type='certainty_only';}
+render();
+</script>
+</html>
