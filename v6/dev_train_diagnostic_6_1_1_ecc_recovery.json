@@ -1,0 +1,28 @@
+{
+  "date": "2026-11-05",
+  "policy": "v611-tagalog-specific-ecc-recovery-v1",
+  "language": "tagalog",
+  "freeze_sha256": "2c8ca585c069c79371f18368a8c690387d5fd4f54c5cf78c775a520e6fb773ea",
+  "reason": "Uncorrectable CUDA ECC error on gpu3001 aborted llama-server during record 11, job 8351246; HTTP 500 returned without parsed or raw model response.",
+  "failed_record_id": "tgm_000717",
+  "original_failure_sha256": "145d388feeb5cdeb927ee311920f82fe8749486cb86c60165f18eaca43eb0d2f",
+  "initial_checkpoint_sha256": "9225afffdaa383342bf0ad4cc7b1b2086abbf5fdfb0f902b26b421c835212187",
+  "initial_saved_records": 10,
+  "initial_prefix_sha256": "abcbbe662c73b45ae317fc176134c245e4958e657cacd522bd04903e9478bca9",
+  "excluded_node": "gpu3001",
+  "excluded_gpu_uuid": "GPU-d615d8cf-1e53-4bfe-64af-5228a40f05ec",
+  "server_log": "v6/results/dev_train_diagnostic_6_1_1/logs/ollama_8351246.log",
+  "job_log": "v6/results/dev_train_diagnostic_6_1_1/logs/sbatch_v611-diag-tagalog_8351246.out",
+  "evidence_sha256": {
+    "v6/results/dev_train_diagnostic_6_1_1/logs/ollama_8351246.log": "2ddb87a0f09d1107a967e079268774afb94e1add592b195b0fc6fa32a913633f",
+    "v6/results/dev_train_diagnostic_6_1_1/logs/sbatch_v611-diag-tagalog_8351246.out": "4b88f67f375c92a894025ea32a3650f8f8eb66025fcb1edfa646a40576f9aa71"
+  },
+  "recovery_dir": "v6/results/dev_train_diagnostic_6_1_1/ecc_recovery",
+  "archive_failure": "v6/results/dev_train_diagnostic_6_1_1/ecc_recovery/original_failure_job-8351246.json",
+  "continuation_policy": "Allow only this documented historical hardware failure to be retried once, unchanged, on another L40S. Keep original ten predictions and raw batches. Every continuation request has one attempt, recorded before sending; any new model/transport/validation failure or unresolved request requires review. No sampled retry, seed change, budget increase or parser change.",
+  "files_sha256": {
+    "scripts/resume_v611_tagalog_ecc.py": "ada725f4e565a001476514f060f59fc3cf742adb769b59181dbe084779f4a7f4",
+    "scripts/submit_v611_tagalog_ecc_resume.sh": "52251e8ab1799d90e7be8f7e5d145b350150c8ba9d612f96274f91f26f51f698",
+    "scripts/sbatch_v611_tagalog_ecc_resume.sh": "d76e8a9812f57e2ad4f38351b3a2fe97553f988a1a3e63da0433b00d9eb0161b"
+  }
+}
